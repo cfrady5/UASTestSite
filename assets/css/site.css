@@ -55,6 +55,8 @@
   --shadow-md:   0 4px 12px rgba(16, 32, 63, .08), 0 12px 32px rgba(16, 32, 63, .10);
 
   --ease:        cubic-bezier(.22, .61, .36, 1);
+
+  --icon-external: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7'/%3E%3Cpath d='M8 7h9v9'/%3E%3C/svg%3E");
 }
 
 /* ---------- Reset ---------- */
@@ -458,13 +460,42 @@ a { color: inherit; }
 .eco-group { padding-top: 1.25rem; border-top: 3px solid var(--gold); }
 
 .tag-list { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .9rem; }
-.tag-list li {
+
+/* The pill lives on the anchor so the whole chip is a hit target. */
+.tag-list a {
+  display: inline-flex; align-items: center; gap: .45rem;
   font-size: .8125rem; font-weight: 600; letter-spacing: .02em;
   padding: .45rem .8rem;
   background: var(--paper-alt);
   border: 1px solid var(--line);
   border-radius: 999px;
   color: var(--ink-soft);
+  text-decoration: none;
+  transition: background-color .16s var(--ease), border-color .16s var(--ease),
+              color .16s var(--ease);
+}
+.tag-list a:hover {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+
+/* Outbound arrow. A mask keeps it decorative — assistive tech never
+   announces it, unlike generated text content. */
+.tag-list a::after {
+  content: "";
+  width: .62em; height: .62em; flex: none;
+  background: currentColor;
+  opacity: .5;
+  -webkit-mask: var(--icon-external) center / contain no-repeat;
+          mask: var(--icon-external) center / contain no-repeat;
+}
+.tag-list a:hover::after { opacity: .9; }
+
+.tag-note {
+  margin-top: .85rem;
+  font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink-muted);
 }
 
 /* ============================================================

@@ -91,6 +91,24 @@ form and in the footer, so the path never depends on JavaScript.
 The submit handler will then `POST` the fields as JSON instead of opening a mail client,
 and will show success and failure states inline.
 
+## Partner links
+
+All 19 entries in the Ecosystem section link to the partner's official site, opening in a
+new tab. Each URL was confirmed against the organization's live site rather than written
+from memory.
+
+Two are worth knowing about if the list is ever edited:
+
+- **Camp Atterbury and Muscatatuck are separate pages.** They are operated jointly as
+  Atterbury-Muscatatuck, but the Indiana National Guard site gives them distinct URLs
+  (`/camp-atterbury/` and `/muscatatuck-training-center/`).
+- **81st Troop Command and 38th Infantry Division have no standalone sites.** Both point at
+  their unit pages on the Indiana National Guard site.
+
+The pill styling lives on the `<a>`, not the `<li>`, so the whole chip is a hit target. An
+entry added as bare `<li>` text will render unstyled — wrap it in an anchor, or move the
+pill rules if you need genuinely unlinked entries.
+
 ## Accessibility and progressive enhancement
 
 - Semantic landmarks, a skip link, and visible focus rings throughout.
