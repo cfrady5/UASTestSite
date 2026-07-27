@@ -105,3 +105,6 @@ and will show success and failure states inline.
 All copy comes from `Phase_1_Midwest_UAS_Test_Site_Landing_Page.pdf`. Section headings,
 capability descriptions, the two leadership quotes, and the partner lists are reproduced
 verbatim; only light connective phrasing was added for hero and section lead-ins.
+
+Section 7 of the brief, "Indiana Drone Strategy (Core Pillars)", was intentionally dropped
+from the page at the client's request. It is the one brief section not represented here.

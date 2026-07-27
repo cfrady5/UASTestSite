@@ -100,13 +100,12 @@ a { color: inherit; }
   border-radius: 2px;
 }
 .section-quotes :focus-visible,
-.section-strategy :focus-visible,
 .section-contact :focus-visible,
 .site-header :focus-visible { outline-color: var(--gold); }
 
 /* ---------- Type scale ---------- */
 .h2, .h3, .hero-title, .hero-sub, .h4,
-.stat-num, .hero-stat-num, .pillar-num, .form-title, .brand-line-1 {
+.stat-num, .hero-stat-num, .form-title, .brand-line-1 {
   font-family: 'Anton', 'Arial Narrow', Impact, sans-serif;
   font-weight: 400;
   text-transform: uppercase;
@@ -447,35 +446,6 @@ a { color: inherit; }
 }
 
 /* ============================================================
-   STRATEGY PILLARS
-   ============================================================ */
-.section-strategy {
-  background: linear-gradient(155deg, var(--blue-deep) 0%, var(--blue-night) 100%);
-  color: #fff;
-}
-.pillars {
-  display: grid; gap: 1rem; margin-top: clamp(1.75rem, 3vw, 2.5rem);
-  counter-reset: pillar;
-}
-@media (min-width: 700px)  { .pillars { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1080px) { .pillars { grid-template-columns: repeat(5, 1fr); } }
-
-.pillars li {
-  display: flex; flex-direction: column; gap: .75rem;
-  padding: 1.4rem 1.25rem;
-  background: rgba(255, 255, 255, .06);
-  border-top: 3px solid var(--gold);
-  border-radius: 0 0 var(--radius) var(--radius);
-  transition: background-color .2s var(--ease), transform .2s var(--ease);
-}
-.pillars li:hover { background: rgba(255, 255, 255, .12); transform: translateY(-3px); }
-.pillar-num { font-size: 1.75rem; color: var(--gold); line-height: 1; }
-.pillar-label {
-  font-size: .9375rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
-  line-height: 1.35; color: #fff;
-}
-
-/* ============================================================
    ECOSYSTEM
    ============================================================ */
 .eco-layout { display: grid; gap: clamp(2.25rem, 4vw, 3.5rem); align-items: start; }
@@ -611,7 +581,7 @@ a { color: inherit; }
     scroll-behavior: auto !important;
   }
   .reveal { opacity: 1; transform: none; }
-  .btn:hover, .card:hover, .pillars li:hover { transform: none; }
+  .btn:hover, .card:hover { transform: none; }
 }
 
 /* ============================================================
@@ -620,9 +590,9 @@ a { color: inherit; }
 @media print {
   .site-header, .nav-toggle, .hero-actions, .contact-form-wrap, .skip-link { display: none !important; }
   .hero-media, .hero-scrim, .band { display: none !important; }
-  .hero, .section-quotes, .section-strategy, .section-contact { background: #fff !important; color: #000 !important; }
+  .hero, .section-quotes, .section-contact { background: #fff !important; color: #000 !important; }
   .hero-title, .h2-light, .eyebrow-gold, .form-title { color: #254A9A !important; }
-  .hero-sub, .hero-lead, .contact-copy, .quote-card blockquote p, .pillar-label { color: #000 !important; }
+  .hero-sub, .hero-lead, .contact-copy, .quote-card blockquote p { color: #000 !important; }
   .reveal { opacity: 1 !important; transform: none !important; }
   body { font-size: 11pt; }
 }
