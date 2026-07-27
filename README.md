@@ -15,6 +15,13 @@ python3 -m http.server 8000
 Deploy by uploading the repository contents to any static host (Vercel, Netlify,
 GitHub Pages, S3/CloudFront, or an existing CMS's static directory).
 
+### Before launch
+
+`<link rel="canonical">` and `<meta property="og:url">` are commented out at the top of
+`index.html`. Fill both in with this page's own public URL once it is known. They are left
+out rather than guessed on purpose: a canonical pointing at another domain tells search
+engines this page is a duplicate of that domain, which would suppress it from results.
+
 ## Structure
 
 ```
@@ -94,16 +101,23 @@ and will show success and failure states inline.
 ## Partner links
 
 All 19 entries in the Ecosystem section link to the partner's official site, opening in a
-new tab. Each URL was confirmed against the organization's live site rather than written
-from memory.
+new tab. The labels and URLs are the client-supplied canonical list — treat that list as
+the source of truth over anything inferred.
 
-Two are worth knowing about if the list is ever edited:
+Three are worth knowing about if the list is ever edited:
 
 - **Camp Atterbury and Muscatatuck are separate pages.** They are operated jointly as
   Atterbury-Muscatatuck, but the Indiana National Guard site gives them distinct URLs
   (`/camp-atterbury/` and `/muscatatuck-training-center/`).
 - **81st Troop Command and 38th Infantry Division have no standalone sites.** Both point at
   their unit pages on the Indiana National Guard site.
+- **IEDC is linked without the `www.` subdomain** (`https://iedc.in.gov/`) and ARI includes
+  the locale path (`https://www.theari.us/en/`). These match the supplied list; the footer
+  logos use the same URLs so the two places cannot drift apart.
+
+Several entries use the organization's full official name rather than the shorter form in
+the Phase 1 brief — "Grissom Air Reserve Base" over "Grissom Air Reserve", "Defense Finance
+and Accounting Service (DFAS)" over "DFAS", and so on.
 
 The pill styling lives on the `<a>`, not the `<li>`, so the whole chip is a hit target. An
 entry added as bare `<li>` text will render unstyled — wrap it in an anchor, or move the
