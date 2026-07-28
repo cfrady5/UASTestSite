@@ -185,7 +185,7 @@ a { color: inherit; }
 .btn-ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .7); }
 .btn-ghost:hover { background: rgba(255, 255, 255, .12); border-color: #fff; }
 
-.btn-sm { padding: .7rem 1.15rem; font-size: .75rem; letter-spacing: .08em; }
+.btn-sm { padding: .8rem 1.5rem; font-size: .75rem; letter-spacing: .08em; }
 .btn-block { width: 100%; }
 
 /* ============================================================
@@ -215,7 +215,7 @@ a { color: inherit; }
   text-transform: uppercase; color: var(--gold); margin-top: .22rem;
 }
 
-.primary-nav { display: flex; align-items: center; gap: 1.75rem; }
+.primary-nav { display: flex; align-items: center; gap: 2.25rem; }
 .primary-nav > ul { display: flex; align-items: center; gap: 1.6rem; }
 .primary-nav a {
   font-size: .8125rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
@@ -225,9 +225,14 @@ a { color: inherit; }
 }
 .primary-nav a:hover { color: #fff; border-bottom-color: var(--gold); }
 .primary-nav a.is-active { color: var(--gold); border-bottom-color: var(--gold); }
-/* Higher specificity than `.primary-nav a`, which would otherwise
-   repaint the gold CTA's label white and destroy its contrast. */
-.primary-nav .nav-cta { color: var(--blue-night); border-bottom: none; }
+/* Higher specificity than `.primary-nav a`, which would otherwise repaint the
+   gold CTA's label white and flatten its padding to the nav-link value —
+   leaving the button with no horizontal padding at all. */
+.primary-nav .nav-cta {
+  color: var(--blue-night);
+  border-bottom: none;
+  padding: .8rem 1.5rem;
+}
 .primary-nav .nav-cta:hover { color: var(--blue-night); border-bottom-color: transparent; }
 
 .nav-toggle {
