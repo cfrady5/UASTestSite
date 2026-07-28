@@ -29,7 +29,9 @@
 <link rel="preload" as="image" href="assets/img/hero-drone-1600.jpg"
       imagesrcset="assets/img/hero-drone-1000.jpg 1000w, assets/img/hero-drone-1600.jpg 1600w, assets/img/hero-drone-2400.jpg 2400w"
       imagesizes="100vw">
-<link rel="stylesheet" href="assets/css/site.css">
+<!-- ?v= is a cache buster. Bump it whenever site.css or site.js changes, or browsers
+     will keep serving the old file against fresh HTML. -->
+<link rel="stylesheet" href="assets/css/site.css?v=2">
 
 <script type="application/ld+json">
 {
@@ -428,6 +430,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js" defer></script>
+<script src="assets/js/site.js?v=2" defer></script>
 </body>
 </html>

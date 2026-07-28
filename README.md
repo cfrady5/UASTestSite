@@ -15,6 +15,13 @@ python3 -m http.server 8000
 Deploy by uploading the repository contents to any static host (Vercel, Netlify,
 GitHub Pages, S3/CloudFront, or an existing CMS's static directory).
 
+### Cache busting
+
+`index.html` loads the stylesheet and script with a `?v=` query string. **Bump that number
+whenever you edit `site.css` or `site.js`.** Without it, browsers happily serve a cached
+stylesheet against freshly fetched HTML, so a CSS change appears not to have taken effect
+until a hard refresh — which is easy to misread as the change never having been made.
+
 ### Before launch
 
 `<link rel="canonical">` and `<meta property="og:url">` are commented out at the top of
