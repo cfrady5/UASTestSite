@@ -567,7 +567,7 @@ a { color: inherit; }
 .site-footer { background: var(--paper); border-top: 4px solid var(--gold); padding-block: 2.75rem; }
 
 .footer-logos {
-  display: flex; flex-wrap: wrap; align-items: center;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
   gap: clamp(1.5rem, 4vw, 3.25rem);
   padding-bottom: 2rem;
 }
