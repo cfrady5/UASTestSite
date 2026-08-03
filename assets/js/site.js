@@ -203,18 +203,38 @@
         var accessKey = form.getAttribute('data-access-key');
         if (accessKey) data.access_key = accessKey;
 
+        /* Content type matters more than it looks. An application/json POST is a
+           "preflighted" cross-origin request, and Google Apps Script never answers
+           the OPTIONS preflight — the request fails before it is delivered. Sending
+           text/plain keeps it a simple request, which Apps Script accepts and parses
+           identically. Set data-content-type="text/plain;charset=utf-8" for that
+           backend; the JSON default suits everything else. */
+        var contentType = form.getAttribute('data-content-type') || 'application/json';
+
         status.textContent = 'Sending…';
         status.className = 'form-note';
+
         fetch(endpoint, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': contentType,
             // Formspree returns a redirect instead of JSON without this.
             'Accept': 'application/json'
           },
           body: JSON.stringify(data)
         }).then(function (res) {
-          if (!res.ok) throw new Error('Request failed');
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.text();
+        }).then(function (text) {
+          /* Apps Script cannot set a non-200 status, so a rejection arrives as a
+             200 carrying a failure flag. Treat that as an error rather than
+             telling the visitor their inquiry was sent when it was not. */
+          var payload = null;
+          try { payload = JSON.parse(text); } catch (err) { /* non-JSON is fine */ }
+          if (payload && (payload.ok === false || payload.success === false)) {
+            throw new Error(payload.error || 'Rejected by the endpoint');
+          }
+
           form.reset();
           status.textContent = 'Thank you — your inquiry has been sent. Our team will follow up shortly.';
           status.className = 'form-note is-ok';

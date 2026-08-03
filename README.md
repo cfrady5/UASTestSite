@@ -134,56 +134,84 @@ form and in the footer, so the path never depends on JavaScript.
 
 ### Making it deliver to the shared inbox
 
-The `mailto:` handoff works, but it depends on the visitor having a desktop mail client
-configured, and the inquiry is lost if they close the compose window. To have submissions
-arrive at `MidwestUASTestSite@theari.us` without that dependency, point the form at a form
-endpoint. **This is the only change needed** — the code already handles the rest.
+The `mailto:` handoff works, but it depends on the visitor having a mail client
+configured, and the inquiry is lost if they close the compose window. To have
+submissions arrive at `MidwestUASTestSite@theari.us` without that dependency, the form
+needs an endpoint to POST to. A static page has no server of its own, so this step
+cannot be skipped.
 
-Add one attribute to the `<form>` tag in `index.html` (around line 380):
+**Chosen route: Google Apps Script**, so mail is sent by ARI's own Google Workspace
+tenant and no third-party service ever sees an inquirer's details.
 
-```html
-<form class="inquiry-form" id="inquiryForm"
-      data-endpoint="https://formspree.io/f/YOUR_FORM_ID" novalidate>
-```
+#### Deploying the endpoint
 
-The handler then `POST`s JSON instead of opening a mail client, and shows inline sending,
-success and failure states. If the POST fails it tells the visitor to email the inbox
-directly, so there is always a fallback. Remove the attribute and it reverts to `mailto:`.
+Do this from a `theari.us` Google account — the mail is sent by whoever deploys it, so
+prefer a shared or service account over a personal one.
 
-**Formspree** (recommended for speed): create a form, set the destination to the shared
-inbox, confirm the address from that inbox, paste the endpoint above. Free tier covers
-roughly 50 submissions a month.
+1. Go to <https://script.google.com> and create a new project. Name it something like
+   "Midwest UAS Test Site — inquiry form".
+2. Replace the contents of `Code.gs` with `tools/apps-script/Code.gs` from this repo.
+   Confirm the `TO` constant at the top is the shared inbox.
+3. Run the `sendTestEmail` function once from the editor. Google will prompt for
+   authorization — grant it, then confirm the test mail reaches the inbox. This proves
+   the script can send before any web wiring exists.
+4. **Deploy → New deployment → Web app**, with:
+   - *Execute as*: **Me**
+   - *Who has access*: **Anyone**
 
-**Web3Forms** (no account beyond email confirmation): its key travels in the payload
-rather than the URL, so use both attributes:
+   "Anyone" is required — the visitor is not signed into Google. It exposes only this
+   script, which does nothing but validate a payload and email the inbox.
+5. Copy the Web app URL. It looks like
+   `https://script.google.com/macros/s/AKfycb.../exec`.
+6. Add two attributes to the `<form>` in `index.html`:
 
-```html
-data-endpoint="https://api.web3forms.com/submit" data-access-key="YOUR_ACCESS_KEY"
-```
+   ```html
+   <form class="inquiry-form" id="inquiryForm"
+         data-endpoint="https://script.google.com/macros/s/AKfycb.../exec"
+         data-content-type="text/plain;charset=utf-8" novalidate>
+   ```
 
-**Netlify Forms**: only if you host on Netlify. It needs form markup changes rather than
-this attribute — add `netlify` and `name` to the `<form>` and a hidden `form-name` input,
-and Netlify captures posts server-side.
+7. Submit a real inquiry through the live page and confirm it arrives.
 
-**Self-hosted**: any URL accepting a JSON `POST` works. The body is:
+**`data-content-type` is not optional here.** An `application/json` POST is a
+preflighted cross-origin request, and Apps Script never answers the `OPTIONS`
+preflight, so the request fails before it is delivered. `text/plain` keeps it a simple
+request; the body is still JSON and the script parses it identically.
+
+Re-deploying after editing the script creates a **new URL** unless you use
+*Deploy → Manage deployments → Edit → Version: New version*, which keeps the existing
+one. Use that, or step 6 has to be repeated each time.
+
+#### Microsoft 365 instead
+
+If ARI is on Microsoft 365 rather than Google Workspace, the equivalent is a Power
+Automate flow: trigger **When an HTTP request is received**, action **Send an email
+(V2)** to the shared inbox, mapping the same JSON fields. Paste the generated URL into
+`data-endpoint`. Test whether it needs `data-content-type` too — if the browser console
+shows a CORS error, set it to `text/plain;charset=utf-8` as above.
+
+#### Other backends
+
+Any URL accepting a JSON `POST` works. The body is:
 
 ```json
 { "name": "...", "email": "...", "organization": "...", "interest": "...",
   "message": "...", "subject": "Test Site Inquiry — Name (Org)" }
 ```
 
-`_subject` is sent alongside `subject` because different services read different keys, and
-`access_key` is added only when `data-access-key` is set.
+`_subject` is sent alongside `subject` because services differ on which key they read,
+and `access_key` is included when `data-access-key` is set (Web3Forms and similar).
+Hosted options such as Formspree work with `data-endpoint` alone — but note they put a
+third party in the path of every inquirer's details, which is what the Apps Script route
+avoids.
 
-### Two things to settle before turning this on
+#### How failures are reported
 
-- **Data handling.** A third-party form service receives every inquirer's name, email,
-  organization and message. For a government-adjacent site that is a call for ARI IT, not
-  a developer default. A self-hosted endpoint or a Netlify/Vercel function writing straight
-  to the inbox avoids the third party.
-- **Deliverability.** Have IT expect mail from whichever service you pick, so inquiries do
-  not land in the shared inbox's spam folder. Send a test through the live form and
-  confirm it arrives before announcing the page.
+Apps Script cannot return a non-200 status, so it signals rejection with `{"ok": false}`
+in a 200 response. The page checks the body as well as the status code, so a rejected
+submission shows the error state rather than falsely telling the visitor their inquiry
+was sent. Any failure falls back to "please email the inbox directly", so there is
+always a route to the team.
 
 ### Spam protection
 
