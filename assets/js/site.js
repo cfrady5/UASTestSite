@@ -126,7 +126,7 @@
      --------------------------------------------------------------- */
   var form   = document.getElementById('inquiryForm');
   var status = document.getElementById('formStatus');
-  var INBOX  = 'dale.lyles@theari.us';
+  var INBOX  = 'MidwestUASTestSite@theari.us';
 
   function setError(field, message) {
     var wrap = field.closest('.field');

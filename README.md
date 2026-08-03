@@ -86,13 +86,45 @@ All imagery is derived from the supplied print PDF.
   headline and emblem.
 - `logo-shield.svg` — the emblem, vectorized from the embedded bitmap by colour-separating
   it into the four brand colours and tracing each layer with potrace.
-- `indiana-map.png`, `logo-iedc.png`, `logo-faa.png`, `logo-ari.png`, `hero-uav.jpg` —
-  cropped from the 300 DPI render, which is colour-accurate.
+- `indiana-map.png`, `logo-iedc.png`, `logo-ari.png`, `hero-uav.jpg` — cropped from the
+  300 DPI render, which is colour-accurate.
+
+### The map is a modified version of IEDC's artwork
+
+`indiana-map.png` is no longer pixel-identical to the map in the print piece. **Indiana
+State University was added to the Terre Haute cluster** at the client's request, having
+been left off the original. The label is drawn in Montserrat Bold at 14px with -0.55px
+tracking to match the surrounding labels, positioned in a gap verified clear of both
+existing text and road lines.
+
+ISU is set as a plain text label rather than a wordmark, because the university's own
+logo was not supplied and inventing one would misrepresent their brand. If IEDC reissues
+the map, that edit needs re-applying — the unmodified crop is in this repo's git history.
+
+### Federal seals and logos are excluded
+
+The Test Site OTA prohibits displaying Agency or Federal Government seals, trademarks,
+logos, service marks or trade names without prior written permission from the Agency:
+
+> The Test Site Sponsor agrees not to display, or use any Agency or Federal Government
+> seals, trademarks, logos, service marks, or trade names on the Company's websites,
+> digital, or printed materials unless permission has been granted by the Agency in
+> writing prior to the usage.
+
+**The FAA seal has been removed from the footer and the image file deleted from the
+repo.** Unreferenced files still resolve at their URL on a static host, so leaving the
+asset in place would arguably still be publishing it. Recover it from git history once
+written approval is on file; the footer carries a comment marking where it went.
+
+The FAA is still referred to by name in body copy ("one of only 9 FAA-designated UAS test
+sites") and as a text link under Sponsoring Organizations. That is descriptive use of the
+agency's name rather than display of a mark — but note the clause above also lists *trade
+names*, so it is worth confirming with counsel how broadly the sponsor reads that term.
 
 ## The inquiry form
 
 The page is static, so the form has no backend. As shipped it validates client-side and
-then opens the visitor's mail client addressed to `dale.lyles@theari.us` with the fields
+then opens the visitor's mail client addressed to `MidwestUASTestSite@theari.us` with the fields
 formatted into the body. The direct email address is also shown in plain text next to the
 form and in the footer, so the path never depends on JavaScript.
 
@@ -147,3 +179,29 @@ verbatim; only light connective phrasing was added for hero and section lead-ins
 
 Section 7 of the brief, "Indiana Drone Strategy (Core Pillars)", was intentionally dropped
 from the page at the client's request. It is the one brief section not represented here.
+
+### Wording changed from the brief, on purpose
+
+Two headings were softened at the client's request to avoid asserting a competitive
+ranking that could be challenged:
+
+| Brief / earlier draft | Now reads |
+|---|---|
+| "Why Indiana Leads in UAS Testing" | "Why test in Indiana" |
+| "Indiana is ready to lead" | "What Indiana's leaders are saying" |
+
+The second was not in the brief — it was a heading written for the quotes section, and it
+made the same "leads" claim the client asked to drop, so it was changed for consistency.
+The Senator Young quote beneath it says Indiana is ready to *help* lead, so the old
+heading also slightly overstated its own source. The quotes themselves are untouched.
+
+The "1 of only 9 FAA-designated UAS test sites" figure is retained — that is a factual
+designation, not a ranking claim, and it matches the FAA's current count.
+
+### Contact
+
+The page and the inquiry form both point at the shared inbox
+`MidwestUASTestSite@theari.us`. The Point of Contact block still names Dale Lyles above
+that shared address; if the intent is for the block to represent the team rather than an
+individual, change the name line in the contact section and the `contactPoint` name in the
+JSON-LD block at the top of `index.html`.
