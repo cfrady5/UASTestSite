@@ -132,14 +132,66 @@ then opens the visitor's mail client addressed to `MidwestUASTestSite@theari.us`
 formatted into the body. The direct email address is also shown in plain text next to the
 form and in the footer, so the path never depends on JavaScript.
 
-**To wire it to a real endpoint**, add a `data-endpoint` attribute to the form:
+### Making it deliver to the shared inbox
+
+The `mailto:` handoff works, but it depends on the visitor having a desktop mail client
+configured, and the inquiry is lost if they close the compose window. To have submissions
+arrive at `MidwestUASTestSite@theari.us` without that dependency, point the form at a form
+endpoint. **This is the only change needed** — the code already handles the rest.
+
+Add one attribute to the `<form>` tag in `index.html` (around line 380):
 
 ```html
-<form class="inquiry-form" id="inquiryForm" data-endpoint="https://example.com/api/inquiry" novalidate>
+<form class="inquiry-form" id="inquiryForm"
+      data-endpoint="https://formspree.io/f/YOUR_FORM_ID" novalidate>
 ```
 
-The submit handler will then `POST` the fields as JSON instead of opening a mail client,
-and will show success and failure states inline.
+The handler then `POST`s JSON instead of opening a mail client, and shows inline sending,
+success and failure states. If the POST fails it tells the visitor to email the inbox
+directly, so there is always a fallback. Remove the attribute and it reverts to `mailto:`.
+
+**Formspree** (recommended for speed): create a form, set the destination to the shared
+inbox, confirm the address from that inbox, paste the endpoint above. Free tier covers
+roughly 50 submissions a month.
+
+**Web3Forms** (no account beyond email confirmation): its key travels in the payload
+rather than the URL, so use both attributes:
+
+```html
+data-endpoint="https://api.web3forms.com/submit" data-access-key="YOUR_ACCESS_KEY"
+```
+
+**Netlify Forms**: only if you host on Netlify. It needs form markup changes rather than
+this attribute — add `netlify` and `name` to the `<form>` and a hidden `form-name` input,
+and Netlify captures posts server-side.
+
+**Self-hosted**: any URL accepting a JSON `POST` works. The body is:
+
+```json
+{ "name": "...", "email": "...", "organization": "...", "interest": "...",
+  "message": "...", "subject": "Test Site Inquiry — Name (Org)" }
+```
+
+`_subject` is sent alongside `subject` because different services read different keys, and
+`access_key` is added only when `data-access-key` is set.
+
+### Two things to settle before turning this on
+
+- **Data handling.** A third-party form service receives every inquirer's name, email,
+  organization and message. For a government-adjacent site that is a call for ARI IT, not
+  a developer default. A self-hosted endpoint or a Netlify/Vercel function writing straight
+  to the inbox avoids the third party.
+- **Deliverability.** Have IT expect mail from whichever service you pick, so inquiries do
+  not land in the shared inbox's spam folder. Send a test through the live form and
+  confirm it arrives before announcing the page.
+
+### Spam protection
+
+The form carries a honeypot field (`#f-website`) that is off-canvas and `aria-hidden`, so
+neither sighted visitors nor screen readers encounter it. When it comes back filled, the
+page shows the normal success message and sends nothing — the bot gets no signal that it
+was caught. This handles naive bots; if the inbox still attracts spam, add the chosen
+service's own captcha rather than replacing the honeypot.
 
 ## Partner links
 

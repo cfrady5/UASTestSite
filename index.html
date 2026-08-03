@@ -31,7 +31,7 @@
       imagesizes="100vw">
 <!-- ?v= is a cache buster. Bump it whenever site.css or site.js changes, or browsers
      will keep serving the old file against fresh HTML. -->
-<link rel="stylesheet" href="assets/css/site.css?v=7">
+<link rel="stylesheet" href="assets/css/site.css?v=8">
 
 <script type="application/ld+json">
 {
@@ -390,6 +390,13 @@
           <p class="error" id="e-msg" hidden></p>
         </div>
 
+        <!-- Honeypot. Hidden from sight and from assistive tech; bots that fill every
+             field give themselves away. Never remove without replacing the spam guard. -->
+        <div class="hp" aria-hidden="true">
+          <label for="f-website">Leave this field empty</label>
+          <input type="text" id="f-website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
         <button type="submit" class="btn btn-gold btn-block">Submit a Test Site Inquiry</button>
         <p class="form-note" id="formStatus" role="status" aria-live="polite"></p>
       </form>
@@ -428,6 +435,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=7" defer></script>
+<script src="assets/js/site.js?v=8" defer></script>
 </body>
 </html>

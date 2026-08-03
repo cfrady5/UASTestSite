@@ -172,6 +172,16 @@
         return;
       }
 
+      // Honeypot tripped: show the normal success state so the bot learns nothing,
+      // but send nothing anywhere.
+      var trap = document.getElementById('f-website');
+      if (trap && trap.value) {
+        form.reset();
+        status.textContent = 'Thank you — your inquiry has been sent.';
+        status.className = 'form-note is-ok';
+        return;
+      }
+
       var data = {
         name:         document.getElementById('f-name').value.trim(),
         email:        document.getElementById('f-email').value.trim(),
@@ -183,11 +193,25 @@
       var endpoint = form.getAttribute('data-endpoint');
 
       if (endpoint) {
+        // Subject line, under the two key names the common services read.
+        data.subject = 'Test Site Inquiry — ' + data.name +
+                       (data.organization ? ' (' + data.organization + ')' : '');
+        data._subject = data.subject;
+
+        // Services like Web3Forms authenticate with a key in the payload rather
+        // than a per-form URL. Harmless when the attribute is absent.
+        var accessKey = form.getAttribute('data-access-key');
+        if (accessKey) data.access_key = accessKey;
+
         status.textContent = 'Sending…';
         status.className = 'form-note';
         fetch(endpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            // Formspree returns a redirect instead of JSON without this.
+            'Accept': 'application/json'
+          },
           body: JSON.stringify(data)
         }).then(function (res) {
           if (!res.ok) throw new Error('Request failed');

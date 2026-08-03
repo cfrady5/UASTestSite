@@ -576,6 +576,12 @@ a { color: inherit; }
   border-color: #FF9A8B;
 }
 
+/* Honeypot: off-canvas rather than display:none, which more bots now skip. */
+.hp {
+  position: absolute; left: -9999px; top: auto;
+  width: 1px; height: 1px; overflow: hidden;
+}
+
 .form-note {
   margin-top: 1rem; font-size: .875rem; min-height: 1.4em;
   color: rgba(255, 255, 255, .9);
