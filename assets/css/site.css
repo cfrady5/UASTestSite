@@ -537,8 +537,10 @@ a { color: inherit; }
   font-size: .75rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
   color: var(--gold); margin-bottom: .4rem;
 }
-.poc-name { font-size: 1.25rem; font-weight: 700; color: #fff; }
-.poc-email a { color: #fff; text-decoration-color: var(--gold); text-underline-offset: 4px; }
+.poc-email a {
+  font-size: 1.125rem; font-weight: 600;
+  color: #fff; text-decoration-color: var(--gold); text-underline-offset: 4px;
+}
 .poc-email a:hover { color: var(--gold); }
 
 /* Form */

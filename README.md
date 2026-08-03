@@ -101,7 +101,7 @@ ISU is set as a plain text label rather than a wordmark, because the university'
 logo was not supplied and inventing one would misrepresent their brand. If IEDC reissues
 the map, that edit needs re-applying — the unmodified crop is in this repo's git history.
 
-### Federal seals and logos are excluded
+### Federal agencies are not named or depicted
 
 The Test Site OTA prohibits displaying Agency or Federal Government seals, trademarks,
 logos, service marks or trade names without prior written permission from the Agency:
@@ -111,15 +111,19 @@ logos, service marks or trade names without prior written permission from the Ag
 > digital, or printed materials unless permission has been granted by the Agency in
 > writing prior to the usage.
 
-**The FAA seal has been removed from the footer and the image file deleted from the
-repo.** Unreferenced files still resolve at their URL on a static host, so leaving the
-asset in place would arguably still be publishing it. Recover it from git history once
-written approval is on file; the footer carries a comment marking where it went.
+Because that clause covers **trade names** as well as marks, the site now carries no
+reference to the FAA at all — not the seal, not the name, not the acronym, and not a link.
+Removed: the footer seal (and its image file), the "Federal Aviation Administration (FAA)"
+entry under Sponsoring Organizations, and every instance of "FAA-designated".
 
-The FAA is still referred to by name in body copy ("one of only 9 FAA-designated UAS test
-sites") and as a text link under Sponsoring Organizations. That is descriptive use of the
-agency's name rather than display of a mark — but note the clause above also lists *trade
-names*, so it is worth confirming with counsel how broadly the sponsor reads that term.
+**The designation claim survives as "one of only 9 federally designated UAS test sites in
+the nation."** The count is the load-bearing fact and it is unchanged; only the naming of
+the designating agency is gone. If the sponsor reads the clause narrowly enough to permit
+naming the agency descriptively, restoring "FAA-designated" is a search-and-replace and
+puts back a materially stronger credibility claim.
+
+The image file is deleted rather than just unreferenced, because an unreferenced asset
+still resolves at its URL on a static host. Git history holds it for when approval lands.
 
 ## The inquiry form
 
@@ -195,13 +199,13 @@ made the same "leads" claim the client asked to drop, so it was changed for cons
 The Senator Young quote beneath it says Indiana is ready to *help* lead, so the old
 heading also slightly overstated its own source. The quotes themselves are untouched.
 
-The "1 of only 9 FAA-designated UAS test sites" figure is retained — that is a factual
-designation, not a ranking claim, and it matches the FAA's current count.
+The "one of only 9" count is retained — that is a factual designation rather than a
+ranking claim. See "Federal agencies are not named or depicted" above for why the
+designating agency is no longer named alongside it.
 
 ### Contact
 
-The page and the inquiry form both point at the shared inbox
-`MidwestUASTestSite@theari.us`. The Point of Contact block still names Dale Lyles above
-that shared address; if the intent is for the block to represent the team rather than an
-individual, change the name line in the contact section and the `contactPoint` name in the
-JSON-LD block at the top of `index.html`.
+No individual is named on the page. The contact section and the inquiry form both route to
+the shared inbox `MidwestUASTestSite@theari.us`, and the JSON-LD `contactPoint` carries the
+address with no `name` field. The address is shown in plain text in the contact section and
+the footer, so the path to reach the team never depends on JavaScript.
