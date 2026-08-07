@@ -24,10 +24,17 @@ until a hard refresh — which is easy to misread as the change never having bee
 
 ### Before launch
 
-`<link rel="canonical">` and `<meta property="og:url">` are commented out at the top of
-`index.html`. Fill both in with this page's own public URL once it is known. They are left
-out rather than guessed on purpose: a canonical pointing at another domain tells search
-engines this page is a duplicate of that domain, which would suppress it from results.
+**Set the canonical URL.** `<link rel="canonical">` and `<meta property="og:url">` are
+commented out at the top of `index.html`. Fill both in with this page's own public URL.
+They are left out rather than guessed on purpose: a canonical pointing at another domain
+tells search engines this page is a duplicate of that domain, which would suppress it from
+results. This repo currently deploys to `https://uas-test-site.vercel.app/` — use that if
+it is the final address, or the custom domain once one is attached.
+
+**Swap the ARI links off the review deployment.** Both the footer logo and the Ecosystem
+entry point at `https://ari-for-review.vercel.app/`, ARI's staging build, at the client's
+request. Preview deployments are not permanent addresses — move both to ARI's production
+domain before this page is announced. There is a comment above the footer link marking it.
 
 ## Structure
 
