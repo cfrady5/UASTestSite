@@ -273,18 +273,39 @@ from the page at the client's request. It is the one brief section not represent
 
 ### Wording changed from the brief, on purpose
 
-Two headings were softened at the client's request to avoid asserting a competitive
-ranking that could be challenged:
+Headings and claims softened at the client's request, so the page does not assert more
+than the programme can currently support:
 
 | Brief / earlier draft | Now reads |
 |---|---|
 | "Why Indiana Leads in UAS Testing" | "Why test in Indiana" |
 | "Indiana is ready to lead" | "What Indiana's leaders are saying" |
+| "Advanced Urban & BVLOS Testing" | "Expanding Urban & BVLOS Testing" |
 
-The second was not in the brief — it was a heading written for the quotes section, and it
-made the same "leads" claim the client asked to drop, so it was changed for consistency.
-The Senator Young quote beneath it says Indiana is ready to *help* lead, so the old
-heading also slightly overstated its own source. The quotes themselves are untouched.
+"Indiana is ready to lead" was not in the brief — it was a heading written for the quotes
+section, and it made the same "leads" claim the client asked to drop. The Senator Young
+quote beneath it says Indiana is ready to *help* lead, so it also overstated its own
+source. The quotes themselves are untouched.
+
+**"Advanced" was changed because the corridor and the urban canyon component are not yet
+operational.** The brief's body copy already hedged ("preliminarily-approved",
+"proposed"), but the heading read as a present-tense capability, and headings are what
+visitors scan. The body now says both are "in development and subject to regulatory
+approval" — worded without naming the approving agency, per the OTA constraint above.
+
+**Still worth reviewing:** the "Public Safety & Urban Operations" capability card lists
+"dense urban conditions and extended BVLOS corridors" among environments the site tests
+in. That is brief copy and reads as present-tense capability for the same two things.
+If the corridor and urban canyon are pre-operational, that card carries the same overclaim
+and should be softened to match.
+
+### Added beyond the brief
+
+"Defense Installation Access" was added to the *Why test in Indiana* list at the client's
+request. Access to Camp Atterbury, Muscatatuck and NSWC Crane without a DoD contract is
+arguably the strongest differentiator on the page, and it previously appeared only lower
+down under Infrastructure as "Defense Integration". The two are deliberately worded
+differently: the first frames the benefit, the second the detail.
 
 The "one of only 9" count is retained — that is a factual designation rather than a
 ranking claim. See "Federal agencies are not named or depicted" above for why the
