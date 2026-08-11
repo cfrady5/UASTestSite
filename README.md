@@ -302,14 +302,13 @@ and should be softened to match.
 ### Added beyond the brief
 
 "Defense Installation Access" was added to the *Why test in Indiana* list at the client's
-request. Access to Camp Atterbury, Muscatatuck and NSWC Crane without a DoD contract is
-arguably the strongest differentiator on the page, and it previously appeared only lower
-down under Infrastructure as "Defense Integration". The two are deliberately worded
-differently: the first frames the benefit, the second the detail.
+request, so the military relationship appears in the section answering "why here" rather
+than only further down under Infrastructure.
 
-The "one of only 9" count is retained — that is a factual designation rather than a
-ranking claim. See "Federal agencies are not named or depicted" above for why the
-designating agency is no longer named alongside it.
+**The brief's "no DoD contract required" clause was then removed at the client's request,
+from both that bullet and the Infrastructure card**, so the two now differ only in that
+Infrastructure also mentions "programs". If that reads as repetition, the Why Indiana
+bullet is the one to reword — Infrastructure carries the brief's original line.
 
 ### Contact
 
