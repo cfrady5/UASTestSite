@@ -39,12 +39,49 @@ domain before this page is announced. There is a comment above the footer link m
 ## Structure
 
 ```
-index.html              All page markup, meta tags and JSON-LD
+index.html              Landing page
+membership.html         Membership registration — hosts the Salesforce form
+membership-thanks.html  Post-submission confirmation (Salesforce retURL target)
 assets/css/site.css     Design tokens + all styles
 assets/js/site.js       Nav, scroll reveal, scroll-spy, form handling
 assets/fonts/           Self-hosted woff2 (no third-party font requests)
 assets/img/             Imagery and logos
+tools/apps-script/      Inquiry-form endpoint for Google Apps Script
 ```
+
+The header and footer are duplicated across the three HTML files. At three pages that is
+still cheaper than introducing a build step, but it is the thing to watch: a change to the
+nav or footer has to be made in every file. **Past about four pages, add a small static
+site generator** rather than keeping that up by hand.
+
+## Membership registration pages
+
+`membership.html` is a shell around a Salesforce Web-to-Lead form. Paste the generated
+HTML inside `div.sf-embed`, replacing the placeholder paragraph — there are instructions in
+a comment at that spot.
+
+**Do not hand-edit the Salesforce markup to style it.** Salesforce regenerates that HTML
+whenever the form changes, so any edits are lost on the next export. The `.sf-embed`
+wrapper styles Web-to-Lead's bare `label` / `input` / `select` / `textarea` / `submit`
+elements by type, so pasted markup matches the site as-is. This was verified by rendering
+a real Web-to-Lead export inside the wrapper.
+
+**Set `retURL` in the pasted markup** to the absolute URL of the confirmation page:
+
+```
+https://uas-test-site.vercel.app/membership-thanks.html
+```
+
+Salesforce redirects there after a successful submission. Without it, submitters land on a
+blank Salesforce page. Update this value if the site moves to a custom domain — it is an
+absolute URL and will not follow the move on its own.
+
+`membership-thanks.html` carries `noindex, follow` so the confirmation page does not
+surface in search results ahead of the registration page. It is reachable only by
+redirect, so nothing links to it from the site.
+
+Neither page is in the main nav. Add a nav link when membership is ready to promote; until
+then the pages are reachable only by direct link, which suits a campaign or email flow.
 
 ## Brand tokens
 
