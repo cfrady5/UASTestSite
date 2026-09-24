@@ -716,6 +716,40 @@ a { color: inherit; }
 }
 .sf-placeholder a { color: var(--blue); font-weight: 600; }
 
+/* Salesforce ships inline style attributes on its labels and section headings.
+   Inline styles beat any normal rule, so these two need !important. The
+   alternative is stripping attributes out of generated markup, which the next
+   export would put straight back. */
+.sf-embed label { font-weight: 700 !important; }
+
+.sf-embed h2,
+.sf-embed h2 span {
+  font-family: 'Anton', 'Arial Narrow', Impact, sans-serif;
+  font-weight: 400; text-transform: uppercase; letter-spacing: .01em;
+  font-size: clamp(1.2rem, 1.1rem + .5vw, 1.5rem); line-height: 1.05;
+  color: var(--blue) !important;
+}
+.sf-embed h2 { margin: 2.25rem 0 .25rem; padding-top: 1.5rem; border-top: 2px solid var(--gold); }
+.sf-embed h2:first-of-type { margin-top: 1rem; }
+
+/* The intro paragraph carries an inline font-size; scale it back to lead size. */
+.sf-embed > form > p { font-size: 1rem !important; color: var(--ink-soft); margin-bottom: 1.5rem; }
+.sf-embed > form > p strong { color: var(--ink); font-weight: 600; }
+
+/* A fixed-width table ships around the hidden Community field. Keep it from
+   forcing horizontal scroll if that row is ever un-hidden. */
+.sf-embed table { width: 100% !important; max-width: 100%; }
+
+/* Several fields are a bare text node followed by a control, with no element to
+   hook, so the spacing has to come from the control itself. */
+.sf-embed form { font-size: .9375rem; color: var(--ink-soft); }
+.sf-embed br + input,
+.sf-embed br + select { margin-top: .4rem; }
+
+.g-recaptcha { margin: 1.75rem 0 .5rem; }
+
+.sf-embed input[type="submit"] { width: 100%; opacity: 1; }
+
 /* --- Confirmation page --- */
 .confirm-section { background: var(--paper-alt); }
 .confirm { max-width: 62ch; }

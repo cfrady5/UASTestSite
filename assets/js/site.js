@@ -275,4 +275,52 @@
       }
     });
   }
+
+  /* ---------------------------------------------------------------
+     Salesforce embed — promote bare text into real labels
+     ---------------------------------------------------------------
+     Web-to-Lead labels roughly half its fields properly and writes the
+     rest as a loose text node before the control
+     ("Organization Name:<input>"), with no element at all.
+
+     Those fields reach screen readers unnamed, and because a text node
+     cannot be styled, they also render as plain body copy next to the
+     properly labelled fields above them.
+
+     Wrapping the text in a real <label for=...> fixes both at once: it
+     is a genuine programmatic label rather than an aria-label patch,
+     and it picks up the .sf-embed label styling, so the whole form
+     looks like one form. Doing it at runtime means the next export from
+     Salesforce is handled too, instead of silently regressing.
+     --------------------------------------------------------------- */
+  var sfEmbed = document.querySelector('.sf-embed');
+
+  if (sfEmbed) {
+    var controls = sfEmbed.querySelectorAll(
+      'input:not([type="hidden"]):not([type="submit"]), select, textarea');
+
+    Array.prototype.forEach.call(controls, function (el) {
+      if (el.labels && el.labels.length) return;       // already labelled
+      if (el.getAttribute('aria-label')) return;
+
+      // Walk back past <br> and whitespace to the text acting as the label
+      var node = el.previousSibling;
+      while (node) {
+        if (node.nodeType === 3 && node.textContent.trim()) break;
+        if (node.nodeType === 1 && node.tagName !== 'BR') { node = null; break; }
+        node = node.previousSibling;
+      }
+      if (!node) return;
+
+      var text = node.textContent.trim();
+      var label = document.createElement('label');
+      label.textContent = text;                        // keeps their ":" and "*"
+
+      if (el.id) label.setAttribute('for', el.id);
+      node.parentNode.replaceChild(label, node);
+
+      // No id to point at: nest the control so the label still applies
+      if (!el.id) label.appendChild(el);
+    });
+  }
 })();

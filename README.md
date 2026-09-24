@@ -56,32 +56,60 @@ site generator** rather than keeping that up by hand.
 
 ## Membership registration pages
 
-`membership.html` is a shell around a Salesforce Web-to-Lead form. Paste the generated
-HTML inside `div.sf-embed`, replacing the placeholder paragraph — there are instructions in
-a comment at that spot.
+`membership.html` carries the live Salesforce Web-to-Lead form, wrapped in `div.sf-embed`.
+`membership-thanks.html` is the `retURL` target Salesforce redirects to on success, and is
+`noindex` so it cannot surface in search ahead of the registration page.
 
-**Do not hand-edit the Salesforce markup to style it.** Salesforce regenerates that HTML
-whenever the form changes, so any edits are lost on the next export. The `.sf-embed`
-wrapper styles Web-to-Lead's bare `label` / `input` / `select` / `textarea` / `submit`
-elements by type, so pasted markup matches the site as-is. This was verified by rendering
-a real Web-to-Lead export inside the wrapper.
+### Two edits were made to the Salesforce export
 
-**Set `retURL` in the pasted markup** to the absolute URL of the confirmation page:
+Everything else is byte-for-byte as Salesforce generated it. **Re-apply only these two
+after any re-export:**
+
+1. **The `<script>` tags were unwrapped from their `<p>`**, which otherwise renders a stray
+   empty paragraph above the form.
+2. **The trailing `<style>` block was dropped.** It set `input[type=text], select { … }`
+   with no scoping — that restyles every input on any page the markup lands on — and
+   painted the submit button ARI navy rather than test-site gold. Everything it did is
+   covered by the `.sf-embed` rules in `site.css`, scoped to the wrapper.
+
+**Do not hand-edit the markup for styling or accessibility.** Salesforce regenerates it
+whenever the form changes, so those edits vanish on the next export. Styling is handled by
+`.sf-embed` rules, and labelling by the runtime fix below.
+
+### Check `retURL` on every re-export
 
 ```
-https://uas-test-site.vercel.app/membership-thanks.html
+name="retURL" value="https://uas-test-site.vercel.app/membership-thanks.html"
 ```
 
-Salesforce redirects there after a successful submission. Without it, submitters land on a
-blank Salesforce page. Update this value if the site moves to a custom domain — it is an
-absolute URL and will not follow the move on its own.
+Without it, submitters land on a blank Salesforce page. It is an absolute URL, so it will
+**not** follow the site to a custom domain — update it when the domain changes.
 
-`membership-thanks.html` carries `noindex, follow` so the confirmation page does not
-surface in search results ahead of the registration page. It is reachable only by
-redirect, so nothing links to it from the site.
+### Half the fields arrive without labels
 
-Neither page is in the main nav. Add a nav link when membership is ready to promote; until
-then the pages are reachable only by direct link, which suits a campaign or email flow.
+Web-to-Lead labels the "About You" fields properly but writes the organization fields as a
+loose text node before the control (`Organization Name:<input>`), with no element at all.
+Those fields reach screen readers unnamed, and because a text node cannot be styled, they
+also render as plain body copy beside the properly labelled fields above.
+
+`site.js` fixes this at runtime by wrapping that text in a real `<label for=…>`. That is a
+genuine programmatic label rather than an `aria-label` patch, it picks up the `.sf-embed`
+label styling so the form reads as one form, and — being runtime — it handles the next
+export instead of silently regressing. Verified: all 18 controls are labelled, and clicking
+a generated label focuses its field.
+
+### Known, and not defects
+
+- **`html-validate` reports errors on this page.** Every one is inherent to the Salesforce
+  markup: inline `style` attributes, record IDs beginning with digits, `multiple="multiple"`
+  boolean style, a deprecated `width` on the hidden table. None affect rendering, and none
+  are fixable without hand-editing generated markup.
+- **Salesforce IDs start with digits**, so `#00NHs…` is not a valid CSS selector. Target
+  those fields by attribute (`[id="00NHs…"]`) if you ever need to.
+- **reCAPTCHA adds a third-party dependency.** The page now loads
+  `google.com/recaptcha/api.js`; the rest of the site makes no third-party requests (fonts
+  are self-hosted). It also sets Google cookies, which is worth a look from whoever owns
+  the privacy position — the site has no privacy policy yet.
 
 ## Brand tokens
 
