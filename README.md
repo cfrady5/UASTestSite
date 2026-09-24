@@ -135,11 +135,19 @@ in Salesforce, since `captcha_settings` in the form references the key by name.
 
 ### Navigation
 
-Membership sits in the main nav on all three pages, marked `aria-current="page"` on its own
-page. The nav breakpoint is **1160px** — with five links plus the CTA the row needs about
-that much before labels collide. It is declared in two places, `site.css` and the
-`matchMedia` query in `site.js`; **both must move together**, and each carries a comment
-saying so.
+The nav is deliberately minimal: **Home, Membership, and the Submit an Inquiry CTA.** The
+landing page's own sections (Why Indiana, Infrastructure, Capabilities, Ecosystem) were
+removed from it at the client's request — they are page sections rather than pages.
+
+Those sections keep their ids and are still reachable from the hero's "Explore
+Capabilities" button and from the membership page's sidebar link, but **not from the nav**.
+If the site grows to more real pages, they are easy to restore.
+
+The nav breakpoint is **820px** — the row needs about 750px, and below ~820 the drawer
+takes over. It is declared in two places, `site.css` and the `matchMedia` query in
+`site.js`; **both must move together**, and each carries a comment saying so. It has moved
+twice already as links were added and removed, so re-measure rather than guess: the sweep
+that set it checks for overflow and horizontal scroll from 1600px down to 320px.
 
 ## Brand tokens
 
