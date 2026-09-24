@@ -18,7 +18,7 @@
 
 <link rel="preload" href="assets/fonts/Anton-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/Montserrat-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=23">
+<link rel="stylesheet" href="assets/css/site.css?v=24">
 </head>
 <body>
 
@@ -27,7 +27,7 @@
 <!-- ============ HEADER ============ -->
 <header class="site-header" id="siteHeader">
   <div class="wrap header-inner">
-    <a class="brand" href="index.html" aria-label="Midwest UAS Test Site of Indiana — home">
+    <a class="brand" href="/" aria-label="Midwest UAS Test Site of Indiana — home">
       <img class="brand-mark" src="assets/img/logo-shield-mark.png" alt="" width="96" height="110" aria-hidden="true">
       <span class="brand-text">
         <span class="brand-line-1">Midwest UAS Test Site</span>
@@ -42,10 +42,10 @@
 
     <nav class="primary-nav" id="primaryNav" aria-label="Primary">
       <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="membership.html" class="is-active" aria-current="page">Membership</a></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/membership" class="is-active" aria-current="page">Membership</a></li>
       </ul>
-      <a class="btn btn-gold btn-sm nav-cta" href="index.html#contact">Submit an Inquiry</a>
+      <a class="btn btn-gold btn-sm nav-cta" href="/#contact">Submit an Inquiry</a>
     </nav>
   </div>
 </header>
@@ -82,7 +82,7 @@
            confirmation page:
 
              name="retURL"
-             value="https://uas-test-site.vercel.app/membership-thanks.html"
+             value="https://uas-test-site.vercel.app/membership-thanks"
 
            Salesforce sends the visitor there after a successful submission.
            Without it they land on a blank Salesforce page. Being absolute,
@@ -129,7 +129,7 @@
           setInterval(timestamp, 500);
         });
         </script>
-        <form action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&amp;orgId=00DHs000001vNdE" method="POST"><input type="hidden" name="captcha_settings" value="{&quot;keyname&quot;:&quot;ARI_Communities&quot;,&quot;fallback&quot;:&quot;true&quot;,&quot;orgId&quot;:&quot;00DHs000001vNdE&quot;,&quot;ts&quot;:&quot;&quot;}"> <input type="hidden" name="oid" value="00DHs000001vNdE"> <input type="hidden" name="retURL" value="https://uas-test-site.vercel.app/membership-thanks.html"> <input type="hidden" name="recordType" value="012Rn000001XOpOIAW"> <br>
+        <form action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&amp;orgId=00DHs000001vNdE" method="POST"><input type="hidden" name="captcha_settings" value="{&quot;keyname&quot;:&quot;ARI_Communities&quot;,&quot;fallback&quot;:&quot;true&quot;,&quot;orgId&quot;:&quot;00DHs000001vNdE&quot;,&quot;ts&quot;:&quot;&quot;}"> <input type="hidden" name="oid" value="00DHs000001vNdE"> <input type="hidden" name="retURL" value="https://uas-test-site.vercel.app/membership-thanks"> <input type="hidden" name="recordType" value="012Rn000001XOpOIAW"> <br>
         <p style="font-size: 20px;"><strong>Please provide the following information to indicate your interest in joining the UAS Test Site community.</strong></p>
         <table width="800">
         <tbody>
@@ -461,7 +461,7 @@
       <p class="aside-contact">
         <a href="mailto:MidwestUASTestSite@theari.us">MidwestUASTestSite@theari.us</a>
       </p>
-      <p><a class="link-arrow" href="index.html#capabilities">Review test site capabilities</a></p>
+      <p><a class="link-arrow" href="/#capabilities">Review test site capabilities</a></p>
     </aside>
 
   </div>
@@ -499,6 +499,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=23" defer></script>
+<script src="assets/js/site.js?v=24" defer></script>
 </body>
 </html>

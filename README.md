@@ -5,15 +5,21 @@ print collateral (`iedc_midwest_uas_test_site_04_cropsbleeds.pdf`).
 
 ## Running it
 
-There is no build step. Open `index.html`, or serve the folder:
+There is no build step, but the site uses **clean URLs** (`/membership`, not
+`/membership.html`), so a plain file server is not enough for local preview — internal
+links would 404. Use a server that resolves extensionless paths:
 
 ```bash
-python3 -m http.server 8000
-# http://localhost:8000
+npx serve .          # clean URLs by default
+# or, to match production exactly:
+vercel dev
 ```
 
-Deploy by uploading the repository contents to any static host (Vercel, Netlify,
-GitHub Pages, S3/CloudFront, or an existing CMS's static directory).
+Opening `index.html` straight off disk no longer works for navigation either, for the same
+reason. `python3 -m http.server` still serves assets fine but will 404 on `/membership`.
+
+Deploy target is **Vercel**, which `vercel.json` now configures. See "Clean URLs" below
+before moving to another host.
 
 ### Cache busting
 
@@ -21,6 +27,28 @@ GitHub Pages, S3/CloudFront, or an existing CMS's static directory).
 whenever you edit `site.css` or `site.js`.** Without it, browsers happily serve a cached
 stylesheet against freshly fetched HTML, so a CSS change appears not to have taken effect
 until a hard refresh — which is easy to misread as the change never having been made.
+
+### Clean URLs
+
+`vercel.json` sets `cleanUrls: true` and `trailingSlash: false`, so pages are served
+without the `.html` extension:
+
+| File | URL |
+|---|---|
+| `index.html` | `/` |
+| `membership.html` | `/membership` |
+| `membership-thanks.html` | `/membership-thanks` |
+
+Vercel also **308-redirects the old `.html` URLs to the clean ones**, so links already
+shared — including the Midwest UAS Test Site tile on ARI's site — keep working rather than
+breaking.
+
+Internal links are root-relative (`/`, `/membership`, `/#contact`). Two consequences:
+
+- **This is now Vercel-specific.** `cleanUrls` is a Vercel feature. Moving to GitHub Pages
+  or S3 would mean restructuring pages into directories (`membership/index.html`) instead,
+  which achieves the same URLs on any host.
+- **Local preview needs a clean-URL server** — see "Running it" above.
 
 ### Before launch
 
@@ -79,11 +107,13 @@ whenever the form changes, so those edits vanish on the next export. Styling is 
 ### Check `retURL` on every re-export
 
 ```
-name="retURL" value="https://uas-test-site.vercel.app/membership-thanks.html"
+name="retURL" value="https://uas-test-site.vercel.app/membership-thanks"
 ```
 
 Without it, submitters land on a blank Salesforce page. It is an absolute URL, so it will
-**not** follow the site to a custom domain — update it when the domain changes.
+**not** follow the site to a custom domain — update it when the domain changes. Note it is
+the extensionless URL; the `.html` form still reaches the page via redirect, but point new
+exports at the clean one.
 
 ### Half the fields arrive without labels
 
