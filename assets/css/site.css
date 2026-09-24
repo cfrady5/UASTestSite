@@ -209,6 +209,9 @@ a { color: inherit; }
 .brand { display: flex; align-items: center; gap: .75rem; text-decoration: none; color: #fff; }
 .brand-mark { width: 42px; height: auto; flex: none; }
 .brand-text { display: flex; flex-direction: column; line-height: 1; }
+/* The wordmark is a name, not a sentence — letting it wrap turns it into
+   three stacked fragments as the nav tightens. */
+.brand-line-1, .brand-line-2 { white-space: nowrap; }
 .brand-line-1 {
   font-size: 1.0625rem; letter-spacing: .02em; color: #fff;
 }
@@ -222,6 +225,7 @@ a { color: inherit; }
 .primary-nav a {
   font-size: .8125rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
   color: rgba(255, 255, 255, .88); text-decoration: none; padding: .4rem 0;
+  white-space: nowrap;          /* a wrapped nav label reads as two links */
   border-bottom: 2px solid transparent;
   transition: color .16s var(--ease), border-color .16s var(--ease);
 }
@@ -252,7 +256,10 @@ a { color: inherit; }
 .nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(2) { opacity: 0; }
 .nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-@media (max-width: 1000px) {
+/* Nav breakpoint. With five links plus the CTA the row needs ~1160px; below that
+   the labels collide, so the drawer takes over. Kept in sync with the matching
+   matchMedia query in site.js — both must move together. */
+@media (max-width: 1160px) {
   .nav-toggle { display: block; }
   .primary-nav {
     position: absolute; inset: 100% 0 auto 0;

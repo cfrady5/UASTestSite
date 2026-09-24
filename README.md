@@ -98,18 +98,48 @@ label styling so the form reads as one form, and — being runtime — it handle
 export instead of silently regressing. Verified: all 18 controls are labelled, and clicking
 a generated label focuses its field.
 
+### reCAPTCHA must list every domain the page is served from
+
+The widget's site key is registered against an explicit domain list in the
+[Google reCAPTCHA admin console](https://www.google.com/recaptcha/admin). Serving the page
+from a host that is not on that list renders
+
+> ERROR for site owner: Invalid domain for site key
+
+in place of the checkbox, and **the form cannot be submitted at all** — the page's own
+script blocks submit until the captcha is solved.
+
+The key is `ARI_Communities`, shared with other ARI Salesforce forms, so whoever
+administers it adds the domain: open the key in the admin console, add the host under
+**Domains**, save. It takes effect within a few minutes. Hosts needed:
+
+- `uas-test-site.vercel.app`
+- any custom domain, when one is attached
+
+Adding a domain only widens where the key may be used; it does not affect the other forms
+sharing it. Generating a *new* key instead would also mean updating the reCAPTCHA settings
+in Salesforce, since `captcha_settings` in the form references the key by name.
+
 ### Known, and not defects
 
-- **`html-validate` reports errors on this page.** Every one is inherent to the Salesforce
-  markup: inline `style` attributes, record IDs beginning with digits, `multiple="multiple"`
-  boolean style, a deprecated `width` on the hidden table. None affect rendering, and none
-  are fixable without hand-editing generated markup.
+- **`html-validate` reports errors on the membership page.** Every one is inherent to the
+  Salesforce markup: inline `style` attributes, record IDs beginning with digits,
+  `multiple="multiple"` boolean style, a deprecated `width` on the hidden table. None
+  affect rendering, and none are fixable without hand-editing generated markup.
 - **Salesforce IDs start with digits**, so `#00NHs…` is not a valid CSS selector. Target
   those fields by attribute (`[id="00NHs…"]`) if you ever need to.
-- **reCAPTCHA adds a third-party dependency.** The page now loads
+- **reCAPTCHA adds a third-party dependency.** The page loads
   `google.com/recaptcha/api.js`; the rest of the site makes no third-party requests (fonts
   are self-hosted). It also sets Google cookies, which is worth a look from whoever owns
   the privacy position — the site has no privacy policy yet.
+
+### Navigation
+
+Membership sits in the main nav on all three pages, marked `aria-current="page"` on its own
+page. The nav breakpoint is **1160px** — with five links plus the CTA the row needs about
+that much before labels collide. It is declared in two places, `site.css` and the
+`matchMedia` query in `site.js`; **both must move together**, and each carries a comment
+saying so.
 
 ## Brand tokens
 

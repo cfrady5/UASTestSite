@@ -18,7 +18,7 @@
 
 <link rel="preload" href="assets/fonts/Anton-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/Montserrat-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=16">
+<link rel="stylesheet" href="assets/css/site.css?v=21">
 </head>
 <body>
 
@@ -46,6 +46,7 @@
         <li><a href="index.html#scale">Infrastructure</a></li>
         <li><a href="index.html#capabilities">Capabilities</a></li>
         <li><a href="index.html#ecosystem">Ecosystem</a></li>
+        <li><a href="membership.html" class="is-active" aria-current="page">Membership</a></li>
       </ul>
       <a class="btn btn-gold btn-sm nav-cta" href="index.html#contact">Submit an Inquiry</a>
     </nav>
@@ -446,6 +447,11 @@
         <option value="Non-Profit">Non-Profit</option>
         <option value="Start-Up">Start-Up</option>
         </select><br><input type="hidden" id="lead_source" name="lead_source" value="Web"><br>
+        <!-- This site key is registered to specific domains in the Google reCAPTCHA
+     admin console. A host that is not on that list renders "ERROR for site
+     owner: Invalid domain for site key" instead of the checkbox, and the form
+     cannot be submitted. Add every host this page is served from — including
+     any future custom domain. See the README. -->
         <div class="g-recaptcha" data-sitekey="6LffLtQrAAAAAJE1SXGTRJ2LJJaE21EUPCv_v9K7"></div>
         <br><input type="submit" id="submitbtn" class="registerbtn" value="Submit"></form>
       </div>
@@ -496,6 +502,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=16" defer></script>
+<script src="assets/js/site.js?v=21" defer></script>
 </body>
 </html>

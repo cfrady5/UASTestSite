@@ -39,7 +39,8 @@
     });
 
     // Reset the drawer when we grow past the mobile breakpoint
-    var desktop = window.matchMedia('(min-width: 1001px)');
+    // Mirrors the nav breakpoint in site.css — change both together.
+    var desktop = window.matchMedia('(min-width: 1161px)');
     var onBreak = function (e) { if (e.matches) closeNav(); };
     if (desktop.addEventListener) desktop.addEventListener('change', onBreak);
     else if (desktop.addListener) desktop.addListener(onBreak);
