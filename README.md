@@ -133,6 +133,21 @@ label styling so the form reads as one form, and — being runtime — it handle
 export instead of silently regressing. Verified: all 18 controls are labelled, and clicking
 a generated label focuses its field.
 
+### Re-importing the Salesforce export
+
+When Salesforce regenerates this form, **three values in the export must not be copied
+over as-is:**
+
+- **`retURL`** — exports carry whatever URL was configured when the form was built. It must
+  be `https://www.midwestuastestsite.us/membership-thanks` (the live domain, extensionless).
+  The exports seen so far still say `uas-test-site.vercel.app/membership-thanks.html`.
+- **The `<script>` tags** need unwrapping from their `<p>`.
+- **The trailing `<style>` block** must be dropped — it restyles inputs site-wide.
+
+Everything else can be pasted verbatim. Diff a new export against the live form before
+swapping it in; so far the only real changes between exports have been `captcha_settings`
+keyname and `data-sitekey`, with every field id, the org id and the record type identical.
+
 ### reCAPTCHA: the key must be v2 Checkbox, and three places must agree
 
 **The key type is not interchangeable.** The form loads classic `api.js` with a
@@ -157,12 +172,12 @@ The two error messages mean different things and are worth telling apart:
 
 Three things must agree, or the form fails in different ways:
 
-1. **The site key in `membership.html`** — must be v2 Checkbox, currently `6Lff…v9K7`.
+1. **The site key in `membership.html`** — must be v2 Checkbox, currently `6LdL…v7Yj`.
 2. **The domain list on that key**, in the reCAPTCHA admin console. It needs every host the
    page is served from: `www.midwestuastestsite.us`, the apex if it serves directly, and
    `uas-test-site.vercel.app` while that URL is still used for review.
 3. **The key pair registered in Salesforce Setup**, named by `captcha_settings` in the form
-   — currently `ARI_Communities`. If the site key in the markup is changed without
+   — currently `ARI_UAS_WebToLead`. If the site key in the markup is changed without
    repointing that Salesforce entry at the same pair, the captcha renders and solves
    correctly in the browser and Salesforce still rejects the lead server-side.
 

@@ -20,7 +20,7 @@
 <link rel="preload" href="/assets/fonts/Montserrat-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="canonical" href="https://www.midwestuastestsite.us/membership">
 <meta property="og:url" content="https://www.midwestuastestsite.us/membership">
-<link rel="stylesheet" href="assets/css/site.css?v=27">
+<link rel="stylesheet" href="assets/css/site.css?v=28">
 </head>
 <body>
 
@@ -131,7 +131,7 @@
           setInterval(timestamp, 500);
         });
         </script>
-        <form action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&amp;orgId=00DHs000001vNdE" method="POST"><input type="hidden" name="captcha_settings" value="{&quot;keyname&quot;:&quot;ARI_Communities&quot;,&quot;fallback&quot;:&quot;true&quot;,&quot;orgId&quot;:&quot;00DHs000001vNdE&quot;,&quot;ts&quot;:&quot;&quot;}"> <input type="hidden" name="oid" value="00DHs000001vNdE"> <input type="hidden" name="retURL" value="https://www.midwestuastestsite.us/membership-thanks"> <input type="hidden" name="recordType" value="012Rn000001XOpOIAW"> <br>
+        <form action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&amp;orgId=00DHs000001vNdE" method="POST"><input type="hidden" name="captcha_settings" value="{&quot;keyname&quot;:&quot;ARI_UAS_WebToLead&quot;,&quot;fallback&quot;:&quot;true&quot;,&quot;orgId&quot;:&quot;00DHs000001vNdE&quot;,&quot;ts&quot;:&quot;&quot;}"> <input type="hidden" name="oid" value="00DHs000001vNdE"> <input type="hidden" name="retURL" value="https://www.midwestuastestsite.us/membership-thanks"> <input type="hidden" name="recordType" value="012Rn000001XOpOIAW"> <br>
         <p style="font-size: 20px;"><strong>Please provide the following information to indicate your interest in joining the UAS Test Site community.</strong></p>
         <table width="800">
         <tbody>
@@ -451,13 +451,13 @@
      response with a v2 secret. An Enterprise or v3 key here renders "ERROR for
      site owner: Invalid key type" and the form cannot be submitted.
      The key must also match the pair registered in Salesforce Setup under the
-     name in captcha_settings above — currently ARI_Communities.
+     name in captcha_settings above — currently ARI_UAS_WebToLead.
      This site key is registered to specific domains in the Google reCAPTCHA
      admin console. A host that is not on that list renders "ERROR for site
      owner: Invalid domain for site key" instead of the checkbox, and the form
      cannot be submitted. Add every host this page is served from — including
      any future custom domain. See the README. -->
-        <div class="g-recaptcha" data-sitekey="6LffLtQrAAAAAJE1SXGTRJ2LJJaE21EUPCv_v9K7"></div>
+        <div class="g-recaptcha" data-sitekey="6LdLyswtAAAAAHWc1JyddMvpe_Fed4TFVbfAv7Yj"></div>
         <br><input type="submit" id="submitbtn" class="registerbtn" value="Submit"></form>
       </div>
     </div>
@@ -507,6 +507,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=27" defer></script>
+<script src="assets/js/site.js?v=28" defer></script>
 </body>
 </html>
