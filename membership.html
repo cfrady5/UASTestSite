@@ -20,7 +20,7 @@
 <link rel="preload" href="/assets/fonts/Montserrat-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="canonical" href="https://www.midwestuastestsite.us/membership">
 <meta property="og:url" content="https://www.midwestuastestsite.us/membership">
-<link rel="stylesheet" href="assets/css/site.css?v=26">
+<link rel="stylesheet" href="assets/css/site.css?v=27">
 </head>
 <body>
 
@@ -446,12 +446,18 @@
         <option value="Non-Profit">Non-Profit</option>
         <option value="Start-Up">Start-Up</option>
         </select><br><input type="hidden" id="lead_source" name="lead_source" value="Web"><br>
-        <!-- This site key is registered to specific domains in the Google reCAPTCHA
+        <!-- This must be a classic reCAPTCHA v2 "I'm not a robot" Checkbox key, because
+     the form loads api.js with a g-recaptcha div and Salesforce verifies the
+     response with a v2 secret. An Enterprise or v3 key here renders "ERROR for
+     site owner: Invalid key type" and the form cannot be submitted.
+     The key must also match the pair registered in Salesforce Setup under the
+     name in captcha_settings above — currently ARI_Communities.
+     This site key is registered to specific domains in the Google reCAPTCHA
      admin console. A host that is not on that list renders "ERROR for site
      owner: Invalid domain for site key" instead of the checkbox, and the form
      cannot be submitted. Add every host this page is served from — including
      any future custom domain. See the README. -->
-        <div class="g-recaptcha" data-sitekey="6LczbM4tAAAAAKQwyKYEIiRKGFLZqeaKRx0wpqJF"></div>
+        <div class="g-recaptcha" data-sitekey="6LffLtQrAAAAAJE1SXGTRJ2LJJaE21EUPCv_v9K7"></div>
         <br><input type="submit" id="submitbtn" class="registerbtn" value="Submit"></form>
       </div>
     </div>
@@ -501,6 +507,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=26" defer></script>
+<script src="assets/js/site.js?v=27" defer></script>
 </body>
 </html>

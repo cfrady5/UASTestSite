@@ -133,31 +133,41 @@ label styling so the form reads as one form, and — being runtime — it handle
 export instead of silently regressing. Verified: all 18 controls are labelled, and clicking
 a generated label focuses its field.
 
-### reCAPTCHA: key and domains must line up in three places
+### reCAPTCHA: the key must be v2 Checkbox, and three places must agree
 
-The widget's **site key is public and lives in `membership.html`** (`data-sitekey`). It is
-currently `6Lcz…pqJF`. A Google Cloud **API key is not used by this site at all** — it is a
-server-side credential for reCAPTCHA Enterprise assessments, and a static site has no
-server. Never commit one here.
+**The key type is not interchangeable.** The form loads classic `api.js` with a
+`g-recaptcha` div, and Salesforce verifies the response with a v2 secret. So the site key
+has to be a classic **reCAPTCHA v2 "I'm not a robot" Checkbox** key, created at
+[google.com/recaptcha/admin](https://www.google.com/recaptcha/admin).
 
-Three things have to agree, or the form fails in different ways:
+A reCAPTCHA **Enterprise** or **v3** key in that slot renders
 
-1. **The site key in `membership.html`** — wrong key, or a key that does not cover the
-   host, renders "ERROR for site owner: Invalid domain for site key" instead of the
-   checkbox. The page's own script then blocks submit, so **nobody can register at all**.
-2. **The domain list on that key**, in the
-   [reCAPTCHA admin console](https://www.google.com/recaptcha/admin). It needs every host
-   the page is served from: `www.midwestuastestsite.us`, the apex if it serves directly,
-   and `uas-test-site.vercel.app` while that URL is still in use for review.
-3. **The key registered in Salesforce Setup.** The form posts
-   `captcha_settings` with `"keyname":"ARI_Communities"`, which names a key pair configured
-   inside Salesforce. If the site key in the HTML is changed without repointing that
-   Salesforce entry at the same key pair, the captcha will render and solve correctly in
-   the browser and Salesforce will still reject the lead server-side — a failure that looks
-   like nothing is wrong on the page.
+> ERROR for site owner: Invalid key type
 
-Item 3 is the one that bites silently. Confirm it with a real test submission whenever the
-key changes.
+and the form cannot be submitted. Enterprise keys are created in Google Cloud, come paired
+with an `AIza…` Cloud API key, and require `enterprise.js` plus a server-side assessment
+call — none of which fits a static page posting to Salesforce Web-to-Lead.
+
+The two error messages mean different things and are worth telling apart:
+
+| Message | Cause |
+|---|---|
+| `Invalid domain for site key` | Right key type, host missing from the key's domain list |
+| `Invalid key type` | Wrong kind of key — Enterprise or v3 where v2 Checkbox is required |
+
+Three things must agree, or the form fails in different ways:
+
+1. **The site key in `membership.html`** — must be v2 Checkbox, currently `6Lff…v9K7`.
+2. **The domain list on that key**, in the reCAPTCHA admin console. It needs every host the
+   page is served from: `www.midwestuastestsite.us`, the apex if it serves directly, and
+   `uas-test-site.vercel.app` while that URL is still used for review.
+3. **The key pair registered in Salesforce Setup**, named by `captcha_settings` in the form
+   — currently `ARI_Communities`. If the site key in the markup is changed without
+   repointing that Salesforce entry at the same pair, the captcha renders and solves
+   correctly in the browser and Salesforce still rejects the lead server-side.
+
+Item 3 fails silently — nothing on the page looks wrong. Confirm it with a real test
+submission whenever the key changes.
 
 ### Known, and not defects
 
