@@ -52,12 +52,17 @@ Internal links are root-relative (`/`, `/membership`, `/#contact`). Two conseque
 
 ### Before launch
 
-**Set the canonical URL.** `<link rel="canonical">` and `<meta property="og:url">` are
-commented out at the top of `index.html`. Fill both in with this page's own public URL.
-They are left out rather than guessed on purpose: a canonical pointing at another domain
-tells search engines this page is a duplicate of that domain, which would suppress it from
-results. This repo currently deploys to `https://uas-test-site.vercel.app/` — use that if
-it is the final address, or the custom domain once one is attached.
+**Attach the custom domain in Vercel.** The site is built for
+`https://www.midwestuastestsite.us/` — canonical URLs, `og:url`, and the Salesforce
+`retURL` all point there — but the domain is **not yet connected to the Vercel project**.
+Until it is, those URLs resolve to nothing. In Vercel: Project → Settings → Domains, add
+`www.midwestuastestsite.us`, point DNS as instructed, and redirect the apex
+(`midwestuastestsite.us`) to `www`.
+
+**Attaching the domain also makes the site public.** The project has SSO protection set to
+`all_except_custom_domains`, so every `.vercel.app` URL requires a Vercel login while the
+custom domain does not. Connecting the domain is what opens the site to visitors — no
+protection setting needs changing.
 
 **Swap the ARI links off the review deployment.** Both the footer logo and the Ecosystem
 entry point at `https://ari-for-review.vercel.app/`, ARI's staging build, at the client's
@@ -107,7 +112,7 @@ whenever the form changes, so those edits vanish on the next export. Styling is 
 ### Check `retURL` on every re-export
 
 ```
-name="retURL" value="https://uas-test-site.vercel.app/membership-thanks"
+name="retURL" value="https://www.midwestuastestsite.us/membership-thanks"
 ```
 
 Without it, submitters land on a blank Salesforce page. It is an absolute URL, so it will
@@ -128,27 +133,31 @@ label styling so the form reads as one form, and — being runtime — it handle
 export instead of silently regressing. Verified: all 18 controls are labelled, and clicking
 a generated label focuses its field.
 
-### reCAPTCHA must list every domain the page is served from
+### reCAPTCHA: key and domains must line up in three places
 
-The widget's site key is registered against an explicit domain list in the
-[Google reCAPTCHA admin console](https://www.google.com/recaptcha/admin). Serving the page
-from a host that is not on that list renders
+The widget's **site key is public and lives in `membership.html`** (`data-sitekey`). It is
+currently `6Lcz…pqJF`. A Google Cloud **API key is not used by this site at all** — it is a
+server-side credential for reCAPTCHA Enterprise assessments, and a static site has no
+server. Never commit one here.
 
-> ERROR for site owner: Invalid domain for site key
+Three things have to agree, or the form fails in different ways:
 
-in place of the checkbox, and **the form cannot be submitted at all** — the page's own
-script blocks submit until the captcha is solved.
+1. **The site key in `membership.html`** — wrong key, or a key that does not cover the
+   host, renders "ERROR for site owner: Invalid domain for site key" instead of the
+   checkbox. The page's own script then blocks submit, so **nobody can register at all**.
+2. **The domain list on that key**, in the
+   [reCAPTCHA admin console](https://www.google.com/recaptcha/admin). It needs every host
+   the page is served from: `www.midwestuastestsite.us`, the apex if it serves directly,
+   and `uas-test-site.vercel.app` while that URL is still in use for review.
+3. **The key registered in Salesforce Setup.** The form posts
+   `captcha_settings` with `"keyname":"ARI_Communities"`, which names a key pair configured
+   inside Salesforce. If the site key in the HTML is changed without repointing that
+   Salesforce entry at the same key pair, the captcha will render and solve correctly in
+   the browser and Salesforce will still reject the lead server-side — a failure that looks
+   like nothing is wrong on the page.
 
-The key is `ARI_Communities`, shared with other ARI Salesforce forms, so whoever
-administers it adds the domain: open the key in the admin console, add the host under
-**Domains**, save. It takes effect within a few minutes. Hosts needed:
-
-- `uas-test-site.vercel.app`
-- any custom domain, when one is attached
-
-Adding a domain only widens where the key may be used; it does not affect the other forms
-sharing it. Generating a *new* key instead would also mean updating the reCAPTCHA settings
-in Salesforce, since `captcha_settings` in the form references the key by name.
+Item 3 is the one that bites silently. Confirm it with a real test submission whenever the
+key changes.
 
 ### Known, and not defects
 
