@@ -323,5 +323,44 @@
       // No id to point at: nest the control so the label still applies
       if (!el.id) label.appendChild(el);
     });
+
+    /* -------------------------------------------------------------
+       Required fields
+       -------------------------------------------------------------
+       Applied here rather than in the markup so a re-export from
+       Salesforce cannot quietly drop it. Keyed by field name, which is
+       stable across exports — the opaque ones are Salesforce custom
+       field ids, named in the comments below.
+
+       This is client-side only. It stops honest mistakes, not a direct
+       POST, so these fields should also be marked required in
+       Salesforce for actual enforcement.
+       ------------------------------------------------------------- */
+    var REQUIRED = [
+      'first_name',
+      'last_name',
+      'email',
+      '00NHs00000a3mHI',   // Your Title
+      '00NHs00000TXQon',   // Organization Name
+      '00NHs00000TY5Mr',   // Organization State
+      '00NHs00000QNfyL'    // Organization Type
+    ];
+
+    REQUIRED.forEach(function (fieldName) {
+      var el = sfEmbed.querySelector('[name="' + fieldName + '"]');
+      if (!el) return;
+
+      el.required = true;
+
+      // Mark it visually, unless Salesforce already put an asterisk in the label
+      var label = el.labels && el.labels[0];
+      if (!label || /\*\s*$/.test(label.textContent)) return;
+
+      var star = document.createElement('span');
+      star.className = 'req';
+      star.setAttribute('aria-hidden', 'true');   // `required` already conveys this
+      star.textContent = ' *';
+      label.appendChild(star);
+    });
   }
 })();

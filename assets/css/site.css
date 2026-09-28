@@ -723,6 +723,19 @@ a { color: inherit; }
 }
 .sf-placeholder a { color: var(--blue); font-weight: 600; }
 
+/* Required marker. The global .req is gold, which is fine on the dark contact
+   panel but only ~1.75:1 on this light card, so it gets its own colour here. */
+.sf-embed .req,
+.form-required-note .req { color: #B3261E; font-weight: 700; }
+
+.form-required-note {
+  font-size: .8125rem; color: var(--ink-muted); margin-top: .75rem;
+}
+
+/* :user-invalid rather than :invalid — the latter would paint every empty
+   required field red before the visitor has typed anything. */
+.sf-embed :is(input, select, textarea):user-invalid { border-color: #B3261E; }
+
 /* Salesforce ships inline style attributes on its labels and section headings.
    Inline styles beat any normal rule, so these two need !important. The
    alternative is stripping attributes out of generated markup, which the next

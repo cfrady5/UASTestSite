@@ -133,6 +133,24 @@ label styling so the form reads as one form, and — being runtime — it handle
 export instead of silently regressing. Verified: all 18 controls are labelled, and clicking
 a generated label focuses its field.
 
+### Required fields
+
+Seven fields are required: first name, last name, email, title, organization name,
+organization state and organization type. Organization country was already required in the
+Salesforce export.
+
+**This is applied in `site.js`, not in the markup**, keyed by field name so it survives a
+re-export — marking them up by hand would be silently undone the next time the form is
+regenerated. Each gets a red asterisk in its label, unless Salesforce already put one
+there, and the panel carries a "\* Indicates a required field" legend.
+
+Invalid fields are outlined using `:user-invalid` rather than `:invalid`, so nothing turns
+red until the visitor has actually interacted with it.
+
+**Client-side only.** This catches honest mistakes; it does not stop a direct POST to
+Web-to-Lead. For real enforcement the same fields should be marked required in Salesforce,
+which would also mean future exports carry `required` themselves.
+
 ### Re-importing the Salesforce export
 
 When Salesforce regenerates this form, **three values in the export must not be copied
