@@ -31,7 +31,7 @@ until a hard refresh — which is easy to misread as the change never having bee
 It lives in two places: `ASSET_V` at the top of `tools/build_pages.py` (for the generated
 pages), and literally in `index.html`, `membership.html` and `membership-thanks.html`.
 Change both and re-run the generator, or half the site runs on a stale stylesheet. Current
-value: **34**.
+value: **35**.
 
 ### Clean URLs
 
@@ -233,8 +233,8 @@ every brand's file has arrived. To add one: drop the asset in that folder, set
 cell has a fixed height and a free width, so proportions are never forced; add
 `badge=True` for a square mark so it is not scaled up to a wordmark's height.
 
-**A dark-on-light logo gets a white plate, not a recolour.** Eight organizations
-supplied only the version meant for white backgrounds — ARI, HII, Purdue
+**A dark-on-light logo gets a white plate, not a recolour.** Seven organizations
+supplied only the version meant for white backgrounds — HII, Purdue
 University, Rose-Hulman, Ivy Tech, CAL Analytics, Sonetics and WayPoint
 Aerospace. Inverting or recolouring somebody's trademark to suit our background
 is not ours to do, so `plate=True` puts them on a white plate instead: one size,

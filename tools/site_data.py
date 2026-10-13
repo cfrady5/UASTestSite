@@ -379,7 +379,7 @@ PARTNER_GROUPS = [
         # official site; this points at their staging deployment to match the
         # footer, which was set that way deliberately. Swap both before launch.
         _org("Applied Research Institute (ARI)", "https://ari-for-review.vercel.app/",
-             "assets/img/partners/ari.png", short="ARI", plate=True),
+             "assets/img/partners/ari.png", short="ARI"),
         _org("Indiana National Guard (INNG)", IN_GOV, "assets/img/partners/indiana-national-guard.png", badge=True,
              short="INNG", expand="Indiana National Guard", restricted=True),
         _org("Purdue Research Foundation (PRF)", "https://prf.org/",
