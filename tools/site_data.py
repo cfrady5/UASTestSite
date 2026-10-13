@@ -440,7 +440,7 @@ PARTNER_GROUPS = [
         _org("AUVSI", "https://www.auvsi.org/", "assets/img/partners/auvsi.svg",
              expand="Association for Uncrewed Vehicle Systems International"),
         _org("DroneResponders", "https://www.droneresponders.org/", "assets/img/partners/droneresponders.avif", badge=True),
-        _org("NUAIR", "https://nuair.org/"),
+        _org("NUAIR", "https://www.nuair.org/"),
         _org("BMG", "https://flymonroecounty.com/", short="BMG",
              expand="Monroe County Airport, Bloomington"),
         # UNLINKED ON PURPOSE. The pack resolves HUF to Terre Haute Regional
