@@ -31,7 +31,7 @@ until a hard refresh — which is easy to misread as the change never having bee
 It lives in two places: `ASSET_V` at the top of `tools/build_pages.py` (for the generated
 pages), and literally in `index.html`, `membership.html` and `membership-thanks.html`.
 Change both and re-run the generator, or half the site runs on a stale stylesheet. Current
-value: **36**.
+value: **37**.
 
 ### Clean URLs
 
@@ -260,34 +260,15 @@ element collapses to zero width — silently, with no broken-image icon. Three o
 the supplied files shipped that way. If a logo goes invisible after being added,
 check for `width` and `height` on the `<svg>` tag first.
 
-**Two marks are withheld on purpose.** The Indiana National Guard seal and the
-NAVSEA mark for NSWC Crane are in the folder but not displayed. The Test Site OTA
-says the Sponsor "agrees not to display, or use any Agency or Federal Government
+**Two agency marks are gated behind a flag.** The Indiana National Guard seal
+and the NAVSEA mark for NSWC Crane are shown, because the client confirmed on
+2026-10-13 that written permission is on file for both. The Test Site OTA says
+the Sponsor "agrees not to display, or use any Agency or Federal Government
 seals, trademarks, logos, service marks, or trade names on the Company's
 websites… unless permission has been granted by the Agency in writing prior to
 the usage" — the same clause that keeps the FAA logo off the site. Set
-`SHOW_RESTRICTED_MARKS = True` in `site_data.py` once that permission is on file,
-and both appear.
-
-**Websites are linked only where the URL is confirmed.** 35 of the 36 link out,
-from the client's own sponsor asset pack. Ecodyne and Raider were unlinked until
-the client's logo upload settled them — it contained the Echodyne and Raider
-Technologies marks. One is still unlinked:
-
-| Organization | Why it is unlinked |
-|---|---|
-| **HUF** | The pack resolves it to Terre Haute Regional Airport but supplies `huf.com`, which is an apparel brand. The airport's own URL is still needed — its logo is on the page already. |
-
-A wrong link on a partner's name is worse than no link. Add a confirmed URL in
-`site_data.py` and it becomes a link.
-
-**Four entries are airport codes, not associations.** The client's slide groups
-HUF, BMG, LAF and BAK under Industry Associations, and they are Terre Haute
-Regional, Monroe County, Purdue University and Columbus Municipal airports. The
-grouping and the on-screen labels are the client's to change, so both stay as
-given; the `expand` field carries the real identity into the link's accessible
-name, appended to the visible text rather than replacing it so WCAG 2.5.3 still
-holds.
+`SHOW_RESTRICTED_MARKS = False` in `site_data.py` if that permission ever lapses
+and both fall back to text with no other change.
 
 ### Claims that were deliberately softened
 

@@ -343,12 +343,17 @@ AREAS = []
 #        trademarks, logos, service marks, or trade names on the Company's
 #        websites, digital, or printed materials unless permission has been
 #        granted by the Agency in writing prior to the usage" — the same clause
-#        that keeps the FAA logo off this site. These render as wordmarks until
-#        SHOW_RESTRICTED_MARKS below is flipped, which should happen only once
-#        the written permission is on file.
+#        that keeps the FAA logo off this site. SHOW_RESTRICTED_MARKS below
+#        gates them; it is on, because the client confirmed the permission is on
+#        file. With it off they fall back to text and nothing else changes.
 # ---------------------------------------------------------------------------
-# Flip to True ONLY when written permission from each agency is on file.
-SHOW_RESTRICTED_MARKS = False
+# Agency and federal marks. The Test Site OTA forbids displaying these without
+# prior written permission from the agency — the clause that keeps the FAA logo
+# off the site. The client confirmed on 2026-10-13 that written permission is on
+# file for the Indiana National Guard and for NAVSEA (NSWC Crane), so both are
+# shown. Set this back to False if that ever lapses, and both revert to text
+# with no other change.
+SHOW_RESTRICTED_MARKS = True
 
 
 def _org(name, url=None, logo=None, short=None, expand=None, restricted=False,
