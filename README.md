@@ -31,7 +31,7 @@ until a hard refresh — which is easy to misread as the change never having bee
 It lives in two places: `ASSET_V` at the top of `tools/build_pages.py` (for the generated
 pages), and literally in `index.html`, `membership.html` and `membership-thanks.html`.
 Change both and re-run the generator, or half the site runs on a stale stylesheet. Current
-value: **35**.
+value: **36**.
 
 ### Clean URLs
 
@@ -221,27 +221,38 @@ Only the first sequence is real content. Every repeat is `aria-hidden` with its
 links taken out of the tab order, so each organization is announced once and
 tabbed to once.
 
-**The band is navy because of what the artwork is.** Most brands publish their
-logo as a reversed, white version for dark backgrounds, and that is what most of
-the supplied files are — on white they would be invisible. Navy also lets 36
-marks in 36 different palettes sit on one field and read as a single wall.
+**The wall is white, and every logo on it is dark-on-light.** Brands mostly
+publish the reversed, white version for dark backgrounds, and most of the
+supplied files were that. `tools/recolor_logos.py` flips them:
 
-Twenty-three organizations have artwork in `assets/img/partners/`. The rest render as
-set white type at the same cell height, so a row reads as one row whether or not
-every brand's file has arrived. To add one: drop the asset in that folder, set
-`logo` on the organization in `site_data.py`, and re-run `build_pages.py`. The
-cell has a fixed height and a free width, so proportions are never forced; add
-`badge=True` for a square mark so it is not scaled up to a wordmark's height.
+    achromatic (white, black, grey)  ->  lightness inverted
+    anything with hue                ->  left exactly as it is
 
-**A dark-on-light logo gets a white plate, not a recolour.** Seven organizations
-supplied only the version meant for white backgrounds — HII, Purdue
-University, Rose-Hulman, Ivy Tech, CAL Analytics, Sonetics and WayPoint
-Aerospace. Inverting or recolouring somebody's trademark to suit our background
-is not ours to do, so `plate=True` puts them on a white plate instead: one size,
-one radius, one inset, so the handful that need it read as a deliberate second
-treatment. Getting the reversed version from each brand removes the plate —
-delete the flag and swap the file. Thales supplied only a 220px screenshot, too
-small for a 64px cell at 2×, and is still set as type.
+So white becomes the site's ink and a light grey becomes a dark grey, while
+Echodyne's blue, AMVIC's green, AUVSI's red and blue, ResilienX's green and
+Skyfire's red come through untouched. A CSS `invert()` filter would have turned
+every blue orange, which is why this is a per-pixel and per-colour pass rather
+than a filter.
+
+**Use chroma, not saturation, to decide what is achromatic.** HLS saturation is
+unstable at the extremes: ResilienX's off-white `#F7F5F0` is seven values from
+neutral and reports a saturation of 0.30, which any sensible threshold reads as
+"this has a hue" — and the logo stays white on a white page. Chroma (max channel
+minus min) puts it at 0.03, correctly neutral. This cost one round trip; the
+`lum.mjs` check in the verification suite is what caught it.
+
+**Originals are kept.** `assets/img/partners/reversed/` holds every file exactly
+as supplied, so nothing is lost and the authentic artwork is one copy away.
+Editing a trademark is normally not ours to do — it is here because the client
+asked for it, having seen the measurements. Any brand that later supplies its
+own dark version should simply replace the file.
+
+Twenty-three organizations have artwork. The rest render as set type at the same
+cell height, so a row reads as one row whether or not every brand's file has
+arrived. To add one: drop the asset in `assets/img/partners/`, set `logo` on the
+organization in `site_data.py`, and re-run `build_pages.py`. The cell has a fixed
+height and a free width, so proportions are never forced; add `badge=True` for a
+square mark so it is not scaled up to a wordmark's height.
 
 **An SVG with only a `viewBox` has no intrinsic size.** Inside an `<img>` sized
 by height with `width: auto`, the browser has no ratio to work from and the

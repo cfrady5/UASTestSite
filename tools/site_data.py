@@ -392,7 +392,7 @@ PARTNER_GROUPS = [
              expand="Naval Surface Warfare Center, Crane Division", restricted=True),
         _org("Anduril", "https://www.anduril.com/", expand="Anduril Industries"),
         _org("HII", "https://hii.com/", "assets/img/partners/hii.svg",
-             expand="Huntington Ingalls Industries", badge=True, plate=True),
+             expand="Huntington Ingalls Industries", badge=True),
         # The sponsor pack notes BlueHalo is now part of AV. Shown under the
         # name the client's list uses.
         _org("BlueHalo", "https://bluehalo.com/", "assets/img/partners/av.svg"),
@@ -401,23 +401,23 @@ PARTNER_GROUPS = [
     ]),
     ("academic", "Academic &amp; Research", [
         _org("Purdue University", "https://www.purdue.edu/", "assets/img/partners/purdue-university.svg",
-             plate=True),
+            ),
         _org("Indiana University", "https://www.iu.edu/"),
         _org("Indiana State University", "https://www.indstate.edu/"),
         _org("Rose-Hulman Institute of Technology", "https://www.rose-hulman.edu/",
-             "assets/img/partners/rose-hulman.png", short="Rose-Hulman", plate=True),
+             "assets/img/partners/rose-hulman.png", short="Rose-Hulman"),
         _org("Ivy Tech Community College", "https://www.ivytech.edu/", "assets/img/partners/ivy-tech.png",
-             short="Ivy Tech", plate=True),
+             short="Ivy Tech"),
     ]),
     ("commercial", "Aerospace &amp; Commercial Technology", [
-        _org("Pierce Aerospace", "https://www.pierceaerospace.net/", "assets/img/partners/pierce-aerospace.webp"),
+        _org("Pierce Aerospace", "https://www.pierceaerospace.net/", "assets/img/partners/pierce-aerospace.png"),
         _org("Precision Planting", "https://www.precisionplanting.com/"),
-        _org("SkyfireAI", "https://www.skyfireai.com/", "assets/img/partners/skyfire-ai.avif"),
+        _org("SkyfireAI", "https://www.skyfireai.com/", "assets/img/partners/skyfire-ai.png"),
         _org("ResilienX", "https://resilienx.com/", "assets/img/partners/resilienx.svg"),
         _org("Motorola Solutions", "https://www.motorolasolutions.com/"),
         _org("Lighthouse Avionics", "https://lighthouseavionics.com/", "assets/img/partners/lighthouse-avionics.svg"),
         _org("Calhoun Analytics", "https://www.calanalytics.com/", "assets/img/partners/cal-analytics.webp",
-             expand="Calhoun Analytics, LLC, trading as CAL Analytics", plate=True),
+             expand="Calhoun Analytics, LLC, trading as CAL Analytics"),
         # UNLINKED ON PURPOSE. The sponsor pack resolves this to Echodyne, a
         # different spelling and a different company, and says to confirm before
         # publication. Linking a partner's name to the wrong company is worse
@@ -431,10 +431,10 @@ PARTNER_GROUPS = [
         _org("Raider", "https://raidertechnologies.com/", "assets/img/partners/raider-technologies.svg",
              expand="Raider Technologies"),
         _org("WayPoint Aerospace", "https://waypointaerospace.com/",
-             "assets/img/partners/waypoint-aerospace.webp", plate=True),
+             "assets/img/partners/waypoint-aerospace.webp"),
         _org("AMVIC", "https://amvictechnology.org/", "assets/img/partners/amvic.png",
              expand="Advanced Machine and Vehicle Innovation Center"),
-        _org("Sonetics Wireless", "https://www.sonetics.com/", "assets/img/partners/sonetics.webp", plate=True),
+        _org("Sonetics Wireless", "https://www.sonetics.com/", "assets/img/partners/sonetics.webp"),
     ]),
     # The client's slide groups four airport codes here. They are airports, not
     # associations, but the grouping and the on-screen labels are theirs to
@@ -443,7 +443,7 @@ PARTNER_GROUPS = [
     ("associations", "Industry Associations &amp; Ecosystem Partners", [
         _org("AUVSI", "https://www.auvsi.org/", "assets/img/partners/auvsi.svg",
              expand="Association for Uncrewed Vehicle Systems International"),
-        _org("DroneResponders", "https://www.droneresponders.org/", "assets/img/partners/droneresponders.avif", badge=True),
+        _org("DroneResponders", "https://www.droneresponders.org/", "assets/img/partners/droneresponders.png", badge=True),
         _org("NUAIR", "https://www.nuair.org/"),
         _org("BMG", "https://flymonroecounty.com/", short="BMG",
              expand="Monroe County Airport, Bloomington"),

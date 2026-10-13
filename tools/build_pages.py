@@ -28,7 +28,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 35          # cache buster; bump when site.css or site.js changes
+ASSET_V = 36          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -591,8 +591,6 @@ def partner_item(org):
         badge = " partner-logo-badge" if org.get("badge") else ""
         inner = (f'<img class="partner-logo{badge}" src="{org["logo"]}" alt="{org["name"]}"'
                  f' loading="lazy" decoding="async">')
-        if org.get("plate"):
-            cls.append("partner-item-plate")
     else:
         # No logo on file. A set wordmark, not a fallback-looking chip — see the
         # note in site_data.py on why most of these have no logo yet.
@@ -640,10 +638,10 @@ def partners_page():
             "organizations connected to the test site.",
         )
         + f"""
-<section class="section partner-wall">
+<section class="section">
   <div class="wrap">
     <header class="section-head reveal">
-      <h2 class="h2 h2-light">Ecosystem organizations</h2>
+      <h2 class="h2">Ecosystem organizations</h2>
       <p class="section-intro-copy">Grouped by each organization's own field of work.
         Select an organization to visit its website.</p>
     </header>
