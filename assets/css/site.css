@@ -1395,7 +1395,28 @@ a { color: inherit; }
   padding: 1.5rem 1.35rem 1.6rem;
   box-shadow: var(--shadow-sm);
 }
-.tier-card-feature { border-top-color: var(--gold); box-shadow: var(--shadow-md); }
+/* The top tier is filled gold so it reads first. Everything inside it moves to
+   the near-black blue: the muted greys that work on white are only about 4.2:1
+   on gold, and gold-on-gold accents vanish entirely. */
+.tier-card-feature {
+  background: var(--gold);
+  border-color: var(--gold-deep);
+  border-top-color: var(--blue-deep);
+  box-shadow: var(--shadow-md);
+}
+.tier-card-feature .tier-num,
+.tier-card-feature .tier-per { color: var(--blue-night); }
+.tier-card-feature .h4,
+.tier-card-feature .tier-amount { color: var(--blue-night); }
+.tier-card-feature .tier-benefits li { color: var(--blue-night); }
+.tier-card-feature .tier-benefits li::before { background: var(--blue-deep); }
+
+/* An outlined button on a gold panel reads as unfinished; solid navy keeps the
+   card's call to action as strong as the card. */
+.tier-card-feature .btn {
+  background: var(--blue-deep); color: #fff; border-color: var(--blue-deep);
+}
+.tier-card-feature .btn:hover { background: var(--blue-night); border-color: var(--blue-night); }
 
 .tier-num {
   font-family: 'Anton', 'Arial Narrow', Impact, sans-serif;

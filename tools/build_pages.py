@@ -28,7 +28,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 31          # cache buster; bump when site.css or site.js changes
+ASSET_V = 32          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -436,30 +436,11 @@ def pricing_page():
         page_hero(
             "Pricing &amp; Membership",
             "Pricing &amp; membership",
-            "Published rates for testing ranges, equipment, personnel and airspace services, "
-            "alongside five annual membership levels.",
+            "Five annual membership levels, alongside published rates for testing ranges, "
+            "equipment, personnel and airspace services.",
         )
         + f"""
 <section class="section">
-  <div class="wrap">
-    <header class="section-head reveal">
-      <h2 class="h2">Testing service rates</h2>
-      <p class="section-intro-copy">Rates are grouped by service type. Final pricing and availability
-        are confirmed with the test site during coordination.</p>
-    </header>
-
-    <div class="tabs reveal" data-tabs data-tabs-label="Pricing categories">
-      <div class="tab-list" hidden></div>
-{chr(10).join(panels)}
-    </div>
-
-    <p class="note note-inline">Rates shown are list prices for planning purposes. Final pricing,
-      availability and any applicable membership discount are confirmed with the test site before
-      scheduling. Services shown as <strong>Contact for pricing</strong> are quoted per engagement.</p>
-  </div>
-</section>
-
-<section class="section section-capabilities">
   <div class="wrap">
     <header class="section-head reveal">
       <h2 class="h2">Annual membership</h2>
@@ -488,6 +469,26 @@ def pricing_page():
         </tbody>
       </table>
     </section>
+  </div>
+</section>
+
+<section class="section section-capabilities">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <h2 class="h2">Testing service rates</h2>
+      <p class="section-intro-copy">Rates are grouped by service type. A membership discount, where
+        one applies, comes off these. Final pricing and availability are confirmed with the test
+        site during coordination.</p>
+    </header>
+
+    <div class="tabs reveal" data-tabs data-tabs-label="Pricing categories">
+      <div class="tab-list" hidden></div>
+{chr(10).join(panels)}
+    </div>
+
+    <p class="note note-inline">Rates shown are list prices for planning purposes. Final pricing,
+      availability and any applicable membership discount are confirmed with the test site before
+      scheduling. Services shown as <strong>Contact for pricing</strong> are quoted per engagement.</p>
   </div>
 </section>
 """
@@ -694,7 +695,8 @@ PAGES = [
      "across logistics, agriculture, infrastructure, public safety and environmental management.",
      industries_page, ()),
     ("pricing.html", "/pricing", "Pricing &amp; Membership",
-     "Testing service rates and five annual membership levels at the Midwest UAS Test Site of Indiana.",
+     "Five annual membership levels and published testing service rates at the Midwest UAS Test "
+     "Site of Indiana.",
      pricing_page, ()),
     ("schedule.html", "/schedule", "Schedule a Test",
      "The five-step process for reserving range time at the Midwest UAS Test Site of Indiana.",
