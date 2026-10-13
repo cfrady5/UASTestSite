@@ -395,20 +395,22 @@ PARTNER_GROUPS = [
         _org("NSWC Crane", "https://www.navsea.navy.mil/Home/Warfare-Centers/NSWC-Crane/",
              "assets/img/partners/nswc-crane.png",
              expand="Naval Surface Warfare Center, Crane Division", restricted=True),
-        _org("Anduril", "https://www.anduril.com/", expand="Anduril Industries"),
+        _org("Anduril", "https://www.anduril.com/", "assets/img/partners/anduril.png",
+             expand="Anduril Industries"),
         _org("HII", "https://hii.com/", "assets/img/partners/hii.svg",
              expand="Huntington Ingalls Industries", badge=True),
         # The sponsor pack notes BlueHalo is now part of AV. Shown under the
         # name the client's list uses.
         _org("BlueHalo", "https://bluehalo.com/", "assets/img/partners/av.svg"),
-        _org("Thales", "https://www.thalesgroup.com/", expand="Thales Group"),
+        _org("Thales", "https://www.thalesgroup.com/", "assets/img/partners/thales.png",
+             expand="Thales Group"),
         _org("AEVEX Aerospace", "https://aevex.com/", "assets/img/partners/aevex.svg"),
     ]),
     ("academic", "Academic &amp; Research", [
         _org("Purdue University", "https://www.purdue.edu/", "assets/img/partners/purdue-university.svg",
             ),
         _org("Indiana University", "https://www.iu.edu/"),
-        _org("Indiana State University", "https://www.indstate.edu/"),
+        _org("Indiana State University", "https://www.indstate.edu/", "assets/img/partners/indiana-state.png"),
         _org("Rose-Hulman Institute of Technology", "https://www.rose-hulman.edu/",
              "assets/img/partners/rose-hulman.png", short="Rose-Hulman"),
         _org("Ivy Tech Community College", "https://www.ivytech.edu/", "assets/img/partners/ivy-tech.png",
@@ -416,10 +418,12 @@ PARTNER_GROUPS = [
     ]),
     ("commercial", "Aerospace &amp; Commercial Technology", [
         _org("Pierce Aerospace", "https://www.pierceaerospace.net/", "assets/img/partners/pierce-aerospace.png"),
-        _org("Precision Planting", "https://www.precisionplanting.com/"),
+        _org("Precision Planting", "https://www.precisionplanting.com/",
+             "assets/img/partners/precision-planting.png"),
         _org("SkyfireAI", "https://www.skyfireai.com/", "assets/img/partners/skyfire-ai.png"),
         _org("ResilienX", "https://resilienx.com/", "assets/img/partners/resilienx.svg"),
-        _org("Motorola Solutions", "https://www.motorolasolutions.com/"),
+        _org("Motorola Solutions", "https://www.motorolasolutions.com/",
+             "assets/img/partners/motorola-solutions.png"),
         _org("Lighthouse Avionics", "https://lighthouseavionics.com/", "assets/img/partners/lighthouse-avionics.svg"),
         _org("Calhoun Analytics", "https://www.calanalytics.com/", "assets/img/partners/cal-analytics.webp",
              expand="Calhoun Analytics, LLC, trading as CAL Analytics"),
@@ -450,8 +454,9 @@ PARTNER_GROUPS = [
              expand="Association for Uncrewed Vehicle Systems International"),
         _org("DroneResponders", "https://www.droneresponders.org/", "assets/img/partners/droneresponders.png", badge=True),
         _org("NUAIR", "https://www.nuair.org/"),
-        _org("BMG", "https://flymonroecounty.com/", short="BMG",
-             expand="Monroe County Airport, Bloomington"),
+        _org("BMG", "https://flymonroecounty.com/",
+             "assets/img/partners/monroe-county-airport.png", short="BMG",
+             expand="Monroe County Airport, Bloomington", badge=True),
         # UNLINKED ON PURPOSE. The pack resolves HUF to Terre Haute Regional
         # Airport but supplies huf.com, which is an apparel brand. The two do
         # not match, so no link until the airport's own URL is confirmed.
