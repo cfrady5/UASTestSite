@@ -28,7 +28,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 33          # cache buster; bump when site.css or site.js changes
+ASSET_V = 34          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -584,12 +584,15 @@ TWO_ROW_AT = 9
 def partner_item(org):
     """One organization, as a link where a website is confirmed and as plain
     text where it is not. Never a guessed URL."""
+    cls = []
     if org["logo"]:
         # Square badges get their own class so they are not scaled to the same
         # height as a long wordmark and left looming over it.
         badge = " partner-logo-badge" if org.get("badge") else ""
         inner = (f'<img class="partner-logo{badge}" src="{org["logo"]}" alt="{org["name"]}"'
                  f' loading="lazy" decoding="async">')
+        if org.get("plate"):
+            cls.append("partner-item-plate")
     else:
         # No logo on file. A set wordmark, not a fallback-looking chip — see the
         # note in site_data.py on why most of these have no logo yet.
@@ -600,17 +603,19 @@ def partner_item(org):
     # unidentifiable three-letter link.
     expand = f' — {org["expand"]}' if org.get("expand") else ""
 
+    extra = (" " + " ".join(cls)) if cls else ""
+
     if org["url"]:
-        return (f'          <li class="partner-cell"><a class="partner-item" '
+        return (f'          <li class="partner-cell"><a class="partner-item{extra}" '
                 f'href="{org["url"]}" target="_blank" rel="noopener noreferrer">'
                 f'{inner}<span class="sr-only">{expand} (opens in a new tab)</span>'
                 f'</a></li>')
     if expand:
         return (f'          <li class="partner-cell"><span class="partner-item '
-                f'partner-item-plain">{inner}<span class="sr-only">{expand}</span>'
+                f'partner-item-plain{extra}">{inner}<span class="sr-only">{expand}</span>'
                 f'</span></li>')
     return (f'          <li class="partner-cell"><span class="partner-item '
-            f'partner-item-plain">{inner}</span></li>')
+            f'partner-item-plain{extra}">{inner}</span></li>')
 
 
 def partners_page():

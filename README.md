@@ -31,7 +31,7 @@ until a hard refresh — which is easy to misread as the change never having bee
 It lives in two places: `ASSET_V` at the top of `tools/build_pages.py` (for the generated
 pages), and literally in `index.html`, `membership.html` and `membership-thanks.html`.
 Change both and re-run the generator, or half the site runs on a stale stylesheet. Current
-value: **33**.
+value: **34**.
 
 ### Clean URLs
 
@@ -226,19 +226,28 @@ logo as a reversed, white version for dark backgrounds, and that is what most of
 the supplied files are — on white they would be invisible. Navy also lets 36
 marks in 36 different palettes sit on one field and read as a single wall.
 
-Fifteen organizations have artwork in `assets/img/partners/`. The rest render as
+Twenty-three organizations have artwork in `assets/img/partners/`. The rest render as
 set white type at the same cell height, so a row reads as one row whether or not
 every brand's file has arrived. To add one: drop the asset in that folder, set
 `logo` on the organization in `site_data.py`, and re-run `build_pages.py`. The
 cell has a fixed height and a free width, so proportions are never forced; add
 `badge=True` for a square mark so it is not scaled up to a wordmark's height.
 
-**A dark-on-light logo is left out rather than recoloured.** Seven organizations
+**A dark-on-light logo gets a white plate, not a recolour.** Eight organizations
 supplied only the version meant for white backgrounds — ARI, HII, Purdue
-University, Ivy Tech, CAL Analytics, Sonetics and WayPoint Aerospace. Inverting
-or recolouring somebody's trademark to suit our background is not ours to do, so
-they stay as type until a reversed version arrives. Thales supplied only a 220px
-screenshot, which is too small for a 64px cell at 2× — it needs real artwork too.
+University, Rose-Hulman, Ivy Tech, CAL Analytics, Sonetics and WayPoint
+Aerospace. Inverting or recolouring somebody's trademark to suit our background
+is not ours to do, so `plate=True` puts them on a white plate instead: one size,
+one radius, one inset, so the handful that need it read as a deliberate second
+treatment. Getting the reversed version from each brand removes the plate —
+delete the flag and swap the file. Thales supplied only a 220px screenshot, too
+small for a 64px cell at 2×, and is still set as type.
+
+**An SVG with only a `viewBox` has no intrinsic size.** Inside an `<img>` sized
+by height with `width: auto`, the browser has no ratio to work from and the
+element collapses to zero width — silently, with no broken-image icon. Three of
+the supplied files shipped that way. If a logo goes invisible after being added,
+check for `width` and `height` on the `<svg>` tag first.
 
 **Two marks are withheld on purpose.** The Indiana National Guard seal and the
 NAVSEA mark for NSWC Crane are in the folder but not displayed. The Test Site OTA

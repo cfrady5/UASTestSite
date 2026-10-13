@@ -1628,12 +1628,29 @@ a { color: inherit; }
 /* Height is fixed, width is free: logos keep their own proportions and their
    own visual weight rather than being squeezed to a common width. */
 .partner-logo {
-  max-height: 100%; width: auto; max-width: 11rem;
+  max-height: 100%; width: auto; max-width: 12.5rem;
   object-fit: contain;
 }
 /* A few marks are a square badge rather than a wordmark and would otherwise
    tower over the lettering beside them. */
 .partner-logo-badge { max-height: 86%; max-width: 5rem; }
+
+/* Some brands publish only the dark-on-light version of their logo, which would
+   disappear on this band. Rather than recolour someone's trademark to suit our
+   background — not ours to do — those sit on a white plate. One size, one
+   radius, one inset for every logo that needs it, so the handful that do read
+   as a deliberate second treatment rather than as a mistake. */
+.partner-wall .partner-item-plate {
+  background: #fff;
+  border-radius: 3px;
+  padding: .55rem 1rem;
+  /* Same inset on every plate, so they line up into one band across the row
+     instead of reading as scattered patches. */
+  margin-block: .35rem;
+}
+/* The arrow sits on navy, outside the plate, so it keeps the gold it has
+   everywhere else. */
+.partner-wall .partner-item-plate::after { top: -.3rem; right: -.4rem; }
 
 /* Where no logo is on file, the organization is set as a wordmark at the
    same height, so a row of them still reads as a wall of names rather

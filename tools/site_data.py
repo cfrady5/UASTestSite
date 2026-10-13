@@ -352,7 +352,7 @@ SHOW_RESTRICTED_MARKS = False
 
 
 def _org(name, url=None, logo=None, short=None, expand=None, restricted=False,
-         badge=False):
+         badge=False, plate=False):
     """One partner organization.
 
     name    The full name, used as the accessible name and image alt text.
@@ -368,7 +368,7 @@ def _org(name, url=None, logo=None, short=None, expand=None, restricted=False,
         logo = None
     return {"name": name, "url": url, "logo": logo,
             "short": short or name, "expand": expand, "restricted": restricted,
-            "badge": badge}
+            "badge": badge, "plate": plate}
 
 
 PARTNER_GROUPS = [
@@ -379,7 +379,7 @@ PARTNER_GROUPS = [
         # official site; this points at their staging deployment to match the
         # footer, which was set that way deliberately. Swap both before launch.
         _org("Applied Research Institute (ARI)", "https://ari-for-review.vercel.app/",
-             short="ARI"),
+             "assets/img/partners/ari.png", short="ARI", plate=True),
         _org("Indiana National Guard (INNG)", IN_GOV, "assets/img/partners/indiana-national-guard.png", badge=True,
              short="INNG", expand="Indiana National Guard", restricted=True),
         _org("Purdue Research Foundation (PRF)", "https://prf.org/",
@@ -391,7 +391,8 @@ PARTNER_GROUPS = [
              "assets/img/partners/nswc-crane.png",
              expand="Naval Surface Warfare Center, Crane Division", restricted=True),
         _org("Anduril", "https://www.anduril.com/", expand="Anduril Industries"),
-        _org("HII", "https://hii.com/", expand="Huntington Ingalls Industries"),
+        _org("HII", "https://hii.com/", "assets/img/partners/hii.svg",
+             expand="Huntington Ingalls Industries", badge=True, plate=True),
         # The sponsor pack notes BlueHalo is now part of AV. Shown under the
         # name the client's list uses.
         _org("BlueHalo", "https://bluehalo.com/", "assets/img/partners/av.svg"),
@@ -399,12 +400,14 @@ PARTNER_GROUPS = [
         _org("AEVEX Aerospace", "https://aevex.com/", "assets/img/partners/aevex.svg"),
     ]),
     ("academic", "Academic &amp; Research", [
-        _org("Purdue University", "https://www.purdue.edu/"),
+        _org("Purdue University", "https://www.purdue.edu/", "assets/img/partners/purdue-university.svg",
+             plate=True),
         _org("Indiana University", "https://www.iu.edu/"),
         _org("Indiana State University", "https://www.indstate.edu/"),
         _org("Rose-Hulman Institute of Technology", "https://www.rose-hulman.edu/",
-             short="Rose-Hulman"),
-        _org("Ivy Tech Community College", "https://www.ivytech.edu/", short="Ivy Tech"),
+             "assets/img/partners/rose-hulman.png", short="Rose-Hulman", plate=True),
+        _org("Ivy Tech Community College", "https://www.ivytech.edu/", "assets/img/partners/ivy-tech.png",
+             short="Ivy Tech", plate=True),
     ]),
     ("commercial", "Aerospace &amp; Commercial Technology", [
         _org("Pierce Aerospace", "https://www.pierceaerospace.net/", "assets/img/partners/pierce-aerospace.webp"),
@@ -413,8 +416,8 @@ PARTNER_GROUPS = [
         _org("ResilienX", "https://resilienx.com/", "assets/img/partners/resilienx.svg"),
         _org("Motorola Solutions", "https://www.motorolasolutions.com/"),
         _org("Lighthouse Avionics", "https://lighthouseavionics.com/", "assets/img/partners/lighthouse-avionics.svg"),
-        _org("Calhoun Analytics", "https://www.calanalytics.com/",
-             expand="Calhoun Analytics, LLC, trading as CAL Analytics"),
+        _org("Calhoun Analytics", "https://www.calanalytics.com/", "assets/img/partners/cal-analytics.webp",
+             expand="Calhoun Analytics, LLC, trading as CAL Analytics", plate=True),
         # UNLINKED ON PURPOSE. The sponsor pack resolves this to Echodyne, a
         # different spelling and a different company, and says to confirm before
         # publication. Linking a partner's name to the wrong company is worse
@@ -427,10 +430,11 @@ PARTNER_GROUPS = [
         # identity as unverified.
         _org("Raider", "https://raidertechnologies.com/", "assets/img/partners/raider-technologies.svg",
              expand="Raider Technologies"),
-        _org("WayPoint Aerospace", "https://waypointaerospace.com/"),
+        _org("WayPoint Aerospace", "https://waypointaerospace.com/",
+             "assets/img/partners/waypoint-aerospace.webp", plate=True),
         _org("AMVIC", "https://amvictechnology.org/", "assets/img/partners/amvic.png",
              expand="Advanced Machine and Vehicle Innovation Center"),
-        _org("Sonetics Wireless", "https://www.sonetics.com/"),
+        _org("Sonetics Wireless", "https://www.sonetics.com/", "assets/img/partners/sonetics.webp", plate=True),
     ]),
     # The client's slide groups four airport codes here. They are airports, not
     # associations, but the grouping and the on-screen labels are theirs to
