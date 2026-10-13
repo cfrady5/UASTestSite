@@ -335,26 +335,46 @@ AREAS = []
 #        written permission from the agency — which covers the military and
 #        federal entries here.
 # ---------------------------------------------------------------------------
-def _org(name, url=None, logo=None, short=None):
-    return {"name": name, "url": url, "logo": logo, "short": short or name}
+def _org(name, url=None, logo=None, short=None, expand=None):
+    """One partner organization.
+
+    name    The full name, used as the accessible name and image alt text.
+    short   What appears on screen. Kept exactly as the client's slide labels
+            it — several are bare airport codes, and renaming them is their
+            call, not ours.
+    expand  Appended to the link's accessible name where `short` alone would
+            not identify the organization ("HUF" on its own means nothing).
+            It never replaces the visible text, so the accessible name still
+            contains it and WCAG 2.5.3 holds.
+    """
+    return {"name": name, "url": url, "logo": logo,
+            "short": short or name, "expand": expand}
 
 
 PARTNER_GROUPS = [
     ("government", "Government &amp; Economic Development", [
         _org("Indiana Economic Development Corporation (IEDC)", "https://iedc.in.gov/",
              "assets/img/logo-iedc.png", "IEDC"),
+        # REVIEW BUILD. The sponsor pack gives https://www.theari.us/ as ARI's
+        # official site; this points at their staging deployment to match the
+        # footer, which was set that way deliberately. Swap both before launch.
         _org("Applied Research Institute (ARI)", "https://ari-for-review.vercel.app/",
              "assets/img/logo-ari.png", "ARI"),
-        _org("Indiana National Guard (INNG)", IN_GOV, short="INNG"),
-        _org("Purdue Research Foundation (PRF)", short="PRF"),
+        _org("Indiana National Guard (INNG)", IN_GOV, short="INNG",
+             expand="Indiana National Guard"),
+        _org("Purdue Research Foundation (PRF)", "https://prf.org/", short="PRF",
+             expand="Purdue Research Foundation"),
     ]),
     ("defense", "Defense &amp; National Security", [
-        _org("NSWC Crane", "https://www.navsea.navy.mil/Home/Warfare-Centers/NSWC-Crane/"),
-        _org("Anduril"),
-        _org("HII"),
-        _org("BlueHalo"),
-        _org("Thales"),
-        _org("AEVEX Aerospace"),
+        _org("NSWC Crane", "https://www.navsea.navy.mil/Home/Warfare-Centers/NSWC-Crane/",
+             expand="Naval Surface Warfare Center, Crane Division"),
+        _org("Anduril", "https://www.anduril.com/", expand="Anduril Industries"),
+        _org("HII", "https://hii.com/", expand="Huntington Ingalls Industries"),
+        # The sponsor pack notes BlueHalo is now part of AV. Shown under the
+        # name the client's list uses.
+        _org("BlueHalo", "https://bluehalo.com/"),
+        _org("Thales", "https://www.thalesgroup.com/", expand="Thales Group"),
+        _org("AEVEX Aerospace", "https://aevex.com/"),
     ]),
     ("academic", "Academic &amp; Research", [
         _org("Purdue University", "https://www.purdue.edu/"),
@@ -365,28 +385,47 @@ PARTNER_GROUPS = [
         _org("Ivy Tech Community College", "https://www.ivytech.edu/", short="Ivy Tech"),
     ]),
     ("commercial", "Aerospace &amp; Commercial Technology", [
-        _org("Pierce Aerospace"),
-        _org("Precision Planting"),
-        _org("SkyfireAI"),
-        _org("ResilienX"),
-        _org("Motorola Solutions"),
-        _org("Lighthouse Avionics"),
-        _org("Calhoun Analytics"),
+        _org("Pierce Aerospace", "https://www.pierceaerospace.net/"),
+        _org("Precision Planting", "https://www.precisionplanting.com/"),
+        _org("SkyfireAI", "https://www.skyfireai.com/"),
+        _org("ResilienX", "https://resilienx.com/"),
+        _org("Motorola Solutions", "https://www.motorolasolutions.com/"),
+        _org("Lighthouse Avionics", "https://lighthouseavionics.com/"),
+        _org("Calhoun Analytics", "https://www.calanalytics.com/",
+             expand="Calhoun Analytics, LLC, trading as CAL Analytics"),
+        # UNLINKED ON PURPOSE. The sponsor pack resolves this to Echodyne, a
+        # different spelling and a different company, and says to confirm before
+        # publication. Linking a partner's name to the wrong company is worse
+        # than not linking it.
         _org("Ecodyne"),
-        _org("INVOLI"),
-        _org("ANRA Technologies"),
+        _org("INVOLI", "https://www.involi.com/"),
+        _org("ANRA Technologies", "https://www.anratechnologies.com/"),
+        # UNLINKED ON PURPOSE. The pack offers Raider Technologies but flags the
+        # identity as unverified.
         _org("Raider"),
-        _org("WayPoint Aerospace"),
-        _org("AMVIC"),
-        _org("Sonetics Wireless"),
+        _org("WayPoint Aerospace", "https://waypointaerospace.com/"),
+        _org("AMVIC", "https://amvictechnology.org/",
+             expand="Advanced Machine and Vehicle Innovation Center"),
+        _org("Sonetics Wireless", "https://www.sonetics.com/"),
     ]),
+    # The client's slide groups four airport codes here. They are airports, not
+    # associations, but the grouping and the on-screen labels are theirs to
+    # change — so the labels stay and `expand` carries the identity into the
+    # link's accessible name.
     ("associations", "Industry Associations &amp; Ecosystem Partners", [
-        _org("AUVSI"),
-        _org("DroneResponders"),
-        _org("NUAIR"),
-        _org("BMG"),
-        _org("HUF"),
-        _org("LAF"),
-        _org("BAK"),
+        _org("AUVSI", "https://www.auvsi.org/",
+             expand="Association for Uncrewed Vehicle Systems International"),
+        _org("DroneResponders", "https://www.droneresponders.org/"),
+        _org("NUAIR", "https://nuair.org/"),
+        _org("BMG", "https://flymonroecounty.com/", short="BMG",
+             expand="Monroe County Airport, Bloomington"),
+        # UNLINKED ON PURPOSE. The pack resolves HUF to Terre Haute Regional
+        # Airport but supplies huf.com, which is an apparel brand. The two do
+        # not match, so no link until the airport's own URL is confirmed.
+        _org("HUF", short="HUF", expand="Terre Haute Regional Airport, Hulman Field"),
+        _org("LAF", "https://www.purdue.edu/airport/", short="LAF",
+             expand="Purdue University Airport"),
+        _org("BAK", "https://www.columbus.in.gov/aviation/", short="BAK",
+             expand="Columbus Municipal Airport"),
     ]),
 ]

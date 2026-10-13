@@ -591,10 +591,20 @@ def partner_item(org):
         # note in site_data.py on why most of these have no logo yet.
         inner = f'<span class="partner-word">{org["short"]}</span>'
 
+    # The expansion is appended rather than substituted, so the accessible name
+    # still contains the visible text (WCAG 2.5.3) while "HUF" stops being an
+    # unidentifiable three-letter link.
+    expand = f' — {org["expand"]}' if org.get("expand") else ""
+
     if org["url"]:
         return (f'          <li class="partner-cell"><a class="partner-item" '
                 f'href="{org["url"]}" target="_blank" rel="noopener noreferrer">'
-                f'{inner}<span class="sr-only"> (opens in a new tab)</span></a></li>')
+                f'{inner}<span class="sr-only">{expand} (opens in a new tab)</span>'
+                f'</a></li>')
+    if expand:
+        return (f'          <li class="partner-cell"><span class="partner-item '
+                f'partner-item-plain">{inner}<span class="sr-only">{expand}</span>'
+                f'</span></li>')
     return (f'          <li class="partner-cell"><span class="partner-item '
             f'partner-item-plain">{inner}</span></li>')
 

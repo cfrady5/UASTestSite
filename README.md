@@ -237,11 +237,25 @@ on that organization in `site_data.py`, and re-run `build_pages.py`. SVG is
 preferred; the cell has a fixed height and a free width, so proportions are
 never forced.
 
-**Websites are linked only where the URL is confirmed.** The nine linked
-organizations use the list the client supplied for the home page ecosystem
-section. The rest render unlinked rather than pointing at a domain guessed from a
-brand name — a wrong link on a partner's name is worse than no link. Add a
-confirmed URL in `site_data.py` and it becomes a link.
+**Websites are linked only where the URL is confirmed.** 33 of the 36 link out,
+from the client's own sponsor asset pack. Three deliberately do not:
+
+| Organization | Why it is unlinked |
+|---|---|
+| **HUF** | The pack resolves it to Terre Haute Regional Airport but supplies `huf.com`, which is an apparel brand. The two do not match. |
+| **Ecodyne** | The pack resolves it to *Echodyne* — different spelling, different company — and says to confirm first. |
+| **Raider** | The pack offers Raider Technologies but flags the identity as unverified. |
+
+A wrong link on a partner's name is worse than no link. Add a confirmed URL in
+`site_data.py` and it becomes a link.
+
+**Four entries are airport codes, not associations.** The client's slide groups
+HUF, BMG, LAF and BAK under Industry Associations, and they are Terre Haute
+Regional, Monroe County, Purdue University and Columbus Municipal airports. The
+grouping and the on-screen labels are the client's to change, so both stay as
+given; the `expand` field carries the real identity into the link's accessible
+name, appended to the visible text rather than replacing it so WCAG 2.5.3 still
+holds.
 
 ### Claims that were deliberately softened
 
