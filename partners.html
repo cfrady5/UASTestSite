@@ -20,7 +20,7 @@
 
 <link rel="preload" href="/assets/fonts/Anton-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/Montserrat-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=30">
+<link rel="stylesheet" href="assets/css/site.css?v=31">
 </head>
 <body>
 
@@ -66,76 +66,79 @@
   <div class="wrap">
     <header class="section-head reveal">
       <h2 class="h2">Ecosystem organizations</h2>
-      <p class="section-intro-copy">Grouped by each organization's own field of work.</p>
+      <p class="section-intro-copy">Grouped by each organization's own field of work.
+        Select an organization to visit its website.</p>
     </header>
 
     <div class="partner-groups">
-      <div class="partner-group reveal">
-        <h3 class="h4">Government &amp; Economic Development</h3>
-        <ul class="partner-list">
-          <li>Indiana Economic Development Corporation (IEDC)</li>
-          <li>Applied Research Institute (ARI)</li>
-          <li>Indiana National Guard (INNG)</li>
-          <li>Purdue Research Foundation (PRF)</li>
+      <div class="partner-group reveal" data-marquee data-rows="1">
+        <h3 class="h4" id="partners-government">Government &amp; Economic Development</h3>
+        <ul class="partner-list" aria-labelledby="partners-government">
+          <li class="partner-cell"><a class="partner-item" href="https://iedc.in.gov/" target="_blank" rel="noopener noreferrer"><img class="partner-logo" src="assets/img/logo-iedc.png" alt="Indiana Economic Development Corporation (IEDC)" loading="lazy" decoding="async"><span class="sr-only"> (opens in a new tab)</span></a></li>
+          <li class="partner-cell"><a class="partner-item" href="https://ari-for-review.vercel.app/" target="_blank" rel="noopener noreferrer"><img class="partner-logo" src="assets/img/logo-ari.png" alt="Applied Research Institute (ARI)" loading="lazy" decoding="async"><span class="sr-only"> (opens in a new tab)</span></a></li>
+          <li class="partner-cell"><a class="partner-item" href="https://www.in.gov/indiana-national-guard/" target="_blank" rel="noopener noreferrer"><span class="partner-word">INNG</span><span class="sr-only"> (opens in a new tab)</span></a></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">PRF</span></span></li>
         </ul>
       </div>
-      <div class="partner-group reveal">
-        <h3 class="h4">Defense &amp; National Security</h3>
-        <ul class="partner-list">
-          <li>NSWC Crane</li>
-          <li>Anduril</li>
-          <li>HII</li>
-          <li>BlueHalo</li>
-          <li>Thales</li>
-          <li>AEVEX Aerospace</li>
+      <div class="partner-group reveal" data-marquee data-rows="1">
+        <h3 class="h4" id="partners-defense">Defense &amp; National Security</h3>
+        <ul class="partner-list" aria-labelledby="partners-defense">
+          <li class="partner-cell"><a class="partner-item" href="https://www.navsea.navy.mil/Home/Warfare-Centers/NSWC-Crane/" target="_blank" rel="noopener noreferrer"><span class="partner-word">NSWC Crane</span><span class="sr-only"> (opens in a new tab)</span></a></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">Anduril</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">HII</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">BlueHalo</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">Thales</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">AEVEX Aerospace</span></span></li>
         </ul>
       </div>
-      <div class="partner-group reveal">
-        <h3 class="h4">Academic &amp; Research</h3>
-        <ul class="partner-list">
-          <li>Purdue University</li>
-          <li>Indiana University</li>
-          <li>Indiana State University</li>
-          <li>Rose-Hulman Institute of Technology</li>
-          <li>Ivy Tech Community College</li>
+      <div class="partner-group reveal" data-marquee data-rows="1">
+        <h3 class="h4" id="partners-academic">Academic &amp; Research</h3>
+        <ul class="partner-list" aria-labelledby="partners-academic">
+          <li class="partner-cell"><a class="partner-item" href="https://www.purdue.edu/" target="_blank" rel="noopener noreferrer"><span class="partner-word">Purdue University</span><span class="sr-only"> (opens in a new tab)</span></a></li>
+          <li class="partner-cell"><a class="partner-item" href="https://www.iu.edu/" target="_blank" rel="noopener noreferrer"><span class="partner-word">Indiana University</span><span class="sr-only"> (opens in a new tab)</span></a></li>
+          <li class="partner-cell"><a class="partner-item" href="https://www.indstate.edu/" target="_blank" rel="noopener noreferrer"><span class="partner-word">Indiana State University</span><span class="sr-only"> (opens in a new tab)</span></a></li>
+          <li class="partner-cell"><a class="partner-item" href="https://www.rose-hulman.edu/" target="_blank" rel="noopener noreferrer"><span class="partner-word">Rose-Hulman</span><span class="sr-only"> (opens in a new tab)</span></a></li>
+          <li class="partner-cell"><a class="partner-item" href="https://www.ivytech.edu/" target="_blank" rel="noopener noreferrer"><span class="partner-word">Ivy Tech</span><span class="sr-only"> (opens in a new tab)</span></a></li>
         </ul>
       </div>
-      <div class="partner-group reveal">
-        <h3 class="h4">Aerospace &amp; Commercial Technology</h3>
-        <ul class="partner-list">
-          <li>Pierce Aerospace</li>
-          <li>Precision Planting</li>
-          <li>SkyfireAI</li>
-          <li>ResilienX</li>
-          <li>Motorola Solutions</li>
-          <li>Lighthouse Avionics</li>
-          <li>Calhoun Analytics</li>
-          <li>Ecodyne</li>
-          <li>INVOLI</li>
-          <li>ANRA Technologies</li>
-          <li>Raider</li>
-          <li>WayPoint Aerospace</li>
-          <li>AMVIC</li>
-          <li>Sonetics Wireless</li>
+      <div class="partner-group reveal" data-marquee data-rows="2">
+        <h3 class="h4" id="partners-commercial">Aerospace &amp; Commercial Technology</h3>
+        <ul class="partner-list" aria-labelledby="partners-commercial">
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">Pierce Aerospace</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">Precision Planting</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">SkyfireAI</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">ResilienX</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">Motorola Solutions</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">Lighthouse Avionics</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">Calhoun Analytics</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">Ecodyne</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">INVOLI</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">ANRA Technologies</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">Raider</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">WayPoint Aerospace</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">AMVIC</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">Sonetics Wireless</span></span></li>
         </ul>
       </div>
-      <div class="partner-group reveal">
-        <h3 class="h4">Industry Associations &amp; Ecosystem Partners</h3>
-        <ul class="partner-list">
-          <li>AUVSI</li>
-          <li>DroneResponders</li>
-          <li>NUAIR</li>
-          <li>BMG</li>
-          <li>HUF</li>
-          <li>LAF</li>
-          <li>BAK</li>
+      <div class="partner-group reveal" data-marquee data-rows="1">
+        <h3 class="h4" id="partners-associations">Industry Associations &amp; Ecosystem Partners</h3>
+        <ul class="partner-list" aria-labelledby="partners-associations">
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">AUVSI</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">DroneResponders</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">NUAIR</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">BMG</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">HUF</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">LAF</span></span></li>
+          <li class="partner-cell"><span class="partner-item partner-item-plain"><span class="partner-word">BAK</span></span></li>
         </ul>
       </div>
     </div>
 
     <p class="note note-inline">Organization names are listed as supplied. Nothing here states the
       nature or status of any commercial relationship with the test site — those designations are
-      confirmed before publication.</p>
+      confirmed before publication. A website is linked only where the organization's official
+      URL has been confirmed; the rest appear unlinked rather than pointing somewhere guessed.
+      Logos are each organization's own trademark and are shown only with permission on file.</p>
   </div>
 </section>
 
@@ -197,6 +200,7 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=30" defer></script>
+<script src="assets/js/site.js?v=31" defer></script>
+<script src="assets/js/partner-marquee.js?v=31" defer></script>
 </body>
 </html>

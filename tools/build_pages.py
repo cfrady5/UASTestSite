@@ -24,9 +24,11 @@ is left alone.
 import pathlib
 import re
 
+import site_data
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 30          # cache buster; bump when site.css or site.js changes
+ASSET_V = 31          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -121,10 +123,7 @@ FOOTER = f"""
   </div>
 </footer>
 
-<script src="assets/js/site.js?v={ASSET_V}" defer></script>
-</body>
-</html>
-"""
+<script src="assets/js/site.js?v={ASSET_V}" defer></script>"""
 
 
 def page_hero(eyebrow, title, lead):
@@ -162,34 +161,15 @@ def cta_band(heading, copy, buttons):
 # --------------------------------------------------------------------------
 # Capabilities
 # --------------------------------------------------------------------------
-# Status is asserted only where the site already states it. The BVLOS corridor
-# is preliminarily approved and the urban canyon component proposed, so both
-# carry a qualifier. No description is invented for any capability: the brief
-# supplied names only.
-CAPABILITIES = [
-    ("Basic LOS Testing", None),
-    ("BVLOS Testing", "In development"),
-    ("Kinetic Testing", None),
-    ("Urban Testing", "In development"),
-    ("cUAS Testing", None),
-    ("Sensor Testing", None),
-    ("Motion Capture Lab", None),
-    ("Hypersonics Lab", None),
-    ("Remote COA Development", None),
-    ("Pilot Certification Course", None),
-]
+# The capability list, their statuses and the network locations all come from
+# tools/site_data.py, which the capabilities map is built from too. Keeping one
+# copy is the point: the page and the map can no longer disagree about what the
+# test site offers or where.
+CAPABILITIES = [(c["name"], "In development" if c["status"] == "in-development" else None)
+                for c in site_data.CAPABILITIES]
 
-# Locations named in the expansion document. No capability-to-location mapping
-# is asserted, because none was supplied and inventing one would misstate where
-# work can actually be performed.
-LOCATIONS = [
-    "Purdue University",
-    "Terre Haute",
-    "Monroe County",
-    "Camp Atterbury",
-    "Muscatatuck",
-    "NSWC Crane",
-]
+LOCATIONS = ([f["name"] for f in site_data.FACILITIES if f.get("network")]
+             + [c["name"] for c in site_data.NETWORK_COUNTIES])
 
 
 def capabilities_page():
@@ -214,28 +194,33 @@ def capabilities_page():
         )
         + f"""
 <section class="section">
-  <div class="wrap cap-layout">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <h2 class="h2">Capability areas</h2>
+      <p class="section-intro-copy">Select a capability to see where it sits in the Indiana
+        testing network, or select a location on the map to work the other way.</p>
+    </header>
 
-    <div class="cap-col reveal">
-      <h2 class="h3">Capability areas</h2>
+    <!-- The explorer is built by assets/js/capabilities-map.js. Everything
+         inside this element is the no-script version: the ten capabilities as
+         an ordinary list, and the IEDC network map. The script hides the list
+         and adds the interactive explorer; if it never runs, the page is what
+         it was before. -->
+    <div class="reveal" data-cap-explorer>
       <ol class="cap-list">
 {chr(10).join(rows)}
       </ol>
-      <p class="note">Capabilities marked <strong>In development</strong> are not yet operational.
-        The 225+ mile BVLOS corridor holds preliminary approval and the dense urban canyon component
-        is proposed; both remain subject to regulatory approval before flight operations begin.</p>
-    </div>
 
-    <div class="cap-col reveal">
-      <figure class="cap-map">
-        <img src="assets/img/indiana-map.png"
-             alt="Map of Indiana showing the test site network: airports, military installations including Camp Atterbury, Muscatatuck, NSWC Crane and Grissom Air Reserve, and university partners across the state."
-             width="1061" height="1400" loading="lazy" decoding="async">
-        <figcaption>Statewide testing network. Individual capabilities are scheduled against specific
-          sites during coordination — contact the operations team to confirm where your test can be flown.</figcaption>
-      </figure>
+      <noscript>
+        <figure class="cap-map">
+          <img src="assets/img/indiana-map.png"
+               alt="Map of Indiana showing the test site network: airports, military installations including Camp Atterbury, Muscatatuck, NSWC Crane and Grissom Air Reserve, and university partners across the state."
+               width="1061" height="1400" loading="lazy" decoding="async">
+          <figcaption>Statewide testing network.</figcaption>
+        </figure>
+      </noscript>
 
-      <div class="loc-block">
+      <div class="loc-block cap-list-note">
         <h3 class="h4">Locations in the testing network</h3>
         <ul class="chip-list">
 {locs}
@@ -243,6 +228,12 @@ def capabilities_page():
       </div>
     </div>
 
+    <p class="note note-inline">Capabilities marked <strong>In development</strong> are not yet
+      operational. The 225+ mile BVLOS corridor holds preliminary approval and the dense urban
+      canyon component is proposed; both remain subject to regulatory approval before flight
+      operations begin. The map plots verified facility locations only — no testing range
+      boundary or flight corridor is drawn, because none has been published, and none is
+      estimated here.</p>
   </div>
 </section>
 """
@@ -578,41 +569,46 @@ def schedule_page():
 # federal or state bodies unlikely to hold one. Shown as ecosystem
 # organizations pending confirmation, grouped only where the category is
 # unambiguous from the organization's own identity.
-PARTNER_GROUPS = [
-    ("Government &amp; Economic Development", [
-        "Indiana Economic Development Corporation (IEDC)",
-        "Applied Research Institute (ARI)",
-        "Indiana National Guard (INNG)",
-        "Purdue Research Foundation (PRF)",
-    ]),
-    ("Defense &amp; National Security", [
-        "NSWC Crane", "Anduril", "HII", "BlueHalo", "Thales", "AEVEX Aerospace",
-    ]),
-    ("Academic &amp; Research", [
-        "Purdue University", "Indiana University", "Indiana State University",
-        "Rose-Hulman Institute of Technology", "Ivy Tech Community College",
-    ]),
-    ("Aerospace &amp; Commercial Technology", [
-        "Pierce Aerospace", "Precision Planting", "SkyfireAI", "ResilienX",
-        "Motorola Solutions", "Lighthouse Avionics", "Calhoun Analytics", "Ecodyne",
-        "INVOLI", "ANRA Technologies", "Raider", "WayPoint Aerospace", "AMVIC",
-        "Sonetics Wireless",
-    ]),
-    ("Industry Associations &amp; Ecosystem Partners", [
-        "AUVSI", "DroneResponders", "NUAIR", "BMG", "HUF", "LAF", "BAK",
-    ]),
-]
+#
+# The list itself lives in site_data.py, with each organization's logo and
+# confirmed website alongside its name.
+PARTNER_GROUPS = site_data.PARTNER_GROUPS
+
+# Above this many organizations a category is split across two scrolling rows
+# running in opposite directions. Below it, one row reads better than two
+# half-empty ones.
+TWO_ROW_AT = 9
+
+
+def partner_item(org):
+    """One organization, as a link where a website is confirmed and as plain
+    text where it is not. Never a guessed URL."""
+    if org["logo"]:
+        inner = (f'<img class="partner-logo" src="{org["logo"]}" alt="{org["name"]}"'
+                 f' loading="lazy" decoding="async">')
+    else:
+        # No logo on file. A set wordmark, not a fallback-looking chip — see the
+        # note in site_data.py on why most of these have no logo yet.
+        inner = f'<span class="partner-word">{org["short"]}</span>'
+
+    if org["url"]:
+        return (f'          <li class="partner-cell"><a class="partner-item" '
+                f'href="{org["url"]}" target="_blank" rel="noopener noreferrer">'
+                f'{inner}<span class="sr-only"> (opens in a new tab)</span></a></li>')
+    return (f'          <li class="partner-cell"><span class="partner-item '
+            f'partner-item-plain">{inner}</span></li>')
 
 
 def partners_page():
     groups = []
-    for name, orgs in PARTNER_GROUPS:
-        chips = "\n".join(f"          <li>{o}</li>" for o in orgs)
+    for slug, name, orgs in PARTNER_GROUPS:
+        cells = "\n".join(partner_item(o) for o in orgs)
+        rows = 2 if len(orgs) >= TWO_ROW_AT else 1
         groups.append(
-            f"""      <div class="partner-group reveal">
-        <h3 class="h4">{name}</h3>
-        <ul class="partner-list">
-{chips}
+            f"""      <div class="partner-group reveal" data-marquee data-rows="{rows}">
+        <h3 class="h4" id="partners-{slug}">{name}</h3>
+        <ul class="partner-list" aria-labelledby="partners-{slug}">
+{cells}
         </ul>
       </div>"""
         )
@@ -629,7 +625,8 @@ def partners_page():
   <div class="wrap">
     <header class="section-head reveal">
       <h2 class="h2">Ecosystem organizations</h2>
-      <p class="section-intro-copy">Grouped by each organization's own field of work.</p>
+      <p class="section-intro-copy">Grouped by each organization's own field of work.
+        Select an organization to visit its website.</p>
     </header>
 
     <div class="partner-groups">
@@ -638,7 +635,9 @@ def partners_page():
 
     <p class="note note-inline">Organization names are listed as supplied. Nothing here states the
       nature or status of any commercial relationship with the test site — those designations are
-      confirmed before publication.</p>
+      confirmed before publication. A website is linked only where the organization's official
+      URL has been confirmed; the rest appear unlinked rather than pointing somewhere guessed.
+      Logos are each organization's own trademark and are shown only with permission on file.</p>
   </div>
 </section>
 
@@ -671,30 +670,37 @@ def partners_page():
     )
 
 
+# filename, URL, <title>, meta description, body builder, page-only scripts.
+# The scripts load after site.js and only on the page that needs them — the
+# map data alone is bigger than everything else on the site put together, and
+# four of the five pages have no use for it.
 PAGES = [
     ("capabilities.html", "/capabilities", "Capabilities",
      "Ten UAS testing and training capabilities at the Midwest UAS Test Site of Indiana, "
      "from line-of-sight and BVLOS flight to kinetic, counter-UAS, sensor and laboratory testing.",
-     capabilities_page),
+     capabilities_page, ("map-data.js", "capabilities-map.js")),
     ("industries.html", "/industries", "Industries",
      "Commercial and public-sector applications supported at the Midwest UAS Test Site of Indiana, "
      "across logistics, agriculture, infrastructure, public safety and environmental management.",
-     industries_page),
+     industries_page, ()),
     ("pricing.html", "/pricing", "Pricing &amp; Membership",
      "Testing service rates and five annual membership levels at the Midwest UAS Test Site of Indiana.",
-     pricing_page),
+     pricing_page, ()),
     ("schedule.html", "/schedule", "Schedule a Test",
      "The five-step process for reserving range time at the Midwest UAS Test Site of Indiana.",
-     schedule_page),
+     schedule_page, ()),
     ("partners.html", "/partners", "Partners",
      "Government, defense, academic and commercial organizations in the Midwest UAS Test Site "
-     "of Indiana ecosystem.", partners_page),
+     "of Indiana ecosystem.", partners_page, ("partner-marquee.js",)),
 ]
 
 
 def main():
-    for filename, path, title, desc, body in PAGES:
-        html = head(title, desc, path) + HEADER + body() + FOOTER
+    for filename, path, title, desc, body, scripts in PAGES:
+        extra = "".join(
+            f'\n<script src="assets/js/{s}?v={ASSET_V}" defer></script>' for s in scripts)
+        html = (head(title, desc, path) + HEADER + body() + FOOTER
+                + extra + "\n</body>\n</html>\n")
         # Collapse the blank lines the templating leaves behind
         html = re.sub(r"\n{3,}", "\n\n", html)
         (ROOT / filename).write_text(html)

@@ -915,6 +915,366 @@ a { color: inherit; }
 .loc-block { margin-top: 2rem; padding-top: 1.25rem; border-top: 2px solid var(--gold); }
 
 /* ============================================================
+   CAPABILITIES MAP
+   ------------------------------------------------------------
+   An interactive explorer: capability navigation on the left, a
+   layered SVG of the Indiana testing network on the right.
+
+   On the map palette: the IEDC print map fills Indiana with brand
+   gold. That works for a static poster and not for this, because
+   gold is also what marks a selected location — a gold landmass
+   leaves the highlight nowhere to go. So the land is near-white,
+   the linework is the blue family, and gold is spent only on
+   selection and highlight, where it has to read instantly.
+   ============================================================ */
+.cap-explorer-grid { display: grid; gap: clamp(1.75rem, 3.5vw, 2.75rem); align-items: start; }
+@media (min-width: 1000px) {
+  .cap-explorer-grid { grid-template-columns: minmax(0, 35fr) minmax(0, 65fr); }
+}
+/* A grid track is at least as wide as its content's min-content size, and the
+   phone capability strip is a row of ten cards — without this the track grows
+   to their combined width and takes the whole page sideways with it. */
+.cap-explorer-nav, .cap-explorer-map { min-width: 0; }
+
+/* ---------- Capability navigation ---------- */
+.cap-nav { display: grid; gap: .3rem; }
+
+.cap-nav-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: .75rem;
+  width: 100%;
+  padding: .85rem 1rem .85rem .9rem;
+  font: inherit;
+  text-align: left;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-left: 3px solid transparent;
+  border-radius: var(--radius);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color .25s var(--ease), border-color .25s var(--ease),
+              color .25s var(--ease), transform .25s var(--ease);
+}
+.cap-nav-item:hover { border-color: var(--blue-mid); background: var(--paper-alt); }
+
+/* Active state carries four signals, only one of which is colour: the
+   accent bar, the caret, the weight change, and aria-selected. */
+.cap-nav-item.is-active {
+  background: var(--blue-deep);
+  border-color: var(--blue-deep);
+  border-left-color: var(--gold);
+  color: #fff;
+}
+.cap-nav-item.is-active .cap-nav-num { color: var(--gold); }
+.cap-nav-item.is-active .cap-nav-name { font-weight: 700; }
+.cap-nav-item.is-active .cap-nav-caret { opacity: 1; transform: none; }
+
+.cap-nav-num {
+  font-family: 'Anton', 'Arial Narrow', Impact, sans-serif;
+  font-size: .9375rem; line-height: 1; letter-spacing: .02em;
+  color: var(--blue-mid);
+}
+.cap-nav-name { font-size: .9375rem; font-weight: 600; line-height: 1.35; }
+
+.cap-nav-flag {
+  grid-column: 2;
+  justify-self: start;
+  margin-top: .3rem;
+  font-size: .625rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: .2rem .45rem;
+  background: var(--warn-bg); color: var(--warn-ink);
+  border-radius: 999px;
+}
+.cap-nav-item.is-active .cap-nav-flag { background: var(--gold); color: var(--blue-night); }
+
+.cap-nav-caret {
+  width: .5rem; height: .75rem; flex: none;
+  color: var(--gold);
+  opacity: 0; transform: translateX(-4px);
+  transition: opacity .25s var(--ease), transform .25s var(--ease);
+}
+
+/* Phones get a horizontal strip above the map rather than a tall column. */
+@media (max-width: 639px) {
+  .cap-nav {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(11.5rem, max-content);
+    overflow-x: auto;
+    padding-bottom: .5rem;
+    scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain;
+  }
+  .cap-nav-item { scroll-snap-align: start; }
+  .cap-nav-caret { display: none; }
+}
+
+/* ---------- The map ---------- */
+.cap-map-figure {
+  display: flex; justify-content: center;
+  background: linear-gradient(170deg, #FBFDFF 0%, var(--paper-alt) 100%);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: .5rem;
+}
+/* Indiana is about 1.57 times as tall as it is wide, so a full-width map in a
+   65% column runs past a laptop screen. Capping the height and letting the SVG
+   letterbox keeps the whole state in view at any window size. */
+.uasmap {
+  display: block;
+  width: 100%; height: auto;
+  max-height: min(84vh, 880px);
+}
+@media (min-width: 1000px) {
+  .cap-explorer-map { position: sticky; top: 7rem; }
+}
+
+.uasmap-state-fill { fill: #FFFFFF; }
+.uasmap-state-line { fill: none; stroke: var(--blue-deep); stroke-width: 2.2; stroke-linejoin: round; }
+
+.uasmap-county { fill: none; stroke: #E2EAF4; stroke-width: .8; transition: fill .3s var(--ease); }
+.uasmap-county.is-highlighted { fill: rgba(251, 193, 44, .3); }
+
+.uasmap-river { fill: none; stroke: #C6DCF0; stroke-width: 1.7; stroke-linecap: round; }
+.uasmap-lake  { fill: #E4EFF9; stroke: #C6DCF0; stroke-width: 1; }
+
+.uasmap-road { fill: none; stroke: #D3DDEA; stroke-width: 1.5; stroke-linecap: round; }
+.uasmap-road-beltway { stroke-width: 1.1; }
+
+/* Verified operational geometry. Nothing renders these today — both
+   collections are empty — but the rules are here so that adding real data
+   needs no CSS. Illustrative geometry is dashed and never solid, so it can
+   never be mistaken for an approved boundary. */
+.uasmap-range { fill: rgba(29, 111, 195, .14); stroke: var(--blue-mid); stroke-width: 1.6; }
+.uasmap-area  { fill: rgba(29, 111, 195, .08); stroke: var(--blue-mid); stroke-width: 1.2; }
+.uasmap-corridor { fill: none; stroke: var(--blue-mid); stroke-width: 2.4; stroke-linecap: round; }
+.uasmap-range.is-illustrative,
+.uasmap-area.is-illustrative,
+.uasmap-corridor.is-illustrative {
+  fill: none; stroke: var(--ink-muted); stroke-dasharray: 7 5; stroke-width: 1.6;
+}
+
+/* ---------- Markers ---------- */
+/* Type is carried by glyph shape, not by colour, so the legend still works
+   for anyone who cannot separate the hues — and so gold stays reserved for
+   the selected and highlighted states. */
+.uasmap-marker { cursor: pointer; }
+.uasmap-glyph { fill: var(--ink-soft); stroke: var(--ink-soft); transition: fill .3s var(--ease), stroke .3s var(--ease); }
+.uasmap-marker.is-network .uasmap-glyph { fill: var(--blue-deep); stroke: var(--blue-deep); }
+.uasmap-ring {
+  fill: none; stroke: var(--blue-deep); stroke-width: 1.6; opacity: .45;
+  transition: stroke .3s var(--ease), opacity .3s var(--ease);
+}
+.uasmap-marker.is-highlighted .uasmap-ring { stroke: var(--gold-deep); opacity: 1; }
+.uasmap-marker.is-selected .uasmap-ring { stroke: var(--blue-deep); opacity: 1; stroke-width: 2.2; }
+.uasmap-hit { fill: transparent; }
+.uasmap-focus { fill: none; stroke: var(--gold); stroke-width: 3; opacity: 0; }
+.uasmap-pulse { fill: none; stroke: var(--gold-deep); stroke-width: 2; opacity: 0; }
+
+.uasmap-marker:focus { outline: none; }
+.uasmap-marker:focus-visible .uasmap-focus { opacity: 1; }
+
+/* Sized in viewBox units, not pixels: the SVG scales, so the labels scale with
+   it and the type stays in proportion to the marks at every width. */
+.uasmap-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 21px; font-weight: 600; letter-spacing: .01em;
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: #fff; stroke-width: 6; stroke-linejoin: round;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .3s var(--ease);
+}
+/* A label that is always on screen is the thing people aim at, so it has to be
+   part of the target. The ones that only appear on hover stay inert: they would
+   otherwise pop up under the pointer and swallow the click. */
+.uasmap-label.is-always { opacity: 1; pointer-events: auto; }
+
+.uasmap-county-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px; font-weight: 700; letter-spacing: .02em;
+  fill: var(--warn-ink);
+  paint-order: stroke;
+  stroke: #fff; stroke-width: 6; stroke-linejoin: round;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .3s var(--ease);
+}
+.uasmap-county-label.is-visible { opacity: 1; }
+.uasmap-marker:hover .uasmap-label,
+.uasmap-marker:focus-visible .uasmap-label { opacity: 1; }
+
+.uasmap-marker.is-outside .uasmap-glyph { fill: var(--ink-muted); stroke: var(--ink-muted); opacity: .75; }
+.uasmap-marker.is-outside .uasmap-label { font-weight: 500; fill: var(--ink-muted); }
+
+/* Group transitions so a selection change reads as one movement. */
+.uasmap-marker,
+.uasmap-marker .uasmap-glyph,
+.uasmap-marker .uasmap-label { transition-duration: .3s; }
+
+.uasmap-marker:hover .uasmap-glyph { fill: var(--blue); stroke: var(--blue); }
+
+/* Dim pass. 20% sits in the middle of the 15–25% the brief asks for: enough
+   that the context is still legible as geography, little enough that the
+   highlighted set reads instantly. */
+.uasmap.is-dimmed .uasmap-marker { opacity: .2; transition: opacity .32s var(--ease); }
+.uasmap.is-dimmed .uasmap-marker.is-highlighted,
+.uasmap.is-dimmed .uasmap-marker.is-selected { opacity: 1; }
+.uasmap.is-dimmed .uasmap-marker:hover,
+.uasmap.is-dimmed .uasmap-marker:focus-visible { opacity: 1; }
+.uasmap.is-dimmed .uasmap-roads,
+.uasmap.is-dimmed .uasmap-water { opacity: .45; transition: opacity .32s var(--ease); }
+
+.uasmap-marker.is-highlighted .uasmap-glyph { fill: var(--gold-deep); stroke: var(--gold-deep); }
+.uasmap-marker.is-highlighted .uasmap-label { opacity: 1; }
+
+.uasmap-marker.is-selected .uasmap-glyph { fill: var(--blue-deep); stroke: var(--blue-deep); }
+.uasmap-marker.is-selected .uasmap-pulse { opacity: 1; }
+.uasmap-marker.is-selected .uasmap-label { opacity: 1; }
+
+/* One pass, not a loop — a marker that pulses forever is noise. */
+@media (prefers-reduced-motion: no-preference) {
+  .uasmap-marker.is-selected .uasmap-pulse { animation: uas-pulse 1.4s var(--ease) 2; }
+}
+@keyframes uas-pulse {
+  0%   { r: 16; opacity: .9; }
+  70%  { r: 30; opacity: 0; }
+  100% { r: 30; opacity: 0; }
+}
+
+/* ---------- Location list ---------- */
+/* The map's second route in. Full-size buttons, so selection never depends on
+   hitting a marker — which matters most on a phone, where the whole state is
+   about 350px wide. */
+.cap-locations { margin-top: 1.25rem; }
+.cap-locations-top { margin-bottom: .9rem; }
+
+.cap-site-link.is-highlighted {
+  background: var(--warn-bg); border-color: var(--gold-deep); color: var(--warn-ink);
+}
+.cap-site-link.is-selected {
+  background: var(--blue-deep); border-color: var(--blue-deep); color: #fff;
+}
+
+.cap-locations-more > summary {
+  font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--blue); cursor: pointer; padding: .35rem 0;
+}
+.cap-locations-more[open] > summary { margin-bottom: .5rem; }
+.cap-locations-group {
+  margin: .9rem 0 .4rem;
+  font-size: .6875rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* ---------- Legend ---------- */
+.cap-legend { margin-top: 1.5rem; padding-top: 1.1rem; border-top: 1px solid var(--line); }
+.cap-legend-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: .6875rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-muted); margin-bottom: .7rem;
+}
+.cap-legend-list {
+  display: flex; flex-wrap: wrap; gap: .4rem 1.25rem;
+}
+.cap-legend-item {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .75rem; color: var(--ink-soft);
+}
+.cap-legend-mark { width: 1.0625rem; height: 1.0625rem; flex: none; }
+.cap-legend-mark > * { fill: var(--ink-soft); stroke: var(--ink-soft); }
+.cap-legend-mark .uasmap-road { fill: none; stroke: #B9C6D7; stroke-width: 2.5; }
+.cap-legend-mark .uasmap-river { fill: none; stroke: #C6DCF0; stroke-width: 2.5; }
+
+.cap-legend-note {
+  margin-top: .7rem;
+  font-size: .75rem; line-height: 1.55; color: var(--ink-muted);
+  max-width: 62ch;
+}
+.cap-legend-absent {
+  padding-left: .7rem;
+  border-left: 2px solid var(--gold);
+  color: var(--ink-soft);
+}
+
+/* ---------- Detail panel ---------- */
+.cap-panel {
+  margin-top: 1.25rem;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--gold);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+.cap-panel:focus { outline: none; }
+.cap-panel:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+.cap-panel-kicker {
+  font-size: .6875rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-muted); margin-bottom: .4rem;
+}
+.cap-panel-head { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-bottom: .75rem; }
+.cap-panel-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(1.0625rem, 1rem + .3vw, 1.25rem); font-weight: 700; line-height: 1.25;
+  color: var(--blue);
+}
+.cap-chip {
+  font-size: .625rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: .25rem .5rem; border-radius: 999px;
+}
+.cap-chip-dev { background: var(--warn-bg); color: var(--warn-ink); }
+
+.cap-panel-copy { color: var(--ink-soft); font-size: .9375rem; max-width: 72ch; }
+.cap-panel-copy + .cap-panel-copy { margin-top: .6rem; }
+.cap-panel-caveat {
+  margin-top: .75rem; padding-left: .8rem;
+  border-left: 2px solid var(--gold);
+  font-size: .8125rem; line-height: 1.6; color: var(--ink-muted);
+  max-width: 72ch;
+}
+.cap-panel-empty { color: var(--ink-muted); font-size: .9375rem; }
+
+.cap-panel-subtitle {
+  margin-top: 1.4rem; margin-bottom: .55rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: .6875rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.cap-panel-sites { display: flex; flex-wrap: wrap; gap: .45rem; }
+.cap-site-link, .cap-site-static {
+  display: inline-block;
+  font: inherit;
+  font-size: .8125rem; font-weight: 600;
+  padding: .4rem .75rem;
+  background: var(--paper-alt);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-soft);
+}
+.cap-site-link { cursor: pointer; transition: background-color .22s var(--ease), border-color .22s var(--ease), color .22s var(--ease); }
+.cap-site-link:hover { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+.cap-panel-meta {
+  display: grid; grid-template-columns: auto 1fr; gap: .25rem 1rem;
+  margin-top: 1.25rem; padding-top: .9rem;
+  border-top: 1px solid var(--line);
+  font-size: .75rem; color: var(--ink-muted);
+}
+.cap-panel-meta dt { font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.cap-panel-meta dd { margin: 0; }
+.cap-panel-link { font-size: .875rem; }
+.cap-panel-cta { margin-top: 1.25rem; font-size: .9375rem; }
+
+/* The static list is the no-JS content; once the explorer is live it is
+   hidden, but the note under it still applies and stays. */
+.cap-explorer.is-live + .cap-list { display: none; }
+
+/* ============================================================
    INDUSTRIES
    ============================================================ */
 .ind-grid { display: grid; gap: 1.25rem; }
@@ -1148,9 +1508,141 @@ a { color: inherit; }
 
 /* ============================================================
    PARTNERS
+   ------------------------------------------------------------
+   Categories are separated by space, not by rules. A gold line
+   between every group competes with the logos it is meant to
+   organise; the heading and the gap do the same job quietly.
    ============================================================ */
-.partner-groups { display: grid; gap: clamp(1.75rem, 3vw, 2.5rem); }
-.partner-group { padding-top: 1.25rem; border-top: 2px solid var(--gold); }
+.partner-groups { display: grid; gap: clamp(2.5rem, 5vw, 4rem); }
+.partner-group > .h4 {
+  margin-bottom: 1.1rem;
+  font-size: clamp(1rem, .95rem + .25vw, 1.125rem);
+  color: var(--blue-deep);
+}
+
+/* The static list, which is what ships in the markup and what a visitor
+   with no JavaScript sees. */
+.partner-list { display: flex; flex-wrap: wrap; gap: .9rem 1.75rem; align-items: center; }
+
+/* ---------- Marquee ---------- */
+.marquee {
+  display: grid; gap: .6rem;
+  /* Edge masks, so a logo fades out instead of being cut mid-stroke. */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 5.5rem,
+                      #000 calc(100% - 5.5rem), transparent);
+          mask-image: linear-gradient(to right, transparent, #000 5.5rem,
+                      #000 calc(100% - 5.5rem), transparent);
+}
+@media (max-width: 639px) {
+  .marquee {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 2rem,
+                        #000 calc(100% - 2rem), transparent);
+            mask-image: linear-gradient(to right, transparent, #000 2rem,
+                        #000 calc(100% - 2rem), transparent);
+  }
+}
+
+.marquee-row { overflow: hidden; }
+.marquee-track { display: flex; width: max-content; will-change: transform; }
+.marquee-seq { display: flex; align-items: center; flex: none; }
+
+/* The track only starts moving once JavaScript has measured one sequence,
+   so it can never animate against a guessed distance. */
+.marquee-row.is-measured .marquee-track {
+  animation: marquee-rtl var(--marquee-duration, 40s) linear infinite;
+}
+.marquee-row.is-measured[data-direction="ltr"] .marquee-track {
+  animation-name: marquee-ltr;
+}
+
+@keyframes marquee-rtl {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(calc(var(--marquee-distance) * -1), 0, 0); }
+}
+@keyframes marquee-ltr {
+  from { transform: translate3d(calc(var(--marquee-distance) * -1), 0, 0); }
+  to   { transform: translate3d(0, 0, 0); }
+}
+
+/* Freezing the animation leaves the track exactly where it is — nothing
+   is repositioned, so nothing can shift under the pointer. */
+.marquee-row:hover .marquee-track,
+.marquee-row.is-paused .marquee-track { animation-play-state: paused; }
+
+/* ---------- Cells ---------- */
+.partner-cell { flex: none; padding-inline: clamp(.9rem, 2.2vw, 1.75rem); }
+
+/* A fixed cell height with a free width: the logos keep their own
+   proportions instead of being squeezed into a common box. */
+.partner-item {
+  display: flex; align-items: center; justify-content: center;
+  height: 3.5rem;
+  padding: .25rem;
+  text-decoration: none;
+  color: var(--ink-soft);
+  border-radius: var(--radius);
+  transition: transform .24s var(--ease), color .24s var(--ease),
+              filter .24s var(--ease);
+}
+.partner-item:not(.partner-item-plain) { cursor: pointer; }
+@media (min-width: 640px) { .partner-item { height: 4rem; } }
+
+.partner-logo {
+  max-height: 100%; width: auto; max-width: 11rem;
+  object-fit: contain;
+}
+
+/* Where no logo is on file, the organization is set as a wordmark at the
+   same height, so a row of them still reads as a wall of names rather
+   than as a row of missing images. */
+.partner-word {
+  display: inline-flex; align-items: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: .9375rem; font-weight: 700; letter-spacing: .01em;
+  line-height: 1.2; text-align: center;
+  color: var(--blue-deep);
+  white-space: nowrap;
+}
+.partner-item-plain .partner-word { color: var(--ink-soft); }
+
+a.partner-item { position: relative; }
+a.partner-item:hover,
+a.partner-item:focus-visible { transform: scale(1.04); }
+a.partner-item:hover .partner-word,
+a.partner-item:focus-visible .partner-word { color: var(--blue); }
+
+/* The outbound arrow appears on hover and focus only, so it never adds to
+   the resting clutter — and it is a mask, so it is never announced. */
+a.partner-item::after {
+  content: "";
+  position: absolute; top: -.1rem; right: -.55rem;
+  width: .65rem; height: .65rem;
+  background: var(--gold-deep);
+  -webkit-mask: var(--icon-external) center / contain no-repeat;
+          mask: var(--icon-external) center / contain no-repeat;
+  opacity: 0;
+  transition: opacity .24s var(--ease);
+}
+a.partner-item:hover::after,
+a.partner-item:focus-visible::after { opacity: 1; }
+
+/* ---------- Reduced motion ---------- */
+/* No automatic movement; the row becomes an ordinary scrollable strip the
+   visitor moves themselves. */
+.marquee.is-static .marquee-track { animation: none !important; transform: none !important; }
+.marquee.is-static .marquee-row {
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+  padding-bottom: .4rem;
+}
+.marquee.is-static .partner-cell { scroll-snap-align: start; }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none !important; transform: none !important; }
+  .marquee-row { overflow-x: auto; }
+  a.partner-item:hover, a.partner-item:focus-visible { transform: none; }
+}
 
 /* ============================================================
    MOTION

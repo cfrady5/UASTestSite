@@ -1,3 +1,11 @@
 node_modules/
 .DS_Store
 *.log
+# Upstream geodata downloads. tools/fetch_geo.py caches the raw files here and
+# writes the committed Indiana extracts to tools/geo-src/; the raw files are
+# 5-50 MB each and have no business in the repository.
+tools/.geo-cache/
+
+# Python bytecode from the build scripts.
+__pycache__/
+*.pyc

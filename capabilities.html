@@ -20,7 +20,7 @@
 
 <link rel="preload" href="/assets/fonts/Anton-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/Montserrat-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=30">
+<link rel="stylesheet" href="assets/css/site.css?v=31">
 </head>
 <body>
 
@@ -63,10 +63,19 @@
 </section>
 
 <section class="section">
-  <div class="wrap cap-layout">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <h2 class="h2">Capability areas</h2>
+      <p class="section-intro-copy">Select a capability to see where it sits in the Indiana
+        testing network, or select a location on the map to work the other way.</p>
+    </header>
 
-    <div class="cap-col reveal">
-      <h2 class="h3">Capability areas</h2>
+    <!-- The explorer is built by assets/js/capabilities-map.js. Everything
+         inside this element is the no-script version: the ten capabilities as
+         an ordinary list, and the IEDC network map. The script hides the list
+         and adds the interactive explorer; if it never runs, the page is what
+         it was before. -->
+    <div class="reveal" data-cap-explorer>
       <ol class="cap-list">
         <li class="cap-item">
           <span class="cap-num" aria-hidden="true">01</span>
@@ -111,33 +120,35 @@
           <span class="cap-name">Pilot Certification Course</span>
         </li>
       </ol>
-      <p class="note">Capabilities marked <strong>In development</strong> are not yet operational.
-        The 225+ mile BVLOS corridor holds preliminary approval and the dense urban canyon component
-        is proposed; both remain subject to regulatory approval before flight operations begin.</p>
-    </div>
 
-    <div class="cap-col reveal">
-      <figure class="cap-map">
-        <img src="assets/img/indiana-map.png"
-             alt="Map of Indiana showing the test site network: airports, military installations including Camp Atterbury, Muscatatuck, NSWC Crane and Grissom Air Reserve, and university partners across the state."
-             width="1061" height="1400" loading="lazy" decoding="async">
-        <figcaption>Statewide testing network. Individual capabilities are scheduled against specific
-          sites during coordination — contact the operations team to confirm where your test can be flown.</figcaption>
-      </figure>
+      <noscript>
+        <figure class="cap-map">
+          <img src="assets/img/indiana-map.png"
+               alt="Map of Indiana showing the test site network: airports, military installations including Camp Atterbury, Muscatatuck, NSWC Crane and Grissom Air Reserve, and university partners across the state."
+               width="1061" height="1400" loading="lazy" decoding="async">
+          <figcaption>Statewide testing network.</figcaption>
+        </figure>
+      </noscript>
 
-      <div class="loc-block">
+      <div class="loc-block cap-list-note">
         <h3 class="h4">Locations in the testing network</h3>
         <ul class="chip-list">
-          <li>Purdue University</li>
           <li>Terre Haute</li>
-          <li>Monroe County</li>
           <li>Camp Atterbury</li>
           <li>Muscatatuck</li>
           <li>NSWC Crane</li>
+          <li>Purdue University</li>
+          <li>Monroe County</li>
         </ul>
       </div>
     </div>
 
+    <p class="note note-inline">Capabilities marked <strong>In development</strong> are not yet
+      operational. The 225+ mile BVLOS corridor holds preliminary approval and the dense urban
+      canyon component is proposed; both remain subject to regulatory approval before flight
+      operations begin. The map plots verified facility locations only — no testing range
+      boundary or flight corridor is drawn, because none has been published, and none is
+      estimated here.</p>
   </div>
 </section>
 
@@ -182,6 +193,8 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=30" defer></script>
+<script src="assets/js/site.js?v=31" defer></script>
+<script src="assets/js/map-data.js?v=31" defer></script>
+<script src="assets/js/capabilities-map.js?v=31" defer></script>
 </body>
 </html>
