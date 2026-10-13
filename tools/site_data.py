@@ -434,8 +434,9 @@ PARTNER_GROUPS = [
         # than not linking it.
         _org("Ecodyne", "https://www.echodyne.com/", "assets/img/partners/echodyne.png",
              expand="Echodyne"),
-        _org("INVOLI", "https://www.involi.com/"),
-        _org("ANRA Technologies", "https://www.anratechnologies.com/"),
+        _org("INVOLI", "https://www.involi.com/", "assets/img/partners/involi.png"),
+        _org("ANRA Technologies", "https://www.anratechnologies.com/",
+             "assets/img/partners/anra-technologies.png"),
         # UNLINKED ON PURPOSE. The pack offers Raider Technologies but flags the
         # identity as unverified.
         _org("Raider", "https://raidertechnologies.com/", "assets/img/partners/raider-technologies.svg",
@@ -454,7 +455,7 @@ PARTNER_GROUPS = [
         _org("AUVSI", "https://www.auvsi.org/", "assets/img/partners/auvsi.svg",
              expand="Association for Uncrewed Vehicle Systems International"),
         _org("DroneResponders", "https://www.droneresponders.org/", "assets/img/partners/droneresponders.png", badge=True),
-        _org("NUAIR", "https://www.nuair.org/"),
+        _org("NUAIR", "https://www.nuair.org/", "assets/img/partners/nuair.png"),
         _org("BMG", "https://flymonroecounty.com/",
              "assets/img/partners/monroe-county-airport.png", short="BMG",
              expand="Monroe County Airport, Bloomington", badge=True),
@@ -463,7 +464,8 @@ PARTNER_GROUPS = [
         # not match, so no link until the airport's own URL is confirmed.
         _org("HUF", logo="assets/img/partners/terre-haute-airport.png", short="HUF",
              expand="Terre Haute Regional Airport, Hulman Field"),
-        _org("LAF", "https://www.purdue.edu/airport/", short="LAF",
+        _org("LAF", "https://www.purdue.edu/airport/",
+             "assets/img/partners/purdue-airport.png", short="LAF",
              expand="Purdue University Airport"),
         _org("BAK", "https://www.columbus.in.gov/aviation/", "assets/img/partners/columbus-aviation.png",
              short="BAK", expand="Columbus Municipal Airport"),

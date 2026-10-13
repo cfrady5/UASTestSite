@@ -1601,7 +1601,7 @@ a { color: inherit; }
    proportions instead of being squeezed into a common box. */
 .partner-item {
   display: flex; align-items: center; justify-content: center;
-  height: 3.5rem;
+  height: 5rem;
   padding: .25rem;
   text-decoration: none;
   color: var(--ink-soft);
@@ -1610,17 +1610,16 @@ a { color: inherit; }
               filter .24s var(--ease);
 }
 .partner-item:not(.partner-item-plain) { cursor: pointer; }
-@media (min-width: 640px) { .partner-item { height: 4rem; } }
+@media (min-width: 640px) { .partner-item { height: 5.5rem; } }
 
-/* Height is fixed, width is free: logos keep their own proportions and their
-   own visual weight rather than being squeezed to a common width. */
-.partner-logo {
-  max-height: 100%; width: auto; max-width: 12.5rem;
-  object-fit: contain;
-}
-/* A few marks are a square badge rather than a wordmark and would otherwise
-   tower over the lettering beside them. */
-.partner-logo-badge { max-height: 86%; max-width: 5rem; }
+/* Each logo carries its own width/height, computed from its real aspect ratio
+   by logo_box() in build_pages.py. The attributes reserve the box before the
+   file loads, so there is no layout shift and the marquee measures a stable
+   track on the first pass. */
+/* The width and height attributes alone would be overridden by any CSS sizing,
+   so the computed box comes through as custom properties as well. The
+   attributes still do their job of reserving space before the file arrives. */
+.partner-logo { width: var(--lw); height: var(--lh); max-width: 100%; object-fit: contain; }
 
 
 /* Where no logo is on file, the organization is set as a wordmark at the

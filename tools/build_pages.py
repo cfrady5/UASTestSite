@@ -28,7 +28,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 40          # cache buster; bump when site.css or site.js changes
+ASSET_V = 42          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -581,15 +581,66 @@ PARTNER_GROUPS = site_data.PARTNER_GROUPS
 TWO_ROW_AT = 9
 
 
+# --------------------------------------------------------------------------
+# Optical sizing for the partner logos
+# --------------------------------------------------------------------------
+# Scaling every logo to the same HEIGHT makes a square badge look twice the
+# weight of a long wordmark. Scaling them to the same AREA goes too far the
+# other way and leaves wide wordmarks as thin slivers. This splits the
+# difference: height falls off with aspect ratio raised to EXPONENT, where 0
+# would be equal height and 0.5 equal area.
+#
+# The height is computed here, from each file's real dimensions, and emitted as
+# a custom property on the cell. Doing it at build time means no layout shift —
+# the browser knows the box before the image arrives.
+LOGO_BASE = 72      # px tall for a square mark
+LOGO_EXP = 0.34
+LOGO_MIN_H = 24
+LOGO_MAX_W = 232
+
+
+def logo_box(path):
+    """(width, height) in px for a logo, from its own aspect ratio."""
+    import math
+    import re as _re
+
+    f = ROOT / path
+    if f.suffix == ".svg":
+        head = f.read_text()
+        head = head[head.index("<svg"):]
+        head = head[:head.index(">") + 1]
+        m = _re.search(r'viewBox\s*=\s*"[\d.\-]+\s+[\d.\-]+\s+([\d.]+)\s+([\d.]+)"', head)
+        if not m:
+            m = _re.search(r'width="([\d.]+)"[^>]*height="([\d.]+)"', head)
+        nw, nh = float(m.group(1)), float(m.group(2))
+    else:
+        from PIL import Image
+        with Image.open(f) as im:
+            nw, nh = im.size
+
+    ratio = nw / nh
+    h = LOGO_BASE / (ratio ** LOGO_EXP)
+    w = h * ratio
+    if w > LOGO_MAX_W:                     # very wide marks get capped on width
+        w, h = LOGO_MAX_W, LOGO_MAX_W / ratio
+    # The floor wins over the width cap. A 11:1 wordmark capped on width alone
+    # would come out 21px tall, which is below the point where it still reads as
+    # a logo rather than a smudge; letting it run a little wider is the better
+    # trade.
+    h = max(h, LOGO_MIN_H)
+    return round(h * ratio), round(h)
+
+
 def partner_item(org):
     """One organization, as a link where a website is confirmed and as plain
     text where it is not. Never a guessed URL."""
     cls = []
     if org["logo"]:
-        # Square badges get their own class so they are not scaled to the same
-        # height as a long wordmark and left looming over it.
-        badge = " partner-logo-badge" if org.get("badge") else ""
-        inner = (f'<img class="partner-logo{badge}" src="{org["logo"]}" alt="{org["name"]}"'
+        w, h = logo_box(org["logo"])
+        # width/height on the element reserve the box before the file loads,
+        # so the marquee measures a stable track and nothing shifts.
+        inner = (f'<img class="partner-logo" src="{org["logo"]}" alt="{org["name"]}"'
+                 f' width="{w}" height="{h}" style="--lw:{w}px;--lh:{h}px"'
                  f' loading="lazy" decoding="async">')
     else:
         # No logo on file. A set wordmark, not a fallback-looking chip — see the
@@ -659,22 +710,6 @@ def partners_page():
   </div>
 </section>
 
-<section class="section section-capabilities">
-  <div class="wrap eco-layout">
-    <figure class="eco-map reveal">
-      <img src="assets/img/indiana-map.png"
-           alt="Map of Indiana showing the test site network of airports, military installations and university partners."
-           width="1061" height="1400" loading="lazy" decoding="async">
-    </figure>
-    <div class="reveal">
-      <h2 class="h2">A statewide testing network</h2>
-      <p class="section-intro-copy">The test site draws on airspace, military installations,
-        universities and logistics corridors across Indiana — connecting design, testing and
-        deployment in one onshore ecosystem.</p>
-      <p><a class="link-arrow" href="/#ecosystem">See the full ecosystem list</a></p>
-    </div>
-  </div>
-</section>
 """
         + cta_band(
             "Become part of the network",

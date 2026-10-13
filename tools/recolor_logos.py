@@ -87,6 +87,43 @@ def do_raster(path):
     return changed, out_path
 
 
+def knockout(src, dst, ink=INK, pad=0):
+    """Lift white artwork off a black panel into dark ink on transparency.
+
+    A plain achromatic flip would turn the panel white and the type dark, which
+    leaves a white rectangle sitting on the page. This instead reads the source
+    luminance as coverage: where the pixel is white the artwork is solid, where
+    it is black there is nothing. Antialiased edges come through as partial
+    alpha rather than as a grey fringe, which is what a straight threshold would
+    give.
+
+    Only for artwork that is purely white on purely black. A panel carrying a
+    coloured mark (Precision Planting's green, ANRA's teal) loses that colour
+    here, so those keep their panel instead.
+    """
+    from PIL import Image
+
+    im = Image.open(src).convert("RGBA")
+    px = im.load()
+    w, h = im.size
+    xs, ys = [], []
+    for y in range(h):
+        for x in range(w):
+            r, g, b, a = px[x, y]
+            cov = (max(r, g, b) + min(r, g, b)) / 510          # 0 black .. 1 white
+            alpha = round(cov * (a / 255) * 255)
+            px[x, y] = (*ink, alpha)
+            if alpha > 8:
+                xs.append(x)
+                ys.append(y)
+
+    if xs:                                                     # trim the dead space
+        im = im.crop((max(0, min(xs) - pad), max(0, min(ys) - pad),
+                      min(w, max(xs) + 1 + pad), min(h, max(ys) + 1 + pad)))
+    im.save(dst, "PNG", optimize=True)
+    return im.size
+
+
 HEX = re.compile(r"#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b")
 NAMED = {"white": "#ffffff", "#fff": "#ffffff", "black": "#000000"}
 
