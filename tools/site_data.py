@@ -409,7 +409,8 @@ PARTNER_GROUPS = [
     ("academic", "Academic &amp; Research", [
         _org("Purdue University", "https://www.purdue.edu/", "assets/img/partners/purdue-university.svg",
             ),
-        _org("Indiana University", "https://www.iu.edu/"),
+        _org("Indiana University", "https://www.iu.edu/",
+             "assets/img/partners/indiana-university.png", badge=True),
         _org("Indiana State University", "https://www.indstate.edu/", "assets/img/partners/indiana-state.png"),
         _org("Rose-Hulman Institute of Technology", "https://www.rose-hulman.edu/",
              "assets/img/partners/rose-hulman.png", short="Rose-Hulman"),

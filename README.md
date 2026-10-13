@@ -31,7 +31,7 @@ until a hard refresh — which is easy to misread as the change never having bee
 It lives in two places: `ASSET_V` at the top of `tools/build_pages.py` (for the generated
 pages), and literally in `index.html`, `membership.html` and `membership-thanks.html`.
 Change both and re-run the generator, or half the site runs on a stale stylesheet. Current
-value: **39**.
+value: **40**.
 
 ### Clean URLs
 
@@ -247,7 +247,7 @@ Editing a trademark is normally not ours to do — it is here because the client
 asked for it, having seen the measurements. Any brand that later supplies its
 own dark version should simply replace the file.
 
-Thirty-one organizations have artwork. The rest render as set type at the same
+Thirty-two organizations have artwork. The rest render as set type at the same
 cell height, so a row reads as one row whether or not every brand's file has
 arrived. To add one: drop the asset in `assets/img/partners/`, set `logo` on the
 organization in `site_data.py`, and re-run `build_pages.py`. The cell has a fixed
