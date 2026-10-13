@@ -328,14 +328,31 @@ AREAS = []
 #        Do not fill these in by guessing a domain from a brand name — a wrong
 #        link on a partner's name is worse than no link.
 #
-# logo   Path under assets/img/partners/, or None. None renders an accessible
-#        wordmark tile instead. Logos are third-party trademarks: add one only
-#        with permission to use it, and note that the Test Site OTA separately
-#        forbids displaying federal seals, trademarks and logos without prior
-#        written permission from the agency — which covers the military and
-#        federal entries here.
+# logo   Path under assets/img/partners/, or None. None renders a wordmark in
+#        the same cell instead, which on this dark band reads as white type.
+#
+#        The marquee band is navy because of what the supplied artwork is: 13 of
+#        the 24 logos the client sent are white or reversed versions, which only
+#        exist to go on a dark field. A logo that is dark-on-light stays None
+#        until a reversed version arrives — recolouring someone's trademark to
+#        fit our background is not ours to do.
+#
+# restricted
+#        A federal or agency seal. The Test Site OTA says the Sponsor "agrees
+#        not to display, or use any Agency or Federal Government seals,
+#        trademarks, logos, service marks, or trade names on the Company's
+#        websites, digital, or printed materials unless permission has been
+#        granted by the Agency in writing prior to the usage" — the same clause
+#        that keeps the FAA logo off this site. These render as wordmarks until
+#        SHOW_RESTRICTED_MARKS below is flipped, which should happen only once
+#        the written permission is on file.
 # ---------------------------------------------------------------------------
-def _org(name, url=None, logo=None, short=None, expand=None):
+# Flip to True ONLY when written permission from each agency is on file.
+SHOW_RESTRICTED_MARKS = False
+
+
+def _org(name, url=None, logo=None, short=None, expand=None, restricted=False,
+         badge=False):
     """One partner organization.
 
     name    The full name, used as the accessible name and image alt text.
@@ -347,34 +364,39 @@ def _org(name, url=None, logo=None, short=None, expand=None):
             It never replaces the visible text, so the accessible name still
             contains it and WCAG 2.5.3 holds.
     """
+    if restricted and not SHOW_RESTRICTED_MARKS:
+        logo = None
     return {"name": name, "url": url, "logo": logo,
-            "short": short or name, "expand": expand}
+            "short": short or name, "expand": expand, "restricted": restricted,
+            "badge": badge}
 
 
 PARTNER_GROUPS = [
     ("government", "Government &amp; Economic Development", [
         _org("Indiana Economic Development Corporation (IEDC)", "https://iedc.in.gov/",
-             "assets/img/logo-iedc.png", "IEDC"),
+             "assets/img/partners/iedc.png", "IEDC"),
         # REVIEW BUILD. The sponsor pack gives https://www.theari.us/ as ARI's
         # official site; this points at their staging deployment to match the
         # footer, which was set that way deliberately. Swap both before launch.
         _org("Applied Research Institute (ARI)", "https://ari-for-review.vercel.app/",
-             "assets/img/logo-ari.png", "ARI"),
-        _org("Indiana National Guard (INNG)", IN_GOV, short="INNG",
-             expand="Indiana National Guard"),
-        _org("Purdue Research Foundation (PRF)", "https://prf.org/", short="PRF",
+             short="ARI"),
+        _org("Indiana National Guard (INNG)", IN_GOV, "assets/img/partners/indiana-national-guard.png", badge=True,
+             short="INNG", expand="Indiana National Guard", restricted=True),
+        _org("Purdue Research Foundation (PRF)", "https://prf.org/",
+             "assets/img/partners/purdue-research-foundation.png", short="PRF",
              expand="Purdue Research Foundation"),
     ]),
     ("defense", "Defense &amp; National Security", [
         _org("NSWC Crane", "https://www.navsea.navy.mil/Home/Warfare-Centers/NSWC-Crane/",
-             expand="Naval Surface Warfare Center, Crane Division"),
+             "assets/img/partners/nswc-crane.png",
+             expand="Naval Surface Warfare Center, Crane Division", restricted=True),
         _org("Anduril", "https://www.anduril.com/", expand="Anduril Industries"),
         _org("HII", "https://hii.com/", expand="Huntington Ingalls Industries"),
         # The sponsor pack notes BlueHalo is now part of AV. Shown under the
         # name the client's list uses.
-        _org("BlueHalo", "https://bluehalo.com/"),
+        _org("BlueHalo", "https://bluehalo.com/", "assets/img/partners/av.svg"),
         _org("Thales", "https://www.thalesgroup.com/", expand="Thales Group"),
-        _org("AEVEX Aerospace", "https://aevex.com/"),
+        _org("AEVEX Aerospace", "https://aevex.com/", "assets/img/partners/aevex.svg"),
     ]),
     ("academic", "Academic &amp; Research", [
         _org("Purdue University", "https://www.purdue.edu/"),
@@ -385,26 +407,28 @@ PARTNER_GROUPS = [
         _org("Ivy Tech Community College", "https://www.ivytech.edu/", short="Ivy Tech"),
     ]),
     ("commercial", "Aerospace &amp; Commercial Technology", [
-        _org("Pierce Aerospace", "https://www.pierceaerospace.net/"),
+        _org("Pierce Aerospace", "https://www.pierceaerospace.net/", "assets/img/partners/pierce-aerospace.webp"),
         _org("Precision Planting", "https://www.precisionplanting.com/"),
-        _org("SkyfireAI", "https://www.skyfireai.com/"),
-        _org("ResilienX", "https://resilienx.com/"),
+        _org("SkyfireAI", "https://www.skyfireai.com/", "assets/img/partners/skyfire-ai.avif"),
+        _org("ResilienX", "https://resilienx.com/", "assets/img/partners/resilienx.svg"),
         _org("Motorola Solutions", "https://www.motorolasolutions.com/"),
-        _org("Lighthouse Avionics", "https://lighthouseavionics.com/"),
+        _org("Lighthouse Avionics", "https://lighthouseavionics.com/", "assets/img/partners/lighthouse-avionics.svg"),
         _org("Calhoun Analytics", "https://www.calanalytics.com/",
              expand="Calhoun Analytics, LLC, trading as CAL Analytics"),
         # UNLINKED ON PURPOSE. The sponsor pack resolves this to Echodyne, a
         # different spelling and a different company, and says to confirm before
         # publication. Linking a partner's name to the wrong company is worse
         # than not linking it.
-        _org("Ecodyne"),
+        _org("Ecodyne", "https://www.echodyne.com/", "assets/img/partners/echodyne.png",
+             expand="Echodyne"),
         _org("INVOLI", "https://www.involi.com/"),
         _org("ANRA Technologies", "https://www.anratechnologies.com/"),
         # UNLINKED ON PURPOSE. The pack offers Raider Technologies but flags the
         # identity as unverified.
-        _org("Raider"),
+        _org("Raider", "https://raidertechnologies.com/", "assets/img/partners/raider-technologies.svg",
+             expand="Raider Technologies"),
         _org("WayPoint Aerospace", "https://waypointaerospace.com/"),
-        _org("AMVIC", "https://amvictechnology.org/",
+        _org("AMVIC", "https://amvictechnology.org/", "assets/img/partners/amvic.png",
              expand="Advanced Machine and Vehicle Innovation Center"),
         _org("Sonetics Wireless", "https://www.sonetics.com/"),
     ]),
@@ -413,19 +437,20 @@ PARTNER_GROUPS = [
     # change — so the labels stay and `expand` carries the identity into the
     # link's accessible name.
     ("associations", "Industry Associations &amp; Ecosystem Partners", [
-        _org("AUVSI", "https://www.auvsi.org/",
+        _org("AUVSI", "https://www.auvsi.org/", "assets/img/partners/auvsi.svg",
              expand="Association for Uncrewed Vehicle Systems International"),
-        _org("DroneResponders", "https://www.droneresponders.org/"),
+        _org("DroneResponders", "https://www.droneresponders.org/", "assets/img/partners/droneresponders.avif", badge=True),
         _org("NUAIR", "https://nuair.org/"),
         _org("BMG", "https://flymonroecounty.com/", short="BMG",
              expand="Monroe County Airport, Bloomington"),
         # UNLINKED ON PURPOSE. The pack resolves HUF to Terre Haute Regional
         # Airport but supplies huf.com, which is an apparel brand. The two do
         # not match, so no link until the airport's own URL is confirmed.
-        _org("HUF", short="HUF", expand="Terre Haute Regional Airport, Hulman Field"),
+        _org("HUF", logo="assets/img/partners/terre-haute-airport.png", short="HUF",
+             expand="Terre Haute Regional Airport, Hulman Field"),
         _org("LAF", "https://www.purdue.edu/airport/", short="LAF",
              expand="Purdue University Airport"),
-        _org("BAK", "https://www.columbus.in.gov/aviation/", short="BAK",
-             expand="Columbus Municipal Airport"),
+        _org("BAK", "https://www.columbus.in.gov/aviation/", "assets/img/partners/columbus-aviation.png",
+             short="BAK", expand="Columbus Municipal Airport"),
     ]),
 ]

@@ -1534,11 +1534,28 @@ a { color: inherit; }
    between every group competes with the logos it is meant to
    organise; the heading and the gap do the same job quietly.
    ============================================================ */
+/* The band is navy because of what the artwork is, not for effect: most of the
+   supplied logos are the reversed, white versions brands publish for exactly
+   this, and they would be invisible on white. It also lets 36 marks in 36
+   different palettes sit on one field and read as a single wall. */
+.partner-wall {
+  background:
+    radial-gradient(110% 80% at 88% 0%, rgba(29, 111, 195, .42) 0%, rgba(29, 111, 195, 0) 60%),
+    linear-gradient(155deg, var(--blue-deep) 0%, var(--blue-night) 70%);
+  color: #fff;
+}
+.partner-wall .section-intro-copy { color: rgba(255, 255, 255, .88); }
+.partner-wall .note {
+  color: rgba(255, 255, 255, .72);
+  border-top-color: rgba(255, 255, 255, .22);
+}
+.partner-wall .note strong { color: #fff; }
+
 .partner-groups { display: grid; gap: clamp(2.5rem, 5vw, 4rem); }
 .partner-group > .h4 {
   margin-bottom: 1.1rem;
   font-size: clamp(1rem, .95rem + .25vw, 1.125rem);
-  color: var(--blue-deep);
+  color: var(--gold);
 }
 
 /* The static list, which is what ships in the markup and what a visitor
@@ -1608,10 +1625,15 @@ a { color: inherit; }
 .partner-item:not(.partner-item-plain) { cursor: pointer; }
 @media (min-width: 640px) { .partner-item { height: 4rem; } }
 
+/* Height is fixed, width is free: logos keep their own proportions and their
+   own visual weight rather than being squeezed to a common width. */
 .partner-logo {
   max-height: 100%; width: auto; max-width: 11rem;
   object-fit: contain;
 }
+/* A few marks are a square badge rather than a wordmark and would otherwise
+   tower over the lettering beside them. */
+.partner-logo-badge { max-height: 86%; max-width: 5rem; }
 
 /* Where no logo is on file, the organization is set as a wordmark at the
    same height, so a row of them still reads as a wall of names rather
@@ -1625,6 +1647,14 @@ a { color: inherit; }
   white-space: nowrap;
 }
 .partner-item-plain .partner-word { color: var(--ink-soft); }
+
+/* On the navy band the wordmarks are white type. They sit at the same height
+   as the logos either side of them, so a category reads as one row whether or
+   not every brand's artwork has arrived. */
+.partner-wall .partner-word { color: #fff; }
+.partner-wall .partner-item-plain .partner-word { color: rgba(255, 255, 255, .8); }
+.partner-wall a.partner-item:hover .partner-word,
+.partner-wall a.partner-item:focus-visible .partner-word { color: var(--gold); }
 
 a.partner-item { position: relative; }
 a.partner-item:hover,

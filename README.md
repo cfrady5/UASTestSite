@@ -31,7 +31,7 @@ until a hard refresh — which is easy to misread as the change never having bee
 It lives in two places: `ASSET_V` at the top of `tools/build_pages.py` (for the generated
 pages), and literally in `index.html`, `membership.html` and `membership-thanks.html`.
 Change both and re-run the generator, or half the site runs on a stale stylesheet. Current
-value: **32**.
+value: **33**.
 
 ### Clean URLs
 
@@ -221,30 +221,42 @@ Only the first sequence is real content. Every repeat is `aria-hidden` with its
 links taken out of the tab order, so each organization is announced once and
 tabbed to once.
 
-**Most organizations have no logo yet, and that is not an oversight.** Two
-constraints:
+**The band is navy because of what the artwork is.** Most brands publish their
+logo as a reversed, white version for dark backgrounds, and that is what most of
+the supplied files are — on white they would be invisible. Navy also lets 36
+marks in 36 different palettes sit on one field and read as a single wall.
 
-1. Third-party logos are trademarks. Each needs permission from its owner before
-   it goes on this site.
-2. The Test Site OTA separately forbids displaying federal and agency seals,
-   trademarks, logos and service marks without prior written permission — the
-   same clause that keeps the FAA logo off the site. That covers NSWC Crane and
-   the Indiana National Guard here.
+Fifteen organizations have artwork in `assets/img/partners/`. The rest render as
+set white type at the same cell height, so a row reads as one row whether or not
+every brand's file has arrived. To add one: drop the asset in that folder, set
+`logo` on the organization in `site_data.py`, and re-run `build_pages.py`. The
+cell has a fixed height and a free width, so proportions are never forced; add
+`badge=True` for a square mark so it is not scaled up to a wordmark's height.
 
-Organizations without a logo render as a set wordmark at the same height, not as
-a missing image. To add one: drop the asset in `assets/img/partners/`, set `logo`
-on that organization in `site_data.py`, and re-run `build_pages.py`. SVG is
-preferred; the cell has a fixed height and a free width, so proportions are
-never forced.
+**A dark-on-light logo is left out rather than recoloured.** Seven organizations
+supplied only the version meant for white backgrounds — ARI, HII, Purdue
+University, Ivy Tech, CAL Analytics, Sonetics and WayPoint Aerospace. Inverting
+or recolouring somebody's trademark to suit our background is not ours to do, so
+they stay as type until a reversed version arrives. Thales supplied only a 220px
+screenshot, which is too small for a 64px cell at 2× — it needs real artwork too.
 
-**Websites are linked only where the URL is confirmed.** 33 of the 36 link out,
-from the client's own sponsor asset pack. Three deliberately do not:
+**Two marks are withheld on purpose.** The Indiana National Guard seal and the
+NAVSEA mark for NSWC Crane are in the folder but not displayed. The Test Site OTA
+says the Sponsor "agrees not to display, or use any Agency or Federal Government
+seals, trademarks, logos, service marks, or trade names on the Company's
+websites… unless permission has been granted by the Agency in writing prior to
+the usage" — the same clause that keeps the FAA logo off the site. Set
+`SHOW_RESTRICTED_MARKS = True` in `site_data.py` once that permission is on file,
+and both appear.
+
+**Websites are linked only where the URL is confirmed.** 35 of the 36 link out,
+from the client's own sponsor asset pack. Ecodyne and Raider were unlinked until
+the client's logo upload settled them — it contained the Echodyne and Raider
+Technologies marks. One is still unlinked:
 
 | Organization | Why it is unlinked |
 |---|---|
-| **HUF** | The pack resolves it to Terre Haute Regional Airport but supplies `huf.com`, which is an apparel brand. The two do not match. |
-| **Ecodyne** | The pack resolves it to *Echodyne* — different spelling, different company — and says to confirm first. |
-| **Raider** | The pack offers Raider Technologies but flags the identity as unverified. |
+| **HUF** | The pack resolves it to Terre Haute Regional Airport but supplies `huf.com`, which is an apparel brand. The airport's own URL is still needed — its logo is on the page already. |
 
 A wrong link on a partner's name is worse than no link. Add a confirmed URL in
 `site_data.py` and it becomes a link.

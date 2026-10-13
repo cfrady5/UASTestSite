@@ -28,7 +28,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 32          # cache buster; bump when site.css or site.js changes
+ASSET_V = 33          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -585,7 +585,10 @@ def partner_item(org):
     """One organization, as a link where a website is confirmed and as plain
     text where it is not. Never a guessed URL."""
     if org["logo"]:
-        inner = (f'<img class="partner-logo" src="{org["logo"]}" alt="{org["name"]}"'
+        # Square badges get their own class so they are not scaled to the same
+        # height as a long wordmark and left looming over it.
+        badge = " partner-logo-badge" if org.get("badge") else ""
+        inner = (f'<img class="partner-logo{badge}" src="{org["logo"]}" alt="{org["name"]}"'
                  f' loading="lazy" decoding="async">')
     else:
         # No logo on file. A set wordmark, not a fallback-looking chip — see the
@@ -632,10 +635,10 @@ def partners_page():
             "organizations connected to the test site.",
         )
         + f"""
-<section class="section">
+<section class="section partner-wall">
   <div class="wrap">
     <header class="section-head reveal">
-      <h2 class="h2">Ecosystem organizations</h2>
+      <h2 class="h2 h2-light">Ecosystem organizations</h2>
       <p class="section-intro-copy">Grouped by each organization's own field of work.
         Select an organization to visit its website.</p>
     </header>
@@ -648,7 +651,8 @@ def partners_page():
       nature or status of any commercial relationship with the test site — those designations are
       confirmed before publication. A website is linked only where the organization's official
       URL has been confirmed; the rest appear unlinked rather than pointing somewhere guessed.
-      Logos are each organization's own trademark and are shown only with permission on file.</p>
+      Each logo is its owner's trademark, shown with permission; organizations whose artwork is
+      not yet on file appear as set type.</p>
   </div>
 </section>
 
