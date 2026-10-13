@@ -23,10 +23,15 @@ before moving to another host.
 
 ### Cache busting
 
-`index.html` loads the stylesheet and script with a `?v=` query string. **Bump that number
+Every page loads the stylesheet and script with a `?v=` query string. **Bump that number
 whenever you edit `site.css` or `site.js`.** Without it, browsers happily serve a cached
 stylesheet against freshly fetched HTML, so a CSS change appears not to have taken effect
 until a hard refresh — which is easy to misread as the change never having been made.
+
+It lives in two places: `ASSET_V` at the top of `tools/build_pages.py` (for the generated
+pages), and literally in `index.html`, `membership.html` and `membership-thanks.html`.
+Change both and re-run the generator, or half the site runs on a stale stylesheet. Current
+value: **30**.
 
 ### Clean URLs
 
@@ -38,6 +43,11 @@ without the `.html` extension:
 | `index.html` | `/` |
 | `membership.html` | `/membership` |
 | `membership-thanks.html` | `/membership-thanks` |
+| `capabilities.html` | `/capabilities` |
+| `industries.html` | `/industries` |
+| `pricing.html` | `/pricing` |
+| `schedule.html` | `/schedule` |
+| `partners.html` | `/partners` |
 
 Vercel also **308-redirects the old `.html` URLs to the clean ones**, so links already
 shared — including the Midwest UAS Test Site tile on ARI's site — keep working rather than
@@ -75,17 +85,74 @@ domain before this page is announced. There is a comment above the footer link m
 index.html              Landing page
 membership.html         Membership registration — hosts the Salesforce form
 membership-thanks.html  Post-submission confirmation (Salesforce retURL target)
+
+capabilities.html       ┐
+industries.html         │ Expansion pages. Generated — see "Expansion pages" below.
+pricing.html            │ Not in the nav; reachable by direct link only.
+schedule.html           │
+partners.html           ┘
+
 assets/css/site.css     Design tokens + all styles
-assets/js/site.js       Nav, scroll reveal, scroll-spy, form handling
+assets/js/site.js       Nav, scroll reveal, scroll-spy, tabs, form handling
 assets/fonts/           Self-hosted woff2 (no third-party font requests)
 assets/img/             Imagery and logos
+tools/build_pages.py    Generator for the five expansion pages
 tools/apps-script/      Inquiry-form endpoint for Google Apps Script
 ```
 
-The header and footer are duplicated across the three HTML files. At three pages that is
-still cheaper than introducing a build step, but it is the thing to watch: a change to the
-nav or footer has to be made in every file. **Past about four pages, add a small static
-site generator** rather than keeping that up by hand.
+## Expansion pages
+
+Five pages — capabilities, industries, pricing and membership, schedule a test, and
+partners — are **generated**, not hand-written:
+
+```bash
+python3 tools/build_pages.py
+```
+
+It writes plain `.html` files that are committed and served directly. **Vercel never runs
+it**; there is still no build step in the deploy. Run it by hand after editing a page body
+or a shared partial, and commit the result.
+
+It exists because the header and footer were already duplicated across three files, and
+eight is where that stops being realistic — one nav change would mean eight correct edits
+or a silent inconsistency. `index.html`, `membership.html` and `membership-thanks.html`
+predate the generator and are still maintained directly, so **a change to the shared header
+or footer has to be made in `tools/build_pages.py` and in those three files.** Folding them
+into the generator is the obvious next cleanup.
+
+### They are not in the nav, on purpose
+
+The client asked for these published but not linked, for review by direct URL:
+
+```
+/capabilities   /industries   /pricing   /schedule   /partners
+```
+
+`HEADER` in the generator deliberately carries only Home, Membership and the CTA. Nothing
+on `index.html` links to them either. When they are ready to go live, add them to the nav
+in `tools/build_pages.py` **and** in the three hand-maintained files, and re-run it.
+
+### Claims that were deliberately softened
+
+The expansion brief is a working document and several things in it would be assertions the
+site cannot yet support. Each is handled in `tools/build_pages.py`, with a comment:
+
+- **BVLOS and urban testing carry an "In development" badge.** The corridor holds
+  preliminary approval and the dense urban canyon component is proposed; neither is
+  operational, and the page says so.
+- **No capability is mapped to a location.** The brief supplied a list of capabilities and
+  a list of sites, not a mapping. Inventing one would misstate where work can be performed.
+- **Blank rates render as "Contact for pricing"**, which asserts no particular price, and a
+  note says published rates are list prices confirmed before scheduling.
+- **Partners are not labelled "Sponsors (Tier 1 Members)."** That is a claim about a paying
+  commercial relationship, and several entries are federal or state bodies unlikely to hold
+  one. They are grouped by field of work, with a note saying nothing about status.
+- **Membership benefits referencing guaranteed BVLOS access carry a qualifier**, since they
+  depend on a corridor that is not yet operational.
+- **Creating a member account is stated not to approve range access.**
+
+If any of these is wrong — if the corridor is operational, or those organisations really
+are Tier 1 members — fix the data in the generator and re-run it.
 
 ## Membership registration pages
 
@@ -444,6 +511,14 @@ pill rules if you need genuinely unlinked entries.
 - Scroll-reveal animation is disabled under `prefers-reduced-motion`, and a `no-js` guard
   means content is never left hidden if JavaScript fails to load.
 - The mobile nav is keyboard operable and closes on `Escape`.
+- **The pricing tabs are built by JavaScript, not shipped in the markup.** Each rate group
+  is a plain `<section>` under its own heading; `site.js` folds them into a tablist and
+  takes each button's label from that heading, so the label lives in one place. Without the
+  script there are no tabs and all four groups are simply on the page — nothing is hidden
+  behind a control that does not work. The tablist follows the ARIA tabs pattern: one tab
+  stop for the list, arrows/Home/End to move between tabs.
+- The membership comparison table scrolls inside a focusable named region rather than
+  forcing the page wide.
 - The Indiana map carries a long `alt` description listing the assets it plots.
 - A print stylesheet flattens the dark sections for legible hard copy.
 

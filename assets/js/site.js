@@ -278,6 +278,121 @@
   }
 
   /* ---------------------------------------------------------------
+     Rate tabs
+     ---------------------------------------------------------------
+     The pricing page ships each rate group as a plain section under its
+     own heading, so every rate is readable with no script at all. This
+     folds those sections into a tablist, taking each button's label from
+     the section heading — the label therefore lives in exactly one place
+     in the markup and cannot drift.
+
+     Keyboard handling follows the ARIA tabs pattern: one tab stop for
+     the whole list (roving tabindex), arrows to move between tabs.
+     --------------------------------------------------------------- */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-tabs]'), function (group) {
+    var list   = group.querySelector('.tab-list');
+    var panels = Array.prototype.slice.call(group.querySelectorAll('.tab-panel'));
+    if (!list || panels.length < 2) return;
+
+    var tabs = [];
+
+    panels.forEach(function (panel, i) {
+      var heading = panel.querySelector('.tab-panel-title');
+      if (!panel.id || !heading) return;
+
+      var tab = document.createElement('button');
+      tab.type = 'button';
+      tab.className = 'tab-btn';
+      tab.id = 'tab-' + panel.id;
+      tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-controls', panel.id);
+      tab.innerHTML = heading.innerHTML;
+
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tab.id);
+      panel.hidden = i !== 0;
+
+      list.appendChild(tab);
+      tabs.push({ tab: tab, panel: panel });
+    });
+
+    // A heading missing from any panel would leave an incomplete tablist;
+    // better to leave the page as the plain sections it already is.
+    if (tabs.length !== panels.length) {
+      list.textContent = '';
+      panels.forEach(function (panel) {
+        panel.hidden = false;
+        panel.removeAttribute('role');
+        panel.removeAttribute('aria-labelledby');
+      });
+      return;
+    }
+
+    function select(index, moveFocus) {
+      tabs.forEach(function (entry, i) {
+        var on = i === index;
+        entry.tab.setAttribute('aria-selected', String(on));
+        entry.tab.tabIndex = on ? 0 : -1;
+        entry.panel.hidden = !on;
+      });
+      if (moveFocus) tabs[index].tab.focus();
+    }
+
+    list.setAttribute('role', 'tablist');
+    list.setAttribute('aria-label', group.getAttribute('data-tabs-label') || 'Categories');
+    list.hidden = false;
+    group.classList.add('is-ready');
+    select(0, false);
+
+    list.addEventListener('click', function (e) {
+      var btn = e.target.closest('.tab-btn');
+      if (!btn) return;
+      tabs.forEach(function (entry, i) { if (entry.tab === btn) select(i, false); });
+    });
+
+    list.addEventListener('keydown', function (e) {
+      var current = tabs.map(function (entry) { return entry.tab; }).indexOf(document.activeElement);
+      if (current < 0) return;
+
+      var next = null;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (current + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (current - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = tabs.length - 1;
+      if (next === null) return;
+
+      e.preventDefault();
+      select(next, true);
+    });
+  });
+
+  /* ---------------------------------------------------------------
+     Process rail
+     ---------------------------------------------------------------
+     Draws the connector between the numbered steps on /schedule once,
+     when it scrolls into view. Purely decorative — the rail is
+     aria-hidden and the steps read identically without it, which is
+     also what happens under reduced motion and with no
+     IntersectionObserver.
+     --------------------------------------------------------------- */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-process]'), function (process) {
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      process.classList.add('is-advanced');
+      return;
+    }
+
+    var railObserver = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-advanced');
+        obs.unobserve(entry.target);
+      });
+    }, { threshold: 0.3 });
+
+    railObserver.observe(process);
+  });
+
+  /* ---------------------------------------------------------------
      Salesforce embed — promote bare text into real labels
      ---------------------------------------------------------------
      Web-to-Lead labels roughly half its fields properly and writes the
