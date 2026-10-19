@@ -28,7 +28,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 42          # cache buster; bump when site.css or site.js changes
+ASSET_V = 43          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -358,15 +358,15 @@ RATE_CATEGORIES = [
 TIERS = [
     ("01", "Commander", "$30,000", ["15% discount", "Early scheduling 120 days out",
                                     "Guaranteed monthly BVLOS testing access",
-                                    "Quarterly Test Site Leadership Meetings", "Event Sponsorship"], True),
+                                    "Quarterly Test Site Leadership Meetings", "Event Sponsorship"]),
     ("02", "Wingman", "$15,000", ["10% discount", "Early scheduling 90 days out",
                                   "Guaranteed monthly BVLOS testing access",
-                                  "Annual Test Site Leadership Meeting"], False),
-    ("03", "Navigator", "$5,000", ["5% discount", "Early scheduling 60 days out"], False),
+                                  "Annual Test Site Leadership Meeting"]),
+    ("03", "Navigator", "$5,000", ["5% discount", "Early scheduling 60 days out"]),
     ("04", "Startup", "$3,000", ["Early scheduling 60 days out", "24-month maximum participation",
-                                 "Must move to a higher tier after the startup period"], False),
+                                 "Must move to a higher tier after the startup period"]),
     ("05", "Research", "$1,000", ["Available to universities and NGOs", "Early scheduling 60 days out",
-                                  "Reciprocal data sharing", "Cost-plus pricing on range time"], False),
+                                  "Reciprocal data sharing", "Cost-plus pricing on range time"]),
 ]
 
 MATRIX_ROWS = [
@@ -411,11 +411,10 @@ def pricing_page():
         )
 
     tier_cards = []
-    for num, name, price, benefits, feature in TIERS:
+    for num, name, price, benefits in TIERS:
         items = "\n".join(f"            <li>{b}</li>" for b in benefits)
-        cls = "tier-card tier-card-feature" if feature else "tier-card"
         tier_cards.append(
-            f"""      <li class="{cls} reveal">
+            f"""      <li class="tier-card reveal">
         <p class="tier-num" aria-hidden="true">{num}</p>
         <h3 class="h4">{name}</h3>
         <p class="tier-price"><span class="tier-amount">{price}</span><span class="tier-per">per year</span></p>
@@ -426,7 +425,7 @@ def pricing_page():
       </li>"""
         )
 
-    head_cells = "".join(f'<th scope="col">{name}</th>' for _, name, _, _, _ in TIERS)
+    head_cells = "".join(f'<th scope="col">{name}</th>' for _, name, _, _ in TIERS)
     body_rows = []
     for label, cells in MATRIX_ROWS:
         tds = "".join(f"<td>{c}</td>" for c in cells)
@@ -492,6 +491,7 @@ def pricing_page():
   </div>
 </section>
 """
+        + schedule_section()
         + cta_band(
             "Discuss testing requirements",
             "Pricing depends on the environment, aircraft group and support you need. "
@@ -516,26 +516,34 @@ STEPS = [
 ]
 
 
-def schedule_page():
+def schedule_section():
+    """The five-step range-access process.
+
+    This was its own page. It had no booking form on it — reserving range time
+    runs through the operations team, not a self-service calendar — so a page
+    whose only content was "here is the process" was a stop on the way to
+    somewhere else. It reads better directly under the rates it applies to, and
+    /schedule now redirects here (see vercel.json) so any link already shared
+    still lands in the right place.
+    """
     nodes = []
     for i, label in enumerate(STEPS, 1):
         nodes.append(
             f"""        <li class="process-step">
           <span class="process-num" aria-hidden="true">{i:02d}</span>
-          <h2 class="process-label">{label}</h2>
+          <h3 class="process-label">{label}</h3>
         </li>"""
         )
 
-    return (
-        page_hero(
-            "Testing Access",
-            "Schedule time on the range",
-            "Range access follows a five-step process, from creating a member account through to "
-            "reservation approval.",
-        )
-        + f"""
-<section class="section">
+    return f"""
+<section class="section" id="schedule">
   <div class="wrap">
+    <header class="section-head reveal">
+      <h2 class="h2">Scheduling a test</h2>
+      <p class="section-intro-copy">Range access follows a five-step process, from creating a
+        member account through to reservation approval.</p>
+    </header>
+
     <div class="process reveal" data-process>
       <div class="process-rail" aria-hidden="true"><span class="process-progress"></span></div>
       <ol class="process-list">
@@ -543,22 +551,12 @@ def schedule_page():
       </ol>
     </div>
 
-    <p class="note note-inline">Creating a member account begins the process. It does not approve
-      range access or create a reservation — scheduling is confirmed by the test site during
-      coordination.</p>
+    <p class="note note-inline">There is no booking form here on purpose. Creating a member
+      account begins the process; it does not approve range access or create a reservation.
+      Dates are confirmed by the test site during coordination.</p>
   </div>
 </section>
 """
-        + cta_band(
-            "Ready to begin testing?",
-            "Start with a member account, or talk to the operations team first if you would rather "
-            "scope the requirement before registering.",
-            [
-                ("Create a member account", "/membership", "btn-gold"),
-                ("Submit a Test Site Inquiry", "/#contact", "btn-ghost"),
-            ],
-        )
-    )
 
 
 # --------------------------------------------------------------------------
@@ -737,12 +735,9 @@ PAGES = [
      "across logistics, agriculture, infrastructure, public safety and environmental management.",
      industries_page, ()),
     ("pricing.html", "/pricing", "Pricing &amp; Membership",
-     "Five annual membership levels and published testing service rates at the Midwest UAS Test "
-     "Site of Indiana.",
+     "Five annual membership levels, published testing service rates and the five-step "
+     "process for reserving range time at the Midwest UAS Test Site of Indiana.",
      pricing_page, ()),
-    ("schedule.html", "/schedule", "Schedule a Test",
-     "The five-step process for reserving range time at the Midwest UAS Test Site of Indiana.",
-     schedule_page, ()),
     ("partners.html", "/partners", "Partners",
      "Government, defense, academic and commercial organizations in the Midwest UAS Test Site "
      "of Indiana ecosystem.", partners_page, ("partner-marquee.js",)),

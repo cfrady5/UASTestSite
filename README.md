@@ -31,7 +31,7 @@ until a hard refresh — which is easy to misread as the change never having bee
 It lives in two places: `ASSET_V` at the top of `tools/build_pages.py` (for the generated
 pages), and literally in `index.html`, `membership.html` and `membership-thanks.html`.
 Change both and re-run the generator, or half the site runs on a stale stylesheet. Current
-value: **42**.
+value: **43**.
 
 ### Clean URLs
 
@@ -46,7 +46,6 @@ without the `.html` extension:
 | `capabilities.html` | `/capabilities` |
 | `industries.html` | `/industries` |
 | `pricing.html` | `/pricing` |
-| `schedule.html` | `/schedule` |
 | `partners.html` | `/partners` |
 
 Vercel also **308-redirects the old `.html` URLs to the clean ones**, so links already
@@ -89,7 +88,6 @@ membership-thanks.html  Post-submission confirmation (Salesforce retURL target)
 capabilities.html       ┐
 industries.html         │ Expansion pages. Generated — see "Expansion pages" below.
 pricing.html            │ Not in the nav; reachable by direct link only.
-schedule.html           │
 partners.html           ┘
 
 assets/css/site.css     Design tokens + all styles
@@ -132,12 +130,23 @@ into the generator is the obvious next cleanup.
 The client asked for these published but not linked, for review by direct URL:
 
 ```
-/capabilities   /industries   /pricing   /schedule   /partners
+/capabilities   /industries   /pricing   /partners
 ```
 
 `HEADER` in the generator deliberately carries only Home, Membership and the CTA. Nothing
 on `index.html` links to them either. When they are ready to go live, add them to the nav
 in `tools/build_pages.py` **and** in the three hand-maintained files, and re-run it.
+
+### /schedule was folded into /pricing
+
+It had no booking form — reserving range time runs through the operations team,
+not a self-service calendar — so a page whose whole content was "here is the
+process" was a stop on the way somewhere else. The five-step process is now a
+section on `/pricing`, directly under the rates it applies to, and `vercel.json`
+redirects `/schedule` to `/pricing#schedule` so any link already shared still
+lands in the right place. The redirect is temporary (302) rather than permanent:
+this is a review-stage layout call, and a 301 is cached by browsers in a way
+that is awkward to walk back.
 
 ### The capabilities map
 

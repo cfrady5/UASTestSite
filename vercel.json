@@ -1,4 +1,11 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/schedule",
+      "destination": "/pricing#schedule",
+      "permanent": false
+    }
+  ]
 }

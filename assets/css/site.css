@@ -1388,6 +1388,8 @@ a { color: inherit; }
 }
 .tier-card {
   display: flex; flex-direction: column;
+  transition: background-color .25s var(--ease), border-color .25s var(--ease),
+              transform .25s var(--ease), box-shadow .25s var(--ease);
   background: var(--paper);
   border: 1px solid var(--line);
   border-top: 3px solid var(--blue);
@@ -1395,28 +1397,42 @@ a { color: inherit; }
   padding: 1.5rem 1.35rem 1.6rem;
   box-shadow: var(--shadow-sm);
 }
-/* The top tier is filled gold so it reads first. Everything inside it moves to
-   the near-black blue: the muted greys that work on white are only about 4.2:1
-   on gold, and gold-on-gold accents vanish entirely. */
-.tier-card-feature {
+/* Gold on hover rather than fixed to one tier: the row reads evenly at rest and
+   the card being considered is the one that lights up. :focus-within carries it
+   to the keyboard — the card's only focusable child is its button — so the
+   highlight is not mouse-only.
+   Everything inside moves to the near-black blue at the same time: the muted
+   greys that work on white are only about 4.2:1 on gold, and the gold bullet
+   accents vanish against it entirely. */
+.tier-card :is(.h4, .tier-num, .tier-per, .tier-amount),
+.tier-card .tier-benefits li,
+.tier-card .tier-benefits li::before,
+.tier-card .btn {
+  transition: color .25s var(--ease), background-color .25s var(--ease),
+              border-color .25s var(--ease);
+}
+.tier-card:hover,
+.tier-card:focus-within {
   background: var(--gold);
   border-color: var(--gold-deep);
   border-top-color: var(--blue-deep);
   box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
 }
-.tier-card-feature .tier-num,
-.tier-card-feature .tier-per { color: var(--blue-night); }
-.tier-card-feature .h4,
-.tier-card-feature .tier-amount { color: var(--blue-night); }
-.tier-card-feature .tier-benefits li { color: var(--blue-night); }
-.tier-card-feature .tier-benefits li::before { background: var(--blue-deep); }
+.tier-card:hover :is(.h4, .tier-num, .tier-per, .tier-amount),
+.tier-card:focus-within :is(.h4, .tier-num, .tier-per, .tier-amount),
+.tier-card:hover .tier-benefits li,
+.tier-card:focus-within .tier-benefits li { color: var(--blue-night); }
+
+.tier-card:hover .tier-benefits li::before,
+.tier-card:focus-within .tier-benefits li::before { background: var(--blue-deep); }
 
 /* An outlined button on a gold panel reads as unfinished; solid navy keeps the
    card's call to action as strong as the card. */
-.tier-card-feature .btn {
+.tier-card:hover .btn,
+.tier-card:focus-within .btn {
   background: var(--blue-deep); color: #fff; border-color: var(--blue-deep);
 }
-.tier-card-feature .btn:hover { background: var(--blue-night); border-color: var(--blue-night); }
 
 .tier-num {
   font-family: 'Anton', 'Arial Narrow', Impact, sans-serif;
@@ -1538,11 +1554,30 @@ a { color: inherit; }
    versions brands publish for dark backgrounds were flipped to match — see
    tools/recolor_logos.py, which inverts only the achromatic ink so each brand's
    own colours survive. Originals are kept in assets/img/partners/reversed/. */
-.partner-groups { display: grid; gap: clamp(2.5rem, 5vw, 4rem); }
+/* Five categories on one page only work if the eye can find the breaks. The
+   earlier full-width gold rules did that too loudly, so the separation is
+   carried by three quieter things at once: a lot more space, a hairline between
+   groups, and a short gold tick that starts each heading. */
+.partner-groups { display: grid; gap: 0; }
+
+.partner-group {
+  padding-block: clamp(2.25rem, 4.5vw, 3.5rem);
+  border-top: 1px solid var(--line);
+}
+.partner-group:first-child { border-top: 0; padding-top: 0; }
+.partner-group:last-child { padding-bottom: 0; }
+
 .partner-group > .h4 {
-  margin-bottom: 1.1rem;
-  font-size: clamp(1rem, .95rem + .25vw, 1.125rem);
+  display: flex; align-items: center; gap: .7rem;
+  margin-bottom: 1.6rem;
+  font-size: clamp(1.0625rem, 1rem + .35vw, 1.3125rem);
+  letter-spacing: -.01em;
   color: var(--blue-deep);
+}
+.partner-group > .h4::before {
+  content: "";
+  flex: none; width: 1.75rem; height: 3px;
+  background: var(--gold); border-radius: 2px;
 }
 
 /* The static list, which is what ships in the markup and what a visitor
@@ -1695,7 +1730,7 @@ a.partner-item:focus-visible::after { opacity: 1; }
     scroll-behavior: auto !important;
   }
   .reveal { opacity: 1; transform: none; }
-  .btn:hover, .card:hover { transform: none; }
+  .btn:hover, .card:hover, .tier-card:hover, .tier-card:focus-within { transform: none; }
 }
 
 /* ============================================================
