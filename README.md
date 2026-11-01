@@ -289,8 +289,18 @@ neutral and reports a saturation of 0.30, which any sensible threshold reads as
 minus min) puts it at 0.03, correctly neutral. This cost one round trip; the
 `lum.mjs` check in the verification suite is what caught it.
 
-**Originals are kept.** `assets/img/partners/reversed/` holds every file exactly
-as supplied, so nothing is lost and the authentic artwork is one copy away.
+**Originals are kept.** `assets/img/partners/reversed/` is the archive of
+files exactly as supplied, so nothing is lost and the authentic artwork is one
+copy away. The name reflects how they mostly arrived, not a rule — Anduril
+later supplied a dark-on-white version, kept there as
+`anduril-dark-on-white.png` beside the reversed original it replaced.
+
+A dark-on-white supply needs no flip, only its plate removed, which is
+`knockout(..., plate="white", ink=None)` in `recolor_logos.py`. `ink=None`
+keeps the artwork's own colour, taken from the darkest pixel in the file
+rather than from each pixel in turn: an antialiased edge is the artwork
+already mixed with the plate, so carrying its grey across would composite it
+a second time and leave the mark with a pale halo.
 Editing a trademark is normally not ours to do — it is here because the client
 asked for it, having seen the measurements. Any brand that later supplies its
 own dark version should simply replace the file.

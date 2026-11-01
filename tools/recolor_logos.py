@@ -87,30 +87,55 @@ def do_raster(path):
     return changed, out_path
 
 
-def knockout(src, dst, ink=INK, pad=0):
-    """Lift white artwork off a black panel into dark ink on transparency.
+def knockout(src, dst, ink=INK, pad=0, plate="black"):
+    """Lift single-colour artwork off a solid plate onto transparency.
 
-    A plain achromatic flip would turn the panel white and the type dark, which
-    leaves a white rectangle sitting on the page. This instead reads the source
-    luminance as coverage: where the pixel is white the artwork is solid, where
-    it is black there is nothing. Antialiased edges come through as partial
-    alpha rather than as a grey fringe, which is what a straight threshold would
-    give.
+    A plain achromatic flip turns the plate the other colour and leaves a
+    rectangle sitting on the page. This instead reads the source luminance as
+    coverage, so antialiased edges come through as partial alpha rather than
+    as the grey fringe a straight threshold would leave.
 
-    Only for artwork that is purely white on purely black. A panel carrying a
+    plate="black"  white artwork on a black plate — white is solid, black is
+                   nothing. The result is painted in `ink`, since white is not
+                   a colour the page can show.
+    plate="white"  dark artwork on a white plate — black is solid, white is
+                   nothing. Pass ink=None to keep the artwork's own colour,
+                   which is the honest choice when it arrived dark already:
+                   there is nothing to flip, only a background to remove.
+                   That colour is taken from the darkest pixel in the file,
+                   not from each pixel in turn. An antialiased edge is the
+                   artwork already mixed with the plate, so carrying its grey
+                   across would composite it a second time and leave the mark
+                   with a pale halo.
+
+    Only for artwork that is one colour on a plain plate. A plate carrying a
     coloured mark (Precision Planting's green, ANRA's teal) loses that colour
-    here, so those keep their panel instead.
+    here, so those keep their plate instead.
     """
     from PIL import Image
 
     im = Image.open(src).convert("RGBA")
     px = im.load()
     w, h = im.size
+
+    if ink is None:
+        # The artwork's own colour: the darkest pixel that is actually there.
+        best, ink = 10 ** 9, (0, 0, 0)
+        for y in range(h):
+            for x in range(w):
+                r, g, b, a = px[x, y]
+                if a < 200:
+                    continue
+                lum = max(r, g, b) + min(r, g, b)
+                if lum < best:
+                    best, ink = lum, (r, g, b)
+
     xs, ys = [], []
     for y in range(h):
         for x in range(w):
             r, g, b, a = px[x, y]
-            cov = (max(r, g, b) + min(r, g, b)) / 510          # 0 black .. 1 white
+            lum = (max(r, g, b) + min(r, g, b)) / 510          # 0 black .. 1 white
+            cov = lum if plate == "black" else 1 - lum
             alpha = round(cov * (a / 255) * 255)
             px[x, y] = (*ink, alpha)
             if alpha > 8:
