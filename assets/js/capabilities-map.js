@@ -778,16 +778,13 @@
       }));
     }
 
+    /* Coordinates only. The per-facility Source and Marker rows said what
+       the legend's provenance note already says for the whole map, and
+       repeating it under every location was cartographer's small print in
+       the middle of a sales page. */
     var meta = el('dl', { 'class': 'cap-panel-meta' });
     addMeta(meta, 'Coordinates', f.lat.toFixed(4) + '°N, ' +
       Math.abs(f.lon).toFixed(4) + '°W');
-    addMeta(meta, 'Source', f.precision === 'dataset'
-      ? f.source
-      : 'Site centroid, approximate');
-    if (f.displaced) {
-      addMeta(meta, 'Marker', 'Nudged apart from a neighbouring marker so both ' +
-        'stay readable. The coordinates above are as sourced.');
-    }
     panel.appendChild(meta);
 
     if (f.url) {
@@ -947,9 +944,13 @@
 
     box.appendChild(el('p', {
       'class': 'cap-legend-note',
+      /* Carries the one fact the per-facility rows used to add: a marker
+         that would collide with its neighbour is nudged. Said once here
+         rather than under every location it applies to. */
       text: 'Boundaries: US Census cartographic files. Roads and water: Natural ' +
             'Earth. Airports: OurAirports. Campus and installation markers are ' +
-            'site centroids.'
+            'site centroids, nudged apart where two would overlap; the ' +
+            'coordinates shown for a location are as sourced.'
     }));
 
     return box;

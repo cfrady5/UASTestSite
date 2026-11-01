@@ -363,14 +363,15 @@ AREAS = []
 #        Do not fill these in by guessing a domain from a brand name — a wrong
 #        link on a partner's name is worse than no link.
 #
-# logo   Path under assets/img/partners/, or None. None renders a wordmark in
-#        the same cell instead, which on this dark band reads as white type.
+# logo   Path under assets/img/partners/, or None. None sets the short name as
+#        type in the same slot, so the card still reads as a mark.
 #
-#        The marquee band is navy because of what the supplied artwork is: 13 of
-#        the 24 logos the client sent are white or reversed versions, which only
-#        exist to go on a dark field. A logo that is dark-on-light stays None
-#        until a reversed version arrives — recolouring someone's trademark to
-#        fit our background is not ours to do.
+#        The partner sections sit on the site's light surfaces, so every mark
+#        needs to be dark on transparent. Much of the supplied artwork was
+#        white or reversed, for a dark field; tools/recolor_logos.py flips the
+#        achromatic ink on those and leaves anything with a hue alone, so a
+#        brand colour is never altered. Keep that true of anything added here:
+#        a white-on-transparent file dropped in as-is is invisible on the page.
 #
 # restricted
 #        A federal or agency seal. The Test Site OTA says the Sponsor "agrees

@@ -901,11 +901,9 @@ a { color: inherit; }
 /* ---------- Shared: static chip list ---------- */
 /* .tag-list puts its pill on the anchor, because every chip there is a link.
    These chips are plain text, so the pill lives on the list item instead. */
-.chip-list,
-.partner-list { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .9rem; }
+.chip-list { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .9rem; }
 
-.chip-list li,
-.partner-list li {
+.chip-list li {
   font-size: .8125rem; font-weight: 600; letter-spacing: .02em;
   padding: .45rem .8rem;
   background: var(--paper-alt);
@@ -1680,160 +1678,183 @@ a { color: inherit; }
    versions brands publish for dark backgrounds were flipped to match — see
    tools/recolor_logos.py, which inverts only the achromatic ink so each brand's
    own colours survive. Originals are kept in assets/img/partners/reversed/. */
-/* Five categories on one page only work if the eye can find the breaks. The
-   earlier full-width gold rules did that too loudly, so the separation is
-   carried by three quieter things at once: a lot more space, a hairline between
-   groups, and a short gold tick that starts each heading. */
-.partner-groups { display: grid; gap: 0; }
+/* A directory, not a logo wall. Each category is its own full-width section
+   so the eye can find the breaks without rules or ticks doing the work:
+   alternating tone, generous space, and a heading that owns its band.
 
-.partner-group {
-  padding-block: clamp(2.25rem, 4.5vw, 3.5rem);
-  border-top: 1px solid var(--line);
-}
-.partner-group:first-child { border-top: 0; padding-top: 0; }
-.partner-group:last-child { padding-bottom: 0; }
+   The tone alternates between the site's two standing surfaces rather than
+   going dark. All 36 marks are dark ink on transparent — a navy panel would
+   swallow every one of them. */
+.partner-section { padding-block: clamp(2.75rem, 5vw, 4.5rem); }
+.partner-section-alt { background: var(--paper-alt); }
 
-.partner-group > .h4 {
-  display: flex; align-items: center; gap: .7rem;
-  margin-bottom: 1.6rem;
-  font-size: clamp(1.0625rem, 1rem + .35vw, 1.3125rem);
-  letter-spacing: -.01em;
-  color: var(--blue-deep);
-}
-.partner-group > .h4::before {
-  content: "";
-  flex: none; width: 1.75rem; height: 3px;
-  background: var(--gold); border-radius: 2px;
-}
-
-/* The static list, which is what ships in the markup and what a visitor
-   with no JavaScript sees. */
-.partner-list { display: flex; flex-wrap: wrap; gap: .9rem 1.75rem; align-items: center; }
-
-/* ---------- Marquee ---------- */
-.marquee {
-  display: grid; gap: .6rem;
-  /* Edge masks, so a logo fades out instead of being cut mid-stroke. */
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 5.5rem,
-                      #000 calc(100% - 5.5rem), transparent);
-          mask-image: linear-gradient(to right, transparent, #000 5.5rem,
-                      #000 calc(100% - 5.5rem), transparent);
-}
-@media (max-width: 639px) {
-  .marquee {
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 2rem,
-                        #000 calc(100% - 2rem), transparent);
-            mask-image: linear-gradient(to right, transparent, #000 2rem,
-                        #000 calc(100% - 2rem), transparent);
-  }
-}
-
-.marquee-row { overflow: hidden; }
-.marquee-track { display: flex; width: max-content; will-change: transform; }
-.marquee-seq { display: flex; align-items: center; flex: none; }
-
-/* The track only starts moving once JavaScript has measured one sequence,
-   so it can never animate against a guessed distance. */
-.marquee-row.is-measured .marquee-track {
-  animation: marquee-rtl var(--marquee-duration, 40s) linear infinite;
-}
-.marquee-row.is-measured[data-direction="ltr"] .marquee-track {
-  animation-name: marquee-ltr;
-}
-
-@keyframes marquee-rtl {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(calc(var(--marquee-distance) * -1), 0, 0); }
-}
-@keyframes marquee-ltr {
-  from { transform: translate3d(calc(var(--marquee-distance) * -1), 0, 0); }
-  to   { transform: translate3d(0, 0, 0); }
-}
-
-/* Freezing the animation leaves the track exactly where it is — nothing
-   is repositioned, so nothing can shift under the pointer. */
-.marquee-row:hover .marquee-track,
-.marquee-row.is-paused .marquee-track { animation-play-state: paused; }
-
-/* ---------- Cells ---------- */
-.partner-cell { flex: none; padding-inline: clamp(.9rem, 2.2vw, 1.75rem); }
-
-/* A fixed cell height with a free width: the logos keep their own
-   proportions instead of being squeezed into a common box. */
-.partner-item {
-  display: flex; align-items: center; justify-content: center;
-  height: 5rem;
-  padding: .25rem;
-  text-decoration: none;
+.partner-section-head { margin-bottom: clamp(1.5rem, 3vw, 2.25rem); max-width: 62ch; }
+.partner-section-head .h3 { color: var(--blue-deep); letter-spacing: -.01em; }
+.partner-section-intro {
+  margin-top: .5rem;
   color: var(--ink-soft);
+  font-size: clamp(.9375rem, .91rem + .2vw, 1.0625rem);
+}
+.partner-section-count {
+  margin-top: .45rem;
+  font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-faint, var(--ink-soft)); opacity: .75;
+}
+
+/* The jump list already separates the intro from the first category, so the
+   section's own closing space would just stack on top of it. */
+.partner-intro { padding-bottom: clamp(1.25rem, 2.5vw, 2rem); }
+.partner-intro-head { margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
+
+/* ---------- Category jump list ---------- */
+.partner-jump ul { display: flex; flex-wrap: wrap; gap: .5rem; }
+.partner-jump a {
+  display: inline-flex; align-items: center; gap: .55rem;
+  padding: .5rem .9rem;
+  font-size: .8125rem; font-weight: 600;
+  color: var(--blue-deep); text-decoration: none;
+  background: var(--paper-alt);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  transition: background-color .18s var(--ease), border-color .18s var(--ease),
+              color .18s var(--ease);
+}
+.partner-jump a:hover,
+.partner-jump a:focus-visible { background: #fff; border-color: var(--blue); color: var(--blue); }
+.pj-n {
+  font-variant-numeric: tabular-nums;
+  font-size: .6875rem; font-weight: 700;
+  color: var(--ink-soft); opacity: .8;
+}
+
+/* ---------- The grid ----------
+   auto-fill, not auto-fit: with auto-fit a four-partner category would
+   stretch four cards across the full width and look nothing like the
+   fourteen-partner one below it. auto-fill keeps the column width the same
+   in every section, which is the whole point of a directory. */
+.partner-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr));
+  gap: clamp(.75rem, 1.6vw, 1.15rem);
+}
+
+.pc { display: flex; }
+
+.pc-link {
+  display: flex; flex-direction: column; align-items: center;
+  gap: .85rem;
+  width: 100%;
+  padding: 1.25rem 1rem 1.1rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  transition: transform .24s var(--ease), color .24s var(--ease),
-              filter .24s var(--ease);
+  text-decoration: none;
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease),
+              transform .2s var(--ease);
 }
-.partner-item:not(.partner-item-plain) { cursor: pointer; }
-@media (min-width: 640px) { .partner-item { height: 5.5rem; } }
+.partner-section-alt .pc-link { background: var(--paper); }
 
-/* Each logo carries its own width/height, computed from its real aspect ratio
-   by logo_box() in build_pages.py. The attributes reserve the box before the
-   file loads, so there is no layout shift and the marquee measures a stable
-   track on the first pass. */
-/* The width and height attributes alone would be overridden by any CSS sizing,
-   so the computed box comes through as custom properties as well. The
-   attributes still do their job of reserving space before the file arrives. */
-.partner-logo { width: var(--lw); height: var(--lh); max-width: 100%; object-fit: contain; }
-
-
-/* Where no logo is on file, the organization is set as a wordmark at the
-   same height, so a row of them still reads as a wall of names rather
-   than as a row of missing images. */
-.partner-word {
-  display: inline-flex; align-items: center;
-  font-family: 'Montserrat', sans-serif;
-  font-size: .9375rem; font-weight: 700; letter-spacing: .01em;
-  line-height: 1.2; text-align: center;
-  color: var(--blue-deep);
-  white-space: nowrap;
+a.pc-link { position: relative; cursor: pointer; }
+a.pc-link:hover,
+a.pc-link:focus-visible {
+  border-color: var(--blue);
+  box-shadow: 0 8px 20px rgba(14, 32, 80, .1);
+  transform: translateY(-2px);
 }
-.partner-item-plain .partner-word { color: var(--ink-soft); }
 
-
-a.partner-item { position: relative; }
-a.partner-item:hover,
-a.partner-item:focus-visible { transform: scale(1.04); }
-a.partner-item:hover .partner-word,
-a.partner-item:focus-visible .partner-word { color: var(--blue); }
-
-/* The outbound arrow appears on hover and focus only, so it never adds to
-   the resting clutter — and it is a mask, so it is never announced. */
-a.partner-item::after {
+/* The outbound arrow shows on hover and focus only, so it adds nothing to
+   the resting page — and it is a mask, so it is never announced. */
+a.pc-link::after {
   content: "";
-  position: absolute; top: -.1rem; right: -.55rem;
-  width: .65rem; height: .65rem;
+  position: absolute; top: .6rem; right: .6rem;
+  width: .6rem; height: .6rem;
   background: var(--gold-deep);
   -webkit-mask: var(--icon-external) center / contain no-repeat;
           mask: var(--icon-external) center / contain no-repeat;
   opacity: 0;
-  transition: opacity .24s var(--ease);
+  transition: opacity .2s var(--ease);
 }
-a.partner-item:hover::after,
-a.partner-item:focus-visible::after { opacity: 1; }
+a.pc-link:hover::after,
+a.pc-link:focus-visible::after { opacity: 1; }
 
-/* ---------- Reduced motion ---------- */
-/* No automatic movement; the row becomes an ordinary scrollable strip the
-   visitor moves themselves. */
-.marquee.is-static .marquee-track { animation: none !important; transform: none !important; }
-.marquee.is-static .marquee-row {
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  overscroll-behavior-x: contain;
-  padding-bottom: .4rem;
+/* One fixed box for every mark, whatever the source file's dimensions —
+   this is what makes a row of logos line up instead of drifting. */
+.pc-logo {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 3.5rem;
 }
-.marquee.is-static .partner-cell { scroll-snap-align: start; }
+
+/* Each logo carries its own width/height, computed from its real aspect
+   ratio by logo_box() in build_pages.py, so a square badge does not tower
+   over a long wordmark. The attributes reserve the box before the file
+   loads; the custom properties repeat it because CSS sizing would otherwise
+   override the attributes.
+   max-* clamps the box to the slot, and because only one axis gets clamped
+   the box itself can end up the wrong shape — object-fit does the rest,
+   painting the logo at its own proportions inside whatever box it is given.
+   Without it a wide wordmark in a narrow card is stretched vertically. */
+.pc-img {
+  width: var(--lw); height: var(--lh);
+  max-width: 100%; max-height: 100%;
+  object-fit: contain;
+}
+
+/* Where no logo is on file, the short name is set as type at the same size,
+   so the slot reads as a mark rather than as a missing image. */
+.pc-word {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.375rem; font-weight: 700; letter-spacing: .02em;
+  line-height: 1; color: var(--blue-deep);
+}
+
+.pc-text { display: flex; flex-direction: column; gap: .2rem; text-align: center; }
+.pc-name {
+  font-size: .8125rem; font-weight: 700; line-height: 1.35;
+  letter-spacing: .005em;
+  color: var(--blue-deep);
+}
+/* The expanded name, only where the short one does not already carry it. */
+.pc-sub {
+  font-size: .75rem; line-height: 1.4;
+  color: var(--ink-soft);
+}
+.pc-plain .pc-name { color: var(--ink-soft); }
+
+/* The column floor steps down with the viewport. One floor for every width
+   leaves a dead band around 480px, where the container is just too narrow
+   for two 13.5rem columns and the grid drops to a single 440px-wide card
+   with a small logo marooned in it. */
+@media (max-width: 639px) {
+  .partner-grid { grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); }
+}
+@media (max-width: 479px) {
+  .partner-grid { grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); }
+  .pc-logo { height: 3rem; }
+  .pc-link { padding: 1rem .75rem .9rem; gap: .7rem; }
+}
+
+/* ---------- The footnote ---------- */
+.partner-note-section { padding-top: 0; }
+.partner-note {
+  max-width: 68ch;
+  border-top: 1px solid var(--line);
+  padding-top: 1.5rem;
+}
+.partner-note > summary {
+  cursor: pointer;
+  font-size: .8125rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.partner-note > summary:hover { color: var(--blue); }
+.partner-note-body { margin-top: .9rem; }
+.partner-note-body p {
+  font-size: .875rem; line-height: 1.7; color: var(--ink-soft);
+}
+.partner-note-body p + p { margin-top: .75rem; }
 
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track { animation: none !important; transform: none !important; }
-  .marquee-row { overflow-x: auto; }
-  a.partner-item:hover, a.partner-item:focus-visible { transform: none; }
+  a.pc-link:hover, a.pc-link:focus-visible { transform: none; }
 }
 
 /* ============================================================

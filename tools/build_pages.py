@@ -28,7 +28,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 49          # cache buster; bump when site.css or site.js changes
+ASSET_V = 54          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -597,10 +597,22 @@ def schedule_section():
 # confirmed website alongside its name.
 PARTNER_GROUPS = site_data.PARTNER_GROUPS
 
-# Above this many organizations a category is split across two scrolling rows
-# running in opposite directions. Below it, one row reads better than two
-# half-empty ones.
-TWO_ROW_AT = 9
+# One line under each category heading, keyed by the group's slug.
+#
+# These describe the FIELD the grouping covers — which is all the grouping
+# itself claims; site_data.py groups each organization by its own line of
+# work, not by anything about its dealings with the test site. Nothing here
+# describes an organization, a relationship or a status, because none of that
+# is on file and the page says as much at the foot.
+GROUP_INTRO = {
+    "government":   "Public agencies, economic development bodies and university "
+                    "research foundations.",
+    "defense":      "Defense, naval and national security organizations.",
+    "academic":     "Universities, colleges and research institutions.",
+    "commercial":   "Aerospace, autonomy, sensing, communications and applied "
+                    "technology companies.",
+    "associations": "Industry associations and regional airports.",
+}
 
 
 # --------------------------------------------------------------------------
@@ -653,55 +665,81 @@ def logo_box(path):
     return round(h * ratio), round(h)
 
 
-def partner_item(org):
-    """One organization, as a link where a website is confirmed and as plain
-    text where it is not. Never a guessed URL."""
-    cls = []
+def partner_card(org):
+    """One organization as a directory card: logo, name, and the expanded
+    name where the short one does not already carry it. A link where a
+    website is confirmed, plain text where it is not — never a guessed URL."""
     if org["logo"]:
         w, h = logo_box(org["logo"])
-        # width/height on the element reserve the box before the file loads,
-        # so the marquee measures a stable track and nothing shifts.
-        inner = (f'<img class="partner-logo" src="{org["logo"]}" alt="{org["name"]}"'
-                 f' width="{w}" height="{h}" style="--lw:{w}px;--lh:{h}px"'
-                 f' loading="lazy" decoding="async">')
+        # width/height reserve the box before the file loads, so a card never
+        # changes height underneath the grid.
+        # alt is empty on purpose: the name is right there as visible text in
+        # the same link, and duplicating it only makes the link announce twice.
+        art = (f'<img class="pc-img" src="{org["logo"]}" alt=""'
+               f' width="{w}" height="{h}" style="--lw:{w}px;--lh:{h}px"'
+               f' loading="lazy" decoding="async">')
     else:
-        # No logo on file. A set wordmark, not a fallback-looking chip — see the
-        # note in site_data.py on why most of these have no logo yet.
-        inner = f'<span class="partner-word">{org["short"]}</span>'
+        # No logo on file — set type at the same size, so the slot still
+        # reads as a mark rather than as a missing image.
+        art = f'<span class="pc-word">{org["short"]}</span>'
 
-    # The expansion is appended rather than substituted, so the accessible name
-    # still contains the visible text (WCAG 2.5.3) while "HUF" stops being an
-    # unidentifiable three-letter link.
-    expand = f' — {org["expand"]}' if org.get("expand") else ""
+    # Only when it adds something: "Purdue Research Foundation (PRF)" already
+    # contains its own expansion, while "HUF" and "AMVIC" do not.
+    expand = org.get("expand")
+    sub = ""
+    if expand and expand.lower() not in org["name"].lower():
+        sub = f'<span class="pc-sub">{expand}</span>'
 
-    extra = (" " + " ".join(cls)) if cls else ""
+    body = (f'<span class="pc-logo">{art}</span>'
+            f'<span class="pc-text"><span class="pc-name">{org["name"]}</span>{sub}</span>')
 
     if org["url"]:
-        return (f'          <li class="partner-cell"><a class="partner-item{extra}" '
-                f'href="{org["url"]}" target="_blank" rel="noopener noreferrer">'
-                f'{inner}<span class="sr-only">{expand} (opens in a new tab)</span>'
-                f'</a></li>')
-    if expand:
-        return (f'          <li class="partner-cell"><span class="partner-item '
-                f'partner-item-plain{extra}">{inner}<span class="sr-only">{expand}</span>'
-                f'</span></li>')
-    return (f'          <li class="partner-cell"><span class="partner-item '
-            f'partner-item-plain{extra}">{inner}</span></li>')
+        return (f'        <li class="pc"><a class="pc-link" href="{org["url"]}"'
+                f' target="_blank" rel="noopener noreferrer">{body}'
+                f'<span class="sr-only"> (opens in a new tab)</span></a></li>')
+    return f'        <li class="pc"><span class="pc-link pc-plain">{body}</span></li>'
 
 
 def partners_page():
-    groups = []
-    for slug, name, orgs in PARTNER_GROUPS:
-        cells = "\n".join(partner_item(o) for o in orgs)
-        rows = 2 if len(orgs) >= TWO_ROW_AT else 1
-        groups.append(
-            f"""      <div class="partner-group reveal" data-marquee data-rows="{rows}">
-        <h3 class="h4" id="partners-{slug}">{name}</h3>
-        <ul class="partner-list" aria-labelledby="partners-{slug}">
-{cells}
-        </ul>
-      </div>"""
+    """Five category sections, each a responsive grid of cards.
+
+    This replaced a set of scrolling logo marquees. A marquee cannot hold a
+    logo in a fixed position, so nothing lined up, names could not sit under
+    the marks, and whatever was mid-travel at the edge was cut off — none of
+    which a directory can afford. The logos, links and optical sizing carry
+    over unchanged; only the arrangement is new.
+    """
+    jump, sections = [], []
+
+    for i, (slug, name, orgs) in enumerate(PARTNER_GROUPS):
+        cards = "\n".join(partner_card(o) for o in orgs)
+        # Alternating tone, not alternating darkness: all 36 marks are dark ink
+        # on transparent, so a dark panel would swallow every one of them.
+        tone = " partner-section-alt" if i % 2 else ""
+        count = len(orgs)
+        jump.append(
+            f'        <li><a href="#partners-{slug}">{name}'
+            f'<span class="pj-n" aria-hidden="true">{count}</span>'
+            f'<span class="sr-only"> ({count} organizations)</span></a></li>'
         )
+        sections.append(
+            f"""<section class="section partner-section{tone}" id="partners-{slug}"
+         aria-labelledby="partners-{slug}-h">
+  <div class="wrap">
+    <header class="partner-section-head reveal">
+      <h2 class="h3" id="partners-{slug}-h">{name}</h2>
+      <p class="partner-section-intro">{GROUP_INTRO[slug]}</p>
+      <p class="partner-section-count">{count} organizations</p>
+    </header>
+    <ul class="partner-grid reveal">
+{cards}
+    </ul>
+  </div>
+</section>
+"""
+        )
+
+    total = sum(len(o) for _, _, o in PARTNER_GROUPS)
 
     return (
         page_hero(
@@ -711,24 +749,38 @@ def partners_page():
             "organizations connected to the test site.",
         )
         + f"""
-<section class="section">
+<section class="section section-intro partner-intro">
   <div class="wrap">
-    <header class="section-head reveal">
+    <header class="section-head partner-intro-head reveal">
       <h2 class="h2">Ecosystem organizations</h2>
-      <p class="section-intro-copy">Grouped by each organization's own field of work.
-        Select an organization to visit its website.</p>
+      <p class="section-intro-copy">{total} organizations, grouped by each one's own field of
+        work. Select an organization to visit its website.</p>
     </header>
 
-    <div class="partner-groups">
-{chr(10).join(groups)}
-    </div>
+    <nav class="partner-jump reveal" aria-label="Partner categories">
+      <ul>
+{chr(10).join(jump)}
+      </ul>
+    </nav>
+  </div>
+</section>
 
-    <p class="note note-inline">Organization names are listed as supplied. Nothing here states the
-      nature or status of any commercial relationship with the test site — those designations are
-      confirmed before publication. A website is linked only where the organization's official
-      URL has been confirmed; the rest appear unlinked rather than pointing somewhere guessed.
-      Each logo is its owner's trademark, shown with permission; organizations whose artwork is
-      not yet on file appear as set type.</p>
+{"".join(sections)}
+<section class="section partner-note-section">
+  <div class="wrap">
+    <details class="partner-note reveal">
+      <summary>About this list</summary>
+      <div class="partner-note-body">
+        <p>Organization names are listed as supplied. Nothing here states the nature or status
+          of any commercial relationship with the test site — those designations are confirmed
+          before publication, and the grouping above reflects each organization's own field of
+          work, nothing more.</p>
+        <p>A website is linked only where the organization's official URL has been confirmed;
+          the rest appear unlinked rather than pointing somewhere guessed. Each logo is its
+          owner's trademark, shown with permission; organizations whose artwork is not yet on
+          file appear as set type.</p>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -764,7 +816,7 @@ PAGES = [
      pricing_page, ()),
     ("partners.html", "/partners", "Partners",
      "Government, defense, academic and commercial organizations in the Midwest UAS Test Site "
-     "of Indiana ecosystem.", partners_page, ("partner-marquee.js",)),
+     "of Indiana ecosystem.", partners_page, ()),
 ]
 
 

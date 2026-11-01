@@ -94,7 +94,6 @@ assets/css/site.css     Design tokens + all styles
 assets/js/site.js       Nav, scroll reveal, scroll-spy, tabs, form handling
 assets/js/map-data.js   GENERATED geometry + tables for the capabilities map
 assets/js/capabilities-map.js   The interactive capabilities explorer
-assets/js/partner-marquee.js    The scrolling partner rows
 assets/fonts/           Self-hosted woff2 (no third-party font requests)
 assets/img/             Imagery and logos
 tools/site_data.py      Capabilities, facilities and partners — one copy, shared
@@ -244,24 +243,31 @@ gold. Here the land is near-white and gold is spent only on selection and
 highlight — on a map where gold means "this is selected", a gold landmass leaves
 the highlight nowhere to go.
 
-### The partner marquees
+### The partner directory
 
-`/partners` scrolls each category as one or two rows, adjacent rows running in
-opposite directions, built by `assets/js/partner-marquee.js`.
+`/partners` is a directory: five category sections, each a responsive grid of
+cards carrying a logo, the organization's name and — where the short name does
+not already say it — its expanded name.
 
-The loop is seamless because the track is the sequence repeated until it is wider
-than the viewport plus one sequence, and the animation moves it by the **measured**
-width of exactly one sequence — so the frame at the end of the cycle is
-pixel-identical to the frame at the start. The width is measured from the DOM and
-re-measured on resize, after logos load and after fonts settle; a guessed width is
-what produces a visible stutter. Movement is a CSS animation on `transform`, so it
-runs off the main thread; JavaScript only measures. Hovering or focusing a row
-sets `animation-play-state: paused`, which freezes the track where it is rather
-than resetting it.
+It replaced a set of scrolling logo marquees, and the reason is worth keeping.
+A marquee cannot hold a logo in a fixed position, so nothing lined up, names
+could not sit under the marks, and whatever was mid-travel at the edge was cut
+off. None of that is affordable in something people are meant to scan. The
+logos, the links and the optical sizing all carried over unchanged; only the
+arrangement is new. `assets/js/partner-marquee.js` is gone — recover it from
+git history if a scrolling strip is ever wanted somewhere else.
 
-Only the first sequence is real content. Every repeat is `aria-hidden` with its
-links taken out of the tab order, so each organization is announced once and
-tabbed to once.
+The page needs no JavaScript. The grid, the category jump list and the
+collapsible provenance note are CSS and HTML.
+
+**Sections alternate tone, not darkness.** `--paper` and `--paper-alt`, the
+site's two standing surfaces. A dark panel is the obvious way to separate
+bands, and it is unavailable here: all thirty-six marks are dark ink on
+transparent, so navy would swallow every one of them.
+
+**Card width is identical in every section.** The grid is `auto-fill`, not
+`auto-fit`. With `auto-fit` the four-partner category would stretch four cards
+across the full width and look nothing like the fourteen-partner one below it.
 
 **The wall is white, and every logo on it is dark-on-light.** Brands mostly
 publish the reversed, white version for dark backgrounds, and most of the
@@ -289,12 +295,20 @@ Editing a trademark is normally not ours to do — it is here because the client
 asked for it, having seen the measurements. Any brand that later supplies its
 own dark version should simply replace the file.
 
-All thirty-six organizations have their own artwork. The rest render as set type at the same
-cell height, so a row reads as one row whether or not every brand's file has
-arrived. To add one: drop the asset in `assets/img/partners/`, set `logo` on the
-organization in `site_data.py`, and re-run `build_pages.py`. The cell has a fixed
-height and a free width, so proportions are never forced; add `badge=True` for a
-square mark so it is not scaled up to a wordmark's height.
+All thirty-six organizations have their own artwork. Anything without a file
+renders as set type in the same slot, so a row reads as one row either way. To
+add one: drop the asset in `assets/img/partners/`, run `tools/trim_logos.py
+--write`, set `logo` on the organization in `site_data.py`, and re-run
+`build_pages.py`.
+
+**Trim the file before adding it.** `logo_box()` sizes each logo from its file
+dimensions, so transparent padding is read as part of the mark: the logo is
+scaled as though the empty space were ink and lands on the page noticeably
+smaller than its neighbours, with an aspect ratio that is not its own. Several
+supplied files were mostly padding — `thales.png` was 31% artwork, which is why
+it rendered as a sliver. `tools/trim_logos.py` crops to the alpha bounding box,
+is idempotent, and leaves a logo drawn on a solid plate alone, because there
+the plate is the mark.
 
 **Logos are sized optically, not to a common height.** Scaling every logo to the
 same height makes a square badge look twice the weight of a long wordmark;
@@ -303,8 +317,14 @@ wordmarks as slivers. `logo_box()` in `build_pages.py` splits the difference —
 height falls off with the aspect ratio raised to 0.34, where 0 would be equal
 height and 0.5 equal area — and emits the result as width/height attributes plus
 custom properties on each cell. Computing it at build time means the browser
-knows every box before the images arrive, so there is no layout shift and the
-marquee measures a stable track on its first pass.
+knows every box before the images arrive, so no card changes height underneath
+the grid.
+
+The slot then clamps the result with `max-width`/`max-height`. Clamping acts on
+one axis at a time, so the element's box can come out the wrong shape —
+`object-fit: contain` is what keeps the painted logo at its own proportions
+inside whatever box it is given. Without it a wide wordmark in a narrow card is
+stretched vertically.
 
 Note that the attributes alone are not enough: they are presentational hints,
 and any CSS `width`/`height` overrides them. That is why the box also comes
