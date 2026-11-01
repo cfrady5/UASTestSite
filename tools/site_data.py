@@ -33,15 +33,50 @@ changes what the published pages claim.
 #             brief supplied capability names only. Fill these in from approved
 #             copy and the detail panel picks them up automatically.
 #
-# sites       Facility ids (see FACILITIES) with a CONFIRMED relationship to the
-#             capability. Empty everywhere today, because no capability-to-site
-#             assignment has been supplied. While a list is empty the map shows
-#             the whole testing network in an explicit "assignment pending"
-#             state rather than guessing. Fill one in and that capability starts
-#             highlighting only its own sites.
+# sites       Facility ids (see FACILITIES) with a confirmed relationship to the
+#             capability. An empty list puts that capability into the
+#             "assignment pending" state, where the map shows the whole testing
+#             network and says so rather than guessing.
 #
-# counties    County ids (FIPS, 3-digit) with a confirmed relationship. Same
-#             rule as `sites`.
+#             SOURCE: the Capabilities slide of Website_Expansion.pptx, supplied
+#             by the client 2026-11-01 (slide 4). It plots a coloured symbol per
+#             capability at each location, which is the assignment this project
+#             had been missing. The slide carries its own legend, which fixes
+#             what each symbol means:
+#
+#               green hatched circle  Basic LOS      pale gold area  Kinetic
+#               teal band             BVLOS          gold circle     Urban
+#               blue lightning disc   cUAS           pale blue globe Sensor
+#               brown globe           Motion Capture teal flask      Hypersonics
+#
+#             Remote COA Development and Pilot Certification Course are the only
+#             two bullets with no symbol, which matches how they were already
+#             modelled here: services, with no testing footprint.
+#
+#             Reading those symbols off the map gives:
+#
+#               Basic LOS        Purdue, Terre Haute, Monroe County, Camp Atterbury
+#               BVLOS            Purdue, Terre Haute, Monroe County, Camp Atterbury,
+#                                Muscatatuck   (the corridor drawn through all five)
+#               Kinetic          Camp Atterbury, Muscatatuck   (two shaded areas)
+#               Urban            Muscatatuck
+#               cUAS             Camp Atterbury, Muscatatuck
+#               Sensor           Terre Haute
+#               Motion Capture   Purdue
+#               Hypersonics      Purdue, NSWC Crane
+#
+#             Cross-checked two ways: against the deck rendered to PDF at full
+#             magnification, and against the slide's own XML, where the vector
+#             symbols carry their legend colours — 00816D flasks at Purdue and
+#             NSWC Crane, 0D4D97 lightning discs at Camp Atterbury and
+#             Muscatatuck, FFD062 Kinetic areas spanning the same two, and the
+#             FFC844 Urban disc at Muscatatuck alone. Both readings agree.
+#
+#             It is still a reading of a diagram, not a data export. If a symbol
+#             was misread the fix is one line below, and nothing else changes.
+#
+# counties    County ids (FIPS, 3-digit) with a confirmed relationship. Monroe
+#             County is a county rather than a site, so it travels here.
 # ---------------------------------------------------------------------------
 CAPABILITIES = [
     {
@@ -52,8 +87,8 @@ CAPABILITIES = [
         "definition": "Flight testing conducted while the aircraft stays within "
                       "the operator's unaided visual line of sight.",
         "description": None,
-        "sites": [],
-        "counties": [],
+        "sites": ["purdue", "terre-haute", "camp-atterbury"],
+        "counties": ["105"],
     },
     {
         "id": "bvlos",
@@ -64,8 +99,8 @@ CAPABILITIES = [
                       "relying on detect-and-avoid and command-and-control systems "
                       "rather than direct observation.",
         "description": None,
-        "sites": [],
-        "counties": [],
+        "sites": ["purdue", "terre-haute", "camp-atterbury", "muscatatuck"],
+        "counties": ["105"],
         "corridors": [],   # no approved corridor geometry has been published
     },
     {
@@ -77,7 +112,7 @@ CAPABILITIES = [
                       "physical interception, which requires a range cleared and "
                       "controlled for it.",
         "description": None,
-        "sites": [],
+        "sites": ["camp-atterbury", "muscatatuck"],
         "counties": [],
     },
     {
@@ -89,7 +124,7 @@ CAPABILITIES = [
                       "line of sight, obstruct GPS and create the signal "
                       "conditions of a real city.",
         "description": None,
-        "sites": [],
+        "sites": ["muscatatuck"],
         "counties": [],
     },
     {
@@ -100,7 +135,7 @@ CAPABILITIES = [
         "definition": "Counter-UAS testing: evaluating systems that detect, track, "
                       "identify or defeat unmanned aircraft.",
         "description": None,
-        "sites": [],
+        "sites": ["camp-atterbury", "muscatatuck"],
         "counties": [],
     },
     {
@@ -112,7 +147,7 @@ CAPABILITIES = [
                       "infrared, radar and radio frequency — against known "
                       "references.",
         "description": None,
-        "sites": [],
+        "sites": ["terre-haute"],
         "counties": [],
     },
     {
@@ -124,7 +159,7 @@ CAPABILITIES = [
                       "attitude tracking, used to validate flight control and "
                       "autonomy before outdoor flight.",
         "description": None,
-        "sites": [],
+        "sites": ["purdue"],
         "counties": [],
     },
     {
@@ -136,7 +171,7 @@ CAPABILITIES = [
                       "Mach 5, where aerodynamic heating and material behaviour "
                       "dominate.",
         "description": None,
-        "sites": [],
+        "sites": ["purdue", "nswc-crane"],
         "counties": [],
     },
     {

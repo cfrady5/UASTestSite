@@ -169,11 +169,25 @@
            ' ' + b.x + ' ' + b.y;
   }
 
+  var countyById = {};
+  MAP.counties.forEach(function (c) { countyById[c.id] = c; });
+
   function linksFor(resolved) {
     if (resolved.basis === 'service' || resolved.basis === 'none') return [];
+
     var pts = resolved.sites
       .map(function (id) { return facilityById[id]; })
       .filter(Boolean);
+
+    /* Monroe County is a network location but has no marker, being a county.
+       Its label anchor — the area centroid build_map.py computes — stands in
+       as a node, so a capability that reaches it is not left with a gap in
+       the middle of its network. */
+    (resolved.counties || []).forEach(function (id) {
+      var geo = countyById[id];
+      if (geo && geo.c) pts.push({ id: 'county-' + id, x: geo.c[0], y: geo.c[1] });
+    });
+
     return spanningTree(pts).map(function (e) {
       return { a: e.a, b: e.b, d: arcPath(e.a, e.b) };
     });
@@ -895,7 +909,12 @@
     lineEntry('uasmap-road uasmap-road-interstate', 'Interstate');
     lineEntry('uasmap-river', 'River');
     lineEntry('uasmap-link', 'Sites sharing a capability');
-    lineEntry('uasmap-link uasmap-link-dashed', 'Network link, assignment pending');
+    /* Only worth a legend row while some capability is actually unassigned.
+       With every capability placed, a key for a line nothing draws is noise —
+       and reads as if part of the map were being withheld. */
+    if (MAP.capabilities.some(function (c) { return resolve(c).basis === 'pending'; })) {
+      lineEntry('uasmap-link uasmap-link-dashed', 'Network link, assignment pending');
+    }
 
     box.appendChild(list);
 
