@@ -28,7 +28,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 48          # cache buster; bump when site.css or site.js changes
+ASSET_V = 49          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -68,8 +68,8 @@ def head(title, desc, path):
 # This markup is duplicated by hand in index.html, membership.html and
 # membership-thanks.html, which predate the generator. Change one, change all
 # four — verify/nav.mjs fails if they drift apart.
+# No Home entry — the wordmark is the link home, on every page.
 NAV_LINKS = [
-    ("/", "Home"),
     ("/capabilities", "Capabilities"),
     ("/industries", "Industries"),
     ("/pricing", "Pricing &amp; Scheduling"),
@@ -103,7 +103,6 @@ def header(current=None):
       <button type="button" class="nav-toggle" id="navToggle" aria-label="Menu"
               aria-expanded="false" aria-controls="primaryNav">
         <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
-        <span class="nav-toggle-label" aria-hidden="true">Menu</span>
       </button>
     </div>
 

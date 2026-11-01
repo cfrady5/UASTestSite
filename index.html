@@ -27,7 +27,7 @@
       imagesizes="100vw">
 <!-- ?v= is a cache buster. Bump it whenever site.css or site.js changes, or browsers
      will keep serving the old file against fresh HTML. -->
-<link rel="stylesheet" href="assets/css/site.css?v=48">
+<link rel="stylesheet" href="assets/css/site.css?v=49">
 
 <script type="application/ld+json">
 {
@@ -56,7 +56,9 @@
 <!-- ============ HEADER ============ -->
 <header class="site-header" id="siteHeader">
   <div class="wrap header-inner">
-    <a class="brand" href="#top" aria-label="Midwest UAS Test Site of Indiana — home">
+    <!-- The wordmark is the only link home now that the menu has no Home
+         entry, so it is what marks the home page as current. -->
+    <a class="brand" href="#top" aria-current="page" aria-label="Midwest UAS Test Site of Indiana — home">
       <img class="brand-mark" src="assets/img/logo-shield-mark.png" alt="" width="96" height="110" aria-hidden="true">
       <span class="brand-text">
         <span class="brand-line-1">Midwest UAS Test Site</span>
@@ -69,13 +71,11 @@
       <button type="button" class="nav-toggle" id="navToggle" aria-label="Menu"
               aria-expanded="false" aria-controls="primaryNav">
         <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
-        <span class="nav-toggle-label" aria-hidden="true">Menu</span>
       </button>
     </div>
 
     <nav class="primary-nav" id="primaryNav" aria-label="Primary">
       <ul>
-        <li><a href="#top" class="is-active" aria-current="page">Home</a></li>
         <li><a href="/capabilities">Capabilities</a></li>
         <li><a href="/industries">Industries</a></li>
         <li><a href="/pricing">Pricing &amp; Scheduling</a></li>
@@ -435,6 +435,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=48" defer></script>
+<script src="assets/js/site.js?v=49" defer></script>
 </body>
 </html>

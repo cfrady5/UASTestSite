@@ -238,8 +238,8 @@ a { color: inherit; }
 .header-actions { display: flex; align-items: center; gap: .75rem; }
 
 .nav-toggle {
-  display: flex; align-items: center; gap: .5rem;
-  min-height: 2.75rem; padding: 0 .85rem;
+  display: flex; align-items: center; justify-content: center;
+  width: 2.75rem; height: 2.75rem; padding: 0;
   background: transparent; border: 1px solid rgba(255, 255, 255, .35);
   border-radius: var(--radius); cursor: pointer;
   color: #fff;
@@ -257,14 +257,6 @@ a { color: inherit; }
 .nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
 .nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(2) { opacity: 0; }
 .nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-/* A bare hamburger on a wide screen is a guessing game, so the button says
-   what it is. The word is decorative here — the accessible name comes from
-   the button's aria-label, which stays "Menu" at every width. */
-.nav-toggle-label {
-  font-size: .75rem; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; line-height: 1;
-}
 
 .primary-nav {
   position: absolute; top: 100%; right: var(--gutter);
@@ -329,12 +321,6 @@ a { color: inherit; }
     padding-inline: var(--gutter);
   }
 }
-/* No room for the word next to the wordmark on the narrowest phones. */
-@media (max-width: 419px) {
-  .nav-toggle-label { display: none; }
-  .nav-toggle { padding-inline: 0; width: 2.75rem; justify-content: center; }
-}
-
 /* Without JS the button cannot open anything, and the drawer is the only
    navigation there is — so the panel unfolds into a wrapping row under the
    bar and the button goes away. The nav is reachable before a byte of
