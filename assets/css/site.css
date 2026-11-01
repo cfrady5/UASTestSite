@@ -1063,6 +1063,72 @@ a { color: inherit; }
 .uasmap-marker { cursor: pointer; }
 .uasmap-glyph { fill: var(--ink-soft); stroke: var(--ink-soft); transition: fill .3s var(--ease), stroke .3s var(--ease); }
 .uasmap-marker.is-network .uasmap-glyph { fill: var(--blue-deep); stroke: var(--blue-deep); }
+/* ---------- Capability connections ---------- */
+/* Lines between facilities that share a capability. pointer-events is off on
+   the whole layer: it already sits under the markers in paint order, and this
+   makes doubly sure a curve passing over a marker cannot eat its click. */
+.uasmap-links { pointer-events: none; }
+
+.uasmap-link {
+  fill: none;
+  stroke: var(--gold-deep);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  opacity: .85;
+}
+/* A wider, fainter pass underneath instead of an SVG blur filter, which would
+   re-rasterise on every frame of a moving pulse. */
+.uasmap-link-glow {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 6;
+  stroke-linecap: round;
+  opacity: .18;
+}
+
+/* An unconfirmed link is dashed and quieter, so it cannot be mistaken for a
+   confirmed one at a glance. */
+.uasmap-linkset.is-illustrative .uasmap-link {
+  stroke-dasharray: 7 6;
+  opacity: .6;
+  stroke-width: 1.5;
+}
+.uasmap-linkset.is-illustrative .uasmap-link-glow { opacity: .1; }
+.uasmap-link-dashed { stroke-dasharray: 3 3; }
+
+.uasmap-linkset { opacity: 1; transition: opacity .35s var(--ease); }
+.uasmap-linkset.is-leaving { opacity: 0; }
+
+.uasmap-pulse-dot {
+  fill: var(--gold); stroke: var(--gold-deep); stroke-width: .6; opacity: .9;
+}
+
+/* A soft halo on the markers the selected capability covers. One slow breath,
+   not a radar sweep. */
+.uasmap-halo {
+  fill: none; stroke: var(--gold); stroke-width: 2.4;
+  opacity: 0; transition: opacity .3s var(--ease);
+}
+.uasmap-marker.is-highlighted .uasmap-halo { opacity: .55; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .uasmap-marker.is-highlighted .uasmap-halo { animation: uas-halo 3.4s var(--ease) infinite; }
+}
+@keyframes uas-halo {
+  0%, 100% { opacity: .22; r: 17; }
+  50%      { opacity: .62; r: 22; }
+}
+
+/* Motion turned down: no travelling pulses, no drawing-on. The lines are
+   simply present, and the dashes that carry meaning stay. */
+@media (prefers-reduced-motion: reduce) {
+  .uasmap-pulse-dot { display: none; }
+  .uasmap-link, .uasmap-link-glow {
+    stroke-dasharray: none !important; stroke-dashoffset: 0 !important;
+  }
+  .uasmap-linkset.is-illustrative .uasmap-link { stroke-dasharray: 7 6 !important; }
+}
+
 .uasmap-ring {
   fill: none; stroke: var(--blue-deep); stroke-width: 1.6; opacity: .45;
   transition: stroke .3s var(--ease), opacity .3s var(--ease);
@@ -1194,7 +1260,8 @@ a { color: inherit; }
   font-size: .75rem; line-height: 1.55; color: var(--ink-muted);
   max-width: 62ch;
 }
-.cap-legend-absent {
+.cap-legend-absent,
+.cap-legend-caveat {
   padding-left: .7rem;
   border-left: 2px solid var(--gold);
   color: var(--ink-soft);

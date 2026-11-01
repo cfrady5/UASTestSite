@@ -31,7 +31,7 @@ until a hard refresh — which is easy to misread as the change never having bee
 It lives in two places: `ASSET_V` at the top of `tools/build_pages.py` (for the generated
 pages), and literally in `index.html`, `membership.html` and `membership-thanks.html`.
 Change both and re-run the generator, or half the site runs on a stale stylesheet. Current
-value: **43**.
+value: **45**.
 
 ### Clean URLs
 
@@ -188,6 +188,39 @@ would otherwise be one unclickable blob. `declutter()` pushes markers to a
 minimum of 20 SVG units apart, about 6.5 km, which on a 450 km-tall state is
 under half a percent. Only the display position moves: the coordinates in the
 detail panel are as sourced, and any marker that moved says so.
+
+**Capability connections.** Selecting a capability draws curved gold lines
+between the facilities it links, revealed progressively, with a slow halo on
+each linked marker and an occasional pulse travelling the path. The topology is
+a minimum spanning tree over the selected markers — a full mesh of six sites is
+fifteen lines and reads as noise, where n-1 edges connect everything and stay
+legible.
+
+The lines are **relationships between facilities, not geography**. They are not
+flight paths, corridors, routes or airspace, they describe nothing about the
+ground between their two ends, and the legend and the detail panel both say so.
+A capability with a confirmed site list draws solid; one with no assignment on
+file draws the testing network dashed and at lower opacity, with the panel
+stating that the assignment is unconfirmed. Every capability is in that second
+state today.
+
+Three implementation notes worth keeping:
+
+- Endpoints come from the markers' own projected coordinates, so they are in the
+  same viewBox space as everything else and stay attached at any size. There is
+  no pixel arithmetic anywhere in the layer.
+- The layer sits under the markers in paint order *and* carries
+  `pointer-events: none`, so a curve passing over a marker can never swallow its
+  click.
+- The progressive reveal needs its three style writes separated by forced
+  reflows, in the order: transitions off, start value, flush, arm the
+  transition, flush, end value. Applying the start value and the transition
+  together does not animate — the browser coalesces the writes, sees only the
+  end state and skips straight to it. The line then sits there with an inline
+  dasharray of the full path length, which also cancels the short dash pattern
+  that marks an unconfirmed link, so it finishes drawing and looks solid. That
+  is the opposite of what it must convey, which is why the stroke is handed back
+  to the stylesheet on `transitionend`.
 
 **What the map does not draw.** There are layers for testing range polygons,
 BVLOS corridors and coverage areas, and all three are empty. No approved

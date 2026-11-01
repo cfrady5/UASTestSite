@@ -116,6 +116,70 @@
   }
 
   /* ---------------------------------------------------------------
+     Connection network
+     ---------------------------------------------------------------
+     The lines between facilities say "these sites are linked for this
+     capability". They are NOT flight paths, corridors or airspace of
+     any kind, and nothing here should ever be read as one: the geometry
+     is a curve between two markers, chosen because it is legible, not
+     because anything flies along it. The legend and the detail panel
+     both say so.
+
+     A full mesh of six sites is fifteen lines and reads as noise, so the
+     network is a minimum spanning tree over the selected markers — every
+     site connected, n-1 edges, and the shortest total length, which
+     happens to look like the way an operator would actually draw it.
+     --------------------------------------------------------------- */
+  function spanningTree(points) {
+    if (points.length < 2) return [];
+    var inTree = [points[0]];
+    var rest = points.slice(1);
+    var edges = [];
+
+    while (rest.length) {
+      var best = null;
+      inTree.forEach(function (a) {
+        rest.forEach(function (b, j) {
+          var d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (!best || d < best.d) best = { a: a, b: b, j: j, d: d };
+        });
+      });
+      edges.push({ a: best.a, b: best.b });
+      inTree.push(best.b);
+      rest.splice(best.j, 1);
+    }
+    return edges;
+  }
+
+  /* A quadratic curve bowed perpendicular to the chord. The control point
+     is derived from the two endpoints, so it lives in the same viewBox
+     space as the markers and holds its position at every size — there is
+     no pixel offset anywhere in this. */
+  function arcPath(a, b) {
+    var mx = (a.x + b.x) / 2;
+    var my = (a.y + b.y) / 2;
+    var dx = b.x - a.x;
+    var dy = b.y - a.y;
+    var len = Math.hypot(dx, dy) || 1;
+    var bow = len * 0.13;
+    // Bow consistently to one side so crossing links stay distinguishable.
+    var cx = mx + (-dy / len) * bow;
+    var cy = my + (dx / len) * bow;
+    return 'M' + a.x + ' ' + a.y + 'Q' + cx.toFixed(1) + ' ' + cy.toFixed(1) +
+           ' ' + b.x + ' ' + b.y;
+  }
+
+  function linksFor(resolved) {
+    if (resolved.basis === 'service' || resolved.basis === 'none') return [];
+    var pts = resolved.sites
+      .map(function (id) { return facilityById[id]; })
+      .filter(Boolean);
+    return spanningTree(pts).map(function (e) {
+      return { a: e.a, b: e.b, d: arcPath(e.a, e.b) };
+    });
+  }
+
+  /* ---------------------------------------------------------------
      Marker symbols
      ---------------------------------------------------------------
      Drawn as geometry rather than emoji or pictorial pins: this is an
@@ -275,6 +339,14 @@
     });
     node.appendChild(corridors);
 
+    /* -- Layer: capability connections -------------------------------
+       Under the markers in paint order AND pointer-events:none in CSS,
+       so a line can never swallow a click meant for a facility. Marked
+       aria-hidden: the relationship it draws is stated in words in the
+       detail panel, which is what a screen reader should get. */
+    var linkLayer = svg('g', { 'class': 'uasmap-links', 'aria-hidden': 'true' });
+    node.appendChild(linkLayer);
+
     /* -- Layer: markers ---------------------------------------------- */
     var markerLayer = svg('g', { 'class': 'uasmap-markers' });
     var markers = {};
@@ -299,6 +371,10 @@
       /* A named network location carries a ring as well as a darker glyph, so
          it is distinguishable without relying on the colour difference. */
       if (f.network) g.appendChild(svg('circle', { 'class': 'uasmap-ring', r: 17 }));
+      /* The halo only becomes visible on a highlighted marker. It is a
+         separate element from the focus ring and the selection pulse so the
+         three states can coexist without fighting over one circle. */
+      g.appendChild(svg('circle', { 'class': 'uasmap-halo', r: 19 }));
       g.appendChild(svg('circle', { 'class': 'uasmap-focus', r: 21 }));
       g.appendChild(svg('circle', { 'class': 'uasmap-pulse', r: 15 }));
       /* build_map.py sizes each hit area at half the distance to the nearest
@@ -328,7 +404,111 @@
     node.appendChild(markerLayer);
 
     return { node: node, markers: markers, counties: counties,
-             countyLabels: countyLabels };
+             countyLabels: countyLabels, links: linkLayer };
+  }
+
+  /* ---------------------------------------------------------------
+     Drawing and clearing the network
+     ---------------------------------------------------------------
+     Each redraw retires the old group before building the new one, so
+     switching capability never leaves a stale line behind and never
+     cross-fades two networks into each other. */
+  var linkSeq = 0;
+
+  function clearLinks(layer) {
+    Array.prototype.forEach.call(layer.children, function (g) {
+      if (g.classList.contains('is-leaving')) return;
+      g.classList.add('is-leaving');
+      if (reduceMotion) {
+        g.remove();
+      } else {
+        window.setTimeout(function () { g.remove(); }, 380);
+      }
+    });
+  }
+
+  function drawLinks(layer, links, basis) {
+    clearLinks(layer);
+    if (!links.length) return;
+
+    linkSeq += 1;
+    var group = svg('g', {
+      'class': 'uasmap-linkset' + (basis === 'confirmed' ? ' is-confirmed' : ' is-illustrative')
+    });
+
+    links.forEach(function (link, i) {
+      var id = 'uas-link-' + linkSeq + '-' + i;
+
+      var line = svg('path', { 'class': 'uasmap-link', id: id, d: link.d });
+      group.appendChild(svg('path', { 'class': 'uasmap-link-glow', d: link.d }));
+      group.appendChild(line);
+
+      if (reduceMotion) return;
+
+      /* Progressive draw. The dash pattern is the path's own length, so
+         the line reveals from one end rather than fading in. Measured
+         after the node is in the document, which is the only point
+         getTotalLength() is meaningful. */
+      window.requestAnimationFrame(function () {
+        var len = 0;
+        try { len = line.getTotalLength(); } catch (e) { /* detached */ }
+        if (!len) return;
+        var pair = [line, line.previousSibling];
+
+        /* Three steps with a forced reflow between each, and in this order.
+           Applying the start value and the transition in one write does not
+           animate: the browser coalesces the writes, sees only the end state
+           and skips straight to it. Turning transitions off, laying the start
+           value down, flushing, and only then arming the transition is what
+           makes the reveal actually run. */
+        pair.forEach(function (el) {
+          el.style.transition = 'none';
+          el.style.strokeDasharray = len;
+          el.style.strokeDashoffset = len;
+        });
+        void line.getBoundingClientRect();
+
+        pair.forEach(function (el) {
+          el.style.transition = 'stroke-dashoffset .85s var(--ease) ' + (i * 110) + 'ms';
+        });
+        void line.getBoundingClientRect();
+
+        pair.forEach(function (el) { el.style.strokeDashoffset = '0'; });
+
+        /* Hand the stroke back to the stylesheet once the reveal is done.
+           The inline dasharray above is the full path length — a single dash
+           covering the whole line — and inline styles beat the stylesheet, so
+           leaving it in place would quietly cancel the short dash pattern that
+           marks an unconfirmed link. The line would finish drawing and then be
+           solid, which is exactly the thing it must not look like. */
+        line.addEventListener('transitionend', function done(e) {
+          if (e.propertyName !== 'stroke-dashoffset') return;
+          line.removeEventListener('transitionend', done);
+          pair.forEach(function (el) {
+            el.style.strokeDasharray = '';
+            el.style.strokeDashoffset = '';
+            el.style.transition = '';
+          });
+        });
+      });
+
+      /* One pulse per link, travelling the path on a long cycle so the
+         map reads as live without ever becoming busy. animateMotion
+         follows the path itself, so it stays attached at any size. */
+      var pulse = svg('circle', { 'class': 'uasmap-pulse-dot', r: 3.2 });
+      var motion = svg('animateMotion', {
+        dur: '4.2s',
+        begin: (1.1 + i * 0.9) + 's;' + id + '-m.end+' + (3 + (i % 3) * 1.7) + 's',
+        id: id + '-m',
+        rotate: 'auto',
+        fill: 'freeze'
+      });
+      motion.appendChild(svg('mpath', { href: '#' + id }));
+      pulse.appendChild(motion);
+      group.appendChild(pulse);
+    });
+
+    layer.appendChild(group);
   }
 
   /* Label placement. The default sits to the right of the glyph; a handful
@@ -508,7 +688,14 @@
         'class': 'cap-panel-caveat',
         text: 'The map is showing every location in the testing network. Which ' +
               'of them performs this capability has not been confirmed, so ' +
-              'none is singled out here.'
+              'none is singled out here, and the connecting lines are drawn ' +
+              'dashed to mark them as the network rather than an assignment.'
+      }));
+    } else if (resolved.sites.length > 1) {
+      panel.appendChild(el('p', {
+        'class': 'cap-panel-caveat',
+        text: 'The lines connect the sites that share this capability. They are ' +
+              'not flight paths, corridors or airspace of any kind.'
       }));
     }
 
@@ -707,6 +894,8 @@
     entry('city', 'City');
     lineEntry('uasmap-road uasmap-road-interstate', 'Interstate');
     lineEntry('uasmap-river', 'River');
+    lineEntry('uasmap-link', 'Sites sharing a capability');
+    lineEntry('uasmap-link uasmap-link-dashed', 'Network link, assignment pending');
 
     box.appendChild(list);
 
@@ -714,6 +903,16 @@
       'class': 'cap-legend-note',
       text: 'A heavier ring marks one of the ' + NETWORK_IDS.length +
             ' named testing network locations plus Monroe County.'
+    }));
+
+    /* Its own class, not .cap-legend-absent: that one means "this layer has no
+       data", and this is a caveat about what a line that IS drawn means. */
+    box.appendChild(el('p', {
+      'class': 'cap-legend-note cap-legend-caveat',
+      text: 'Connecting lines show which facilities are linked for a capability. ' +
+            'They are illustrative relationships between sites — not flight ' +
+            'paths, corridors, routes or airspace, and they describe no ' +
+            'geography between the two ends.'
     }));
 
     var missing = [];
@@ -814,6 +1013,8 @@
   /* ---------------------------------------------------------------
      One render pass
      --------------------------------------------------------------- */
+  var lastLinkSignature = null;
+
   function apply() {
     var capability = state.capability ? byId[state.capability] : null;
     var resolved = resolve(capability);
@@ -841,6 +1042,15 @@
       g.classList.toggle('is-selected', selected);
       g.setAttribute('aria-pressed', String(selected));
     });
+
+    /* The network is redrawn only when the selection actually changes, not
+       on every apply() — a facility click must not restart the animation of
+       a network that has not moved. */
+    var signature = resolved.basis + ':' + resolved.sites.join(',');
+    if (signature !== lastLinkSignature) {
+      lastLinkSignature = signature;
+      drawLinks(map.links, linksFor(resolved), resolved.basis);
+    }
 
     var counties = {};
     (resolved.counties || []).forEach(function (id) { counties[id] = true; });
