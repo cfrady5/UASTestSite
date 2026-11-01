@@ -8,42 +8,59 @@
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------------------------------------------------------------
-     Mobile navigation
+     Navigation drawer
+
+     A disclosure, not a modal: the drawer is the whole nav at every
+     width, so it does not trap focus or lock the page. The button is
+     the only way in, Escape and a click outside are the ways out, and
+     the DOM order (button, then nav) means Tab walks straight into the
+     links with nothing to manage.
      --------------------------------------------------------------- */
   var toggle = document.getElementById('navToggle');
   var nav    = document.getElementById('primaryNav');
 
-  function closeNav() {
+  function navOpen() {
+    return !!toggle && toggle.getAttribute('aria-expanded') === 'true';
+  }
+
+  function setNav(open) {
     if (!nav || !toggle) return;
-    nav.classList.remove('is-open');
-    toggle.setAttribute('aria-expanded', 'false');
+    nav.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
   }
 
   if (toggle && nav) {
-    toggle.addEventListener('click', function () {
-      var open = toggle.getAttribute('aria-expanded') === 'true';
-      toggle.setAttribute('aria-expanded', String(!open));
-      nav.classList.toggle('is-open', !open);
-    });
+    toggle.addEventListener('click', function () { setNav(!navOpen()); });
 
-    // Close after choosing a destination on mobile
+    // Close after choosing a destination. Same-page anchors never reload,
+    // so without this the drawer would stay over the section it jumped to.
     nav.addEventListener('click', function (e) {
-      if (e.target.closest('a')) closeNav();
+      if (e.target.closest('a')) setNav(false);
     });
 
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
-        closeNav();
+      if (e.key === 'Escape' && navOpen()) {
+        setNav(false);
         toggle.focus();
       }
     });
 
-    // Reset the drawer when we grow past the mobile breakpoint
-    // Mirrors the nav breakpoint in site.css — change both together.
-    var desktop = window.matchMedia('(min-width: 821px)');
-    var onBreak = function (e) { if (e.matches) closeNav(); };
-    if (desktop.addEventListener) desktop.addEventListener('change', onBreak);
-    else if (desktop.addListener) desktop.addListener(onBreak);
+    /* A click anywhere else dismisses it. Listening on the document rather
+       than a backdrop element keeps the markup to the nav itself — there is
+       no overlay to get stacked under the sticky header. */
+    document.addEventListener('click', function (e) {
+      if (!navOpen()) return;
+      if (nav.contains(e.target) || toggle.contains(e.target)) return;
+      setNav(false);
+    });
+
+    /* Focus leaving the header closes it too, so a keyboard user tabbing
+       past the last link does not leave an open panel behind them. */
+    document.addEventListener('focusin', function (e) {
+      if (!navOpen()) return;
+      if (nav.contains(e.target) || toggle.contains(e.target)) return;
+      setNav(false);
+    });
   }
 
   /* ---------------------------------------------------------------

@@ -415,10 +415,7 @@ PARTNER_GROUPS = [
     ("government", "Government &amp; Economic Development", [
         _org("Indiana Economic Development Corporation (IEDC)", "https://iedc.in.gov/",
              "assets/img/partners/iedc.png", "IEDC"),
-        # REVIEW BUILD. The sponsor pack gives https://www.theari.us/ as ARI's
-        # official site; this points at their staging deployment to match the
-        # footer, which was set that way deliberately. Swap both before launch.
-        _org("Applied Research Institute (ARI)", "https://ari-for-review.vercel.app/",
+        _org("Applied Research Institute (ARI)", "https://theari.us/",
              "assets/img/partners/ari.png", short="ARI"),
         _org("Indiana National Guard (INNG)", IN_GOV, "assets/img/partners/indiana-national-guard.png", badge=True,
              short="INNG", expand="Indiana National Guard", restricted=True),

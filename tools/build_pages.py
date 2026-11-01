@@ -28,7 +28,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 46          # cache buster; bump when site.css or site.js changes
+ASSET_V = 48          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -63,9 +63,31 @@ def head(title, desc, path):
 """
 
 
-# The expansion pages are intentionally absent from the nav for now — they are
-# published for review and reachable by direct link only.
-HEADER = """
+# Every destination lives in the drawer behind the menu button, at every width.
+#
+# This markup is duplicated by hand in index.html, membership.html and
+# membership-thanks.html, which predate the generator. Change one, change all
+# four — verify/nav.mjs fails if they drift apart.
+NAV_LINKS = [
+    ("/", "Home"),
+    ("/capabilities", "Capabilities"),
+    ("/industries", "Industries"),
+    ("/pricing", "Pricing &amp; Scheduling"),
+    ("/partners", "Partners"),
+    ("/membership", "Membership"),
+]
+
+
+def nav_items(current=None):
+    out = []
+    for href, label in NAV_LINKS:
+        mark = ' class="is-active" aria-current="page"' if href == current else ""
+        out.append(f'        <li><a href="{href}"{mark}>{label}</a></li>')
+    return "\n".join(out)
+
+
+def header(current=None):
+    return f"""
 <header class="site-header" id="siteHeader">
   <div class="wrap header-inner">
     <a class="brand" href="/" aria-label="Midwest UAS Test Site of Indiana — home">
@@ -76,17 +98,20 @@ HEADER = """
       </span>
     </a>
 
-    <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav">
-      <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
-      <span class="sr-only">Menu</span>
-    </button>
+    <div class="header-actions">
+      <a class="btn btn-gold btn-sm nav-cta nav-cta-bar" href="/#contact">Submit an Inquiry</a>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Menu"
+              aria-expanded="false" aria-controls="primaryNav">
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="nav-toggle-label" aria-hidden="true">Menu</span>
+      </button>
+    </div>
 
     <nav class="primary-nav" id="primaryNav" aria-label="Primary">
       <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/membership">Membership</a></li>
+{nav_items(current)}
       </ul>
-      <a class="btn btn-gold btn-sm nav-cta" href="/#contact">Submit an Inquiry</a>
+      <a class="btn btn-gold btn-sm nav-cta nav-cta-drawer" href="/#contact">Submit an Inquiry</a>
     </nav>
   </div>
 </header>
@@ -107,7 +132,7 @@ FOOTER = f"""
       <!-- Federal agency seals and logos are intentionally absent. Under the Test Site
            OTA, Agency and Federal Government seals, trademarks, logos, service marks and
            trade names may not be displayed without prior written permission. -->
-      <a class="footer-logo" href="https://ari-for-review.vercel.app/" target="_blank" rel="noopener noreferrer">
+      <a class="footer-logo" href="https://theari.us/" target="_blank" rel="noopener noreferrer">
         <img src="assets/img/logo-ari.png" alt="Applied Research Institute"
              width="458" height="97" loading="lazy" decoding="async">
       </a>
@@ -748,7 +773,7 @@ def main():
     for filename, path, title, desc, body, scripts in PAGES:
         extra = "".join(
             f'\n<script src="assets/js/{s}?v={ASSET_V}" defer></script>' for s in scripts)
-        html = (head(title, desc, path) + HEADER + body() + FOOTER
+        html = (head(title, desc, path) + header(path) + body() + FOOTER
                 + extra + "\n</body>\n</html>\n")
         # Collapse the blank lines the templating leaves behind
         html = re.sub(r"\n{3,}", "\n\n", html)

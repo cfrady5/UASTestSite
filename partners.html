@@ -20,7 +20,7 @@
 
 <link rel="preload" href="/assets/fonts/Anton-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/Montserrat-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=46">
+<link rel="stylesheet" href="assets/css/site.css?v=48">
 </head>
 <body>
 
@@ -36,17 +36,25 @@
       </span>
     </a>
 
-    <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav">
-      <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
-      <span class="sr-only">Menu</span>
-    </button>
+    <div class="header-actions">
+      <a class="btn btn-gold btn-sm nav-cta nav-cta-bar" href="/#contact">Submit an Inquiry</a>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Menu"
+              aria-expanded="false" aria-controls="primaryNav">
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="nav-toggle-label" aria-hidden="true">Menu</span>
+      </button>
+    </div>
 
     <nav class="primary-nav" id="primaryNav" aria-label="Primary">
       <ul>
         <li><a href="/">Home</a></li>
+        <li><a href="/capabilities">Capabilities</a></li>
+        <li><a href="/industries">Industries</a></li>
+        <li><a href="/pricing">Pricing &amp; Scheduling</a></li>
+        <li><a href="/partners" class="is-active" aria-current="page">Partners</a></li>
         <li><a href="/membership">Membership</a></li>
       </ul>
-      <a class="btn btn-gold btn-sm nav-cta" href="/#contact">Submit an Inquiry</a>
+      <a class="btn btn-gold btn-sm nav-cta nav-cta-drawer" href="/#contact">Submit an Inquiry</a>
     </nav>
   </div>
 </header>
@@ -75,7 +83,7 @@
         <h3 class="h4" id="partners-government">Government &amp; Economic Development</h3>
         <ul class="partner-list" aria-labelledby="partners-government">
           <li class="partner-cell"><a class="partner-item" href="https://iedc.in.gov/" target="_blank" rel="noopener noreferrer"><img class="partner-logo" src="assets/img/partners/iedc.png" alt="Indiana Economic Development Corporation (IEDC)" width="212" height="41" style="--lw:212px;--lh:41px" loading="lazy" decoding="async"><span class="sr-only"> (opens in a new tab)</span></a></li>
-          <li class="partner-cell"><a class="partner-item" href="https://ari-for-review.vercel.app/" target="_blank" rel="noopener noreferrer"><img class="partner-logo" src="assets/img/partners/ari.png" alt="Applied Research Institute (ARI)" width="142" height="51" style="--lw:142px;--lh:51px" loading="lazy" decoding="async"><span class="sr-only"> (opens in a new tab)</span></a></li>
+          <li class="partner-cell"><a class="partner-item" href="https://theari.us/" target="_blank" rel="noopener noreferrer"><img class="partner-logo" src="assets/img/partners/ari.png" alt="Applied Research Institute (ARI)" width="142" height="51" style="--lw:142px;--lh:51px" loading="lazy" decoding="async"><span class="sr-only"> (opens in a new tab)</span></a></li>
           <li class="partner-cell"><a class="partner-item" href="https://www.in.gov/indiana-national-guard/" target="_blank" rel="noopener noreferrer"><img class="partner-logo" src="assets/img/partners/indiana-national-guard.png" alt="Indiana National Guard (INNG)" width="72" height="72" style="--lw:72px;--lh:72px" loading="lazy" decoding="async"><span class="sr-only"> — Indiana National Guard (opens in a new tab)</span></a></li>
           <li class="partner-cell"><a class="partner-item" href="https://prf.org/" target="_blank" rel="noopener noreferrer"><img class="partner-logo" src="assets/img/partners/purdue-research-foundation.png" alt="Purdue Research Foundation (PRF)" width="181" height="45" style="--lw:181px;--lh:45px" loading="lazy" decoding="async"><span class="sr-only"> — Purdue Research Foundation (opens in a new tab)</span></a></li>
         </ul>
@@ -168,7 +176,7 @@
       <!-- Federal agency seals and logos are intentionally absent. Under the Test Site
            OTA, Agency and Federal Government seals, trademarks, logos, service marks and
            trade names may not be displayed without prior written permission. -->
-      <a class="footer-logo" href="https://ari-for-review.vercel.app/" target="_blank" rel="noopener noreferrer">
+      <a class="footer-logo" href="https://theari.us/" target="_blank" rel="noopener noreferrer">
         <img src="assets/img/logo-ari.png" alt="Applied Research Institute"
              width="458" height="97" loading="lazy" decoding="async">
       </a>
@@ -184,7 +192,7 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=46" defer></script>
-<script src="assets/js/partner-marquee.js?v=46" defer></script>
+<script src="assets/js/site.js?v=48" defer></script>
+<script src="assets/js/partner-marquee.js?v=48" defer></script>
 </body>
 </html>
