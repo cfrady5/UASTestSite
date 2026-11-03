@@ -36,7 +36,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 71          # cache buster; bump when site.css or site.js changes
+ASSET_V = 74          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -725,7 +725,7 @@ def partners_page():
     which a directory can afford. The logos, links and optical sizing carry
     over unchanged; only the arrangement is new.
     """
-    jump, sections = [], []
+    sections = []
 
     for i, (slug, name, orgs) in enumerate(PARTNER_GROUPS):
         cards = "\n".join(partner_card(o) for o in orgs)
@@ -733,11 +733,6 @@ def partners_page():
         # on transparent, so a dark panel would swallow every one of them.
         tone = " partner-section-alt" if i % 2 else ""
         count = len(orgs)
-        jump.append(
-            f'        <li><a href="#partners-{slug}">{name}'
-            f'<span class="pj-n" aria-hidden="true">{count}</span>'
-            f'<span class="sr-only"> ({count} organizations)</span></a></li>'
-        )
         sections.append(
             f"""<section class="section partner-section{tone}" id="partners-{slug}"
          aria-labelledby="partners-{slug}-h">
@@ -766,12 +761,6 @@ def partners_page():
 <section class="section section-intro partner-intro" aria-label="Ecosystem organizations">
   <div class="wrap">
 {partner_lead(total)}
-
-    <nav class="partner-jump reveal" aria-label="Partner categories">
-      <ul>
-{chr(10).join(jump)}
-      </ul>
-    </nav>
   </div>
 </section>
 
