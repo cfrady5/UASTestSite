@@ -666,9 +666,6 @@ a { color: inherit; }
 /* Full content width, so the frame's left edge lines up with the heading
    above it. Centring it inside a narrower cap put the video on one axis and
    the type on another, which read as two unrelated blocks. */
-/* Ghost rather than gold: the video is what this section is for, and gold
-   here would compete with it. Same treatment as the hero's secondary action
-   on a dark field. */
 .launch-actions { margin-top: 1.6rem; }
 
 .launch-video { width: 100%; margin-inline: auto; }
