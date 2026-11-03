@@ -527,8 +527,21 @@ a { color: inherit; }
 /* Room for it, so the arrow never lands on the last line of copy. */
 .card-link p { padding-right: 1.6rem; }
 
-/* The button closing a section. */
-.section-actions { margin-top: clamp(1.75rem, 3.5vw, 2.5rem); }
+/* A heading with its action on the right, sharing one rule. The action sits
+   with the thing it acts on rather than at the foot of the list, so it is in
+   view before the cards are read rather than after.
+   It wraps below the heading when the two no longer fit, which on a phone is
+   immediately — a button squeezed beside a heading is worse than one under
+   it. */
+.section-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: .9rem 1.5rem;
+}
+.section-bar > .h3 { margin: 0; }
+/* The button is taller than the heading's line box, so the bar's auto height
+   left it overhanging the grid by a few pixels. This both separates them and
+   fixes the overlap. */
+.section-bar + .card-grid { margin-top: clamp(1.25rem, 2.5vw, 1.75rem); }
 
 @media (prefers-reduced-motion: reduce) {
   .card-link::after { transition: opacity .22s var(--ease); transform: none; }
