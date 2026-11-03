@@ -36,7 +36,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 75          # cache buster; bump when site.css or site.js changes
+ASSET_V = 76          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
