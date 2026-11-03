@@ -545,6 +545,22 @@ PARTNER_GROUPS = [
 # ---------------------------------------------------------------------------
 SPEAKERS = [
     {
+        "name": "Andrew Kossack",
+        "role": "President and CEO, Applied Research Institute",
+        "quote": "The Midwest and Great Lakes region already knows how to build things "
+                 "that matter. This initiative connects that manufacturing strength with "
+                 "the flight testing, defense expertise and research capabilities needed "
+                 "to bring new aviation technologies to market. Our ambition reaches "
+                 "across the region: help innovators develop their systems, prove them in "
+                 "relevant environments and build them here.",
+        "photo": "assets/img/speakers/andrew-kossack.jpg",
+        "alt": "Andrew Kossack speaking at a lectern bearing the Midwest UAS Test Site "
+               "shield, in front of a large American flag.",
+        "composite": "ARI launch press release — combines two excerpts of the published "
+                     "statement.",
+        "approved": False,
+    },
+    {
         "name": "Todd Young",
         "role": "U.S. Senator for Indiana",
         "quote": "Our state is uniquely positioned to help lead the way in the development "
@@ -581,22 +597,6 @@ SPEAKERS = [
         # NOT VERBATIM. Assembled from separate excerpts of the 29 October launch
         # transcript, so it omits intervening language. See `composite` below.
         "composite": "October 29 launch transcript — combines separate excerpts.",
-        "approved": False,
-    },
-    {
-        "name": "Andrew Kossack",
-        "role": "President and CEO, Applied Research Institute",
-        "quote": "The Midwest and Great Lakes region already knows how to build things "
-                 "that matter. This initiative connects that manufacturing strength with "
-                 "the flight testing, defense expertise and research capabilities needed "
-                 "to bring new aviation technologies to market. Our ambition reaches "
-                 "across the region: help innovators develop their systems, prove them in "
-                 "relevant environments and build them here.",
-        "photo": "assets/img/speakers/andrew-kossack.jpg",
-        "alt": "Andrew Kossack speaking at a lectern bearing the Midwest UAS Test Site "
-               "shield, in front of a large American flag.",
-        "composite": "ARI launch press release — combines two excerpts of the published "
-                     "statement.",
         "approved": False,
     },
 ]

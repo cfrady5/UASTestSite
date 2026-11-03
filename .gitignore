@@ -9,3 +9,8 @@ tools/.geo-cache/
 # Python bytecode from the build scripts.
 __pycache__/
 *.pyc
+
+# Camera originals for the launch photographs. tools/prepare_photos.py reads
+# them from here and writes the committed crops to assets/img/; the originals
+# are 11-13 MB each and have no business in the repository.
+tools/photo-src/

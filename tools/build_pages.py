@@ -30,11 +30,13 @@ outside those markers is left exactly as found.
 import pathlib
 import re
 
+from PIL import Image
+
 import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 61          # cache buster; bump when site.css or site.js changes
+ASSET_V = 64          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -864,19 +866,26 @@ def speaker_card(sp, missing):
 
     portrait = ""
     if photo:
+        # Real dimensions, read from the file. The crops are not all the same
+        # size — one source was too small to reach the others' width — so a
+        # hardcoded pair would reserve the wrong box and shift the card.
+        with Image.open(ROOT / photo) as im:
+            w, h = im.size
         portrait = (
             f'\n        <div class="speaker-portrait">'
-            f'<img src="{photo}" alt="{esc(alt)}" width="640" height="800" '
+            f'<img src="{photo}" alt="{esc(alt)}" width="{w}" height="{h}" '
             f'loading="lazy" decoding="async"></div>')
 
-    return f"""      <figure class="speaker{' speaker-has-photo' if photo else ''} reveal">{portrait}
+    # The photograph sits under the quote it belongs to, so the words come
+    # first and the speaker is who you see having said them.
+    return f"""      <figure class="speaker{' speaker-has-photo' if photo else ''} reveal">
         <div class="speaker-body">
           <blockquote class="speaker-quote"><p>{esc(sp['quote'])}</p></blockquote>
           <figcaption class="speaker-id">
             <span class="speaker-name">{esc(sp['name'])}</span>
             <span class="speaker-role">{esc(sp['role'])}</span>
           </figcaption>
-        </div>
+        </div>{portrait}
       </figure>"""
 
 

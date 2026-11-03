@@ -33,25 +33,32 @@ INBOX = ROOT / "tools" / "photo-src"
 OUT_SPEAKERS = ROOT / "assets" / "img" / "speakers"
 OUT_IMG = ROOT / "assets" / "img"
 
-PORTRAIT_RATIO = 4 / 5
-PORTRAIT_W = 640          # 2x the card's widest rendered portrait
+# The card shows the speaker at the lectern as a band under the quote, so the
+# crop is landscape. That also suits the sources, which are 3:2 frames — a 4:5
+# portrait crop would have thrown most of each one away and, on the one small
+# file here, left nothing worth enlarging.
+PORTRAIT_RATIO = 3 / 2
+PORTRAIT_W = 1040         # 2x the card's rendered width at the widest layout
 WIDE_W = 1600
 JPEG_Q = 82
 
-# source filename -> (output name, focal x, focal y)
+# source filename -> (output name, focal x, focal y, crop width as a fraction
+# of the source width)
 #
-# The focal point is the centre of the speaker's FACE as a fraction of the
-# source frame. The crop is built around it and then nudged to stay inside
-# the image, so a face near an edge still yields a full-size crop.
+# The focal point is the centre of the speaker's FACE in the source frame, read
+# off `--grid`. The crop is built around it and then nudged to stay inside the
+# image, so a face near an edge still yields a full-size crop. The width sets
+# how close the shot is: smaller is tighter.
 #
-# These are placeholders until the photographs are on disk — run --grid on
-# each file and replace them. A wrong focal point crops someone's head off,
-# so do not guess them.
+# Do not guess these. A wrong focal point crops someone's head off.
 PORTRAITS = {
-    "kossack.jpg":   ("andrew-kossack.jpg", 0.50, 0.42),
-    "young.jpg":     ("todd-young.jpg",     0.50, 0.42),
-    "frazier.jpg":   ("mitch-frazier.jpg",  0.50, 0.42),
-    "braun.jpg":     ("mike-braun.jpg",     0.50, 0.42),
+    # 800x827 and the subject is small in it, so this one takes the whole
+    # frame and still enlarges slightly. It is the only low-resolution source
+    # here; a bigger original would be worth asking for.
+    "kossack.jpg":   ("andrew-kossack.jpg", 0.50, 0.68, 0.72),
+    "young.jpg":     ("todd-young.jpg",     0.60, 0.72, 0.66),
+    "frazier.jpg":   ("mitch-frazier.jpg",  0.43, 0.59, 0.44),
+    "braun.jpg":     ("mike-braun.jpg",     0.47, 0.29, 0.44),
 }
 
 # Wide photographs, which keep their framing and are only resized.
@@ -59,10 +66,8 @@ WIDES = {
     "team.jpg": "launch-ribbon-cutting.jpg",
 }
 
-# The crop is taken this many face-heights tall. A portrait wants more than
-# the head: shoulders and a little air above read as a portrait, a tight
-# head crop reads as a passport photo.
-FRAME_HEIGHT_FRACTION = 0.55   # of the source height
+# Where the face sits in the finished crop, measured from the top.
+FACE_FROM_TOP = 0.34
 
 
 def find(name):
@@ -70,24 +75,27 @@ def find(name):
     return p if p.exists() else None
 
 
-def crop_portrait(im, fx, fy):
-    """A 4:5 box around (fx, fy), clamped inside the frame."""
-    h = int(im.height * FRAME_HEIGHT_FRACTION)
-    w = int(h * PORTRAIT_RATIO)
-    if w > im.width:                       # narrow source: fit to width
-        w, h = im.width, int(im.width / PORTRAIT_RATIO)
+def crop_portrait(im, fx, fy, wfrac):
+    """A 3:2 box around (fx, fy), clamped inside the frame."""
+    w = int(im.width * wfrac)
+    h = int(w / PORTRAIT_RATIO)
+    if h > im.height:                      # wide source: fit to height
+        h, w = im.height, int(im.height * PORTRAIT_RATIO)
 
     cx, cy = im.width * fx, im.height * fy
-    # Sit the face in the upper third rather than dead centre — that is where
-    # a face belongs in a portrait, and it leaves room for the shoulders.
+    # The face sits a third of the way down, which leaves the lectern and the
+    # speaker's hands in frame. Centring it vertically crops the head.
     left = int(cx - w / 2)
-    top = int(cy - h * 0.33)
+    top = int(cy - h * FACE_FROM_TOP)
     left = max(0, min(left, im.width - w))
     top = max(0, min(top, im.height - h))
     return im.crop((left, top, left + w, top + h))
 
 
 def save(im, path, width):
+    # Only ever downscale. Enlarging past the source invents detail that is
+    # not there and costs bytes to carry it; a small file is better served
+    # small and left to the browser than blown up here.
     if im.width > width:
         im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
     im = im.convert("RGB")
@@ -136,16 +144,20 @@ def main():
 
     dest_dir = pathlib.Path("/tmp/photo-preview") if a.preview else None
 
-    for src_name, (out_name, fx, fy) in PORTRAITS.items():
+    for src_name, (out_name, fx, fy, wfrac) in PORTRAITS.items():
         src = find(src_name)
         if not src:
             print(f"  {src_name:16} not in the inbox, skipped")
             continue
         im = Image.open(src)
+        cropped = crop_portrait(im, fx, fy, wfrac)
         out = (dest_dir / out_name) if dest_dir else (OUT_SPEAKERS / out_name)
-        size, nbytes = save(crop_portrait(im, fx, fy), out, PORTRAIT_W)
+        size, nbytes = save(cropped, out, PORTRAIT_W)
+        scale = size[0] / cropped.width
+        warn = "  ENLARGED, will be soft" if scale > 1.02 else ""
         print(f"  {src_name:16} {str(im.size):14} -> {out_name:22} "
-              f"{size[0]}x{size[1]}  {nbytes // 1024} KB")
+              f"crop {cropped.width}x{cropped.height} -> {size[0]}x{size[1]}  "
+              f"{nbytes // 1024} KB{warn}")
 
     for src_name, out_name in WIDES.items():
         src = find(src_name)
