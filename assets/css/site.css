@@ -498,6 +498,43 @@ a { color: inherit; }
 .card-accent { border-top-color: var(--gold); }
 .card-accent:hover { border-top-color: var(--blue); }
 
+/* A card that is itself a link. The anchor carries the card, so the whole
+   box is the hit area and the lift on hover is a promise it keeps.
+   The grid stretches the <li> to the row's height; without these the anchor
+   stops at its own content and the bottom of a short card is dead to the
+   pointer while still lifting on hover. */
+.card-grid > li:has(> .card-link) { display: flex; }
+.card-link {
+  flex: 1;
+  display: block;
+  text-decoration: none; color: inherit;
+  position: relative;
+}
+.card-link .h4 { color: var(--blue-deep); transition: color .22s var(--ease); }
+.card-link:hover .h4,
+.card-link:focus-visible .h4 { color: var(--blue); }
+/* The arrow is drawn, not written: a "read more" in every card repeats the
+   same three words down the row, and the heading already says where it goes. */
+.card-link::after {
+  content: "\2192";
+  position: absolute; right: 1.5rem; bottom: 1.2rem;
+  font-size: 1.125rem; line-height: 1; color: var(--gold-deep);
+  opacity: 0; transform: translateX(-.35rem);
+  transition: opacity .22s var(--ease), transform .22s var(--ease);
+}
+.card-link:hover::after,
+.card-link:focus-visible::after { opacity: 1; transform: translateX(0); }
+/* Room for it, so the arrow never lands on the last line of copy. */
+.card-link p { padding-right: 1.6rem; }
+
+/* The button closing a section. */
+.section-actions { margin-top: clamp(1.75rem, 3.5vw, 2.5rem); }
+
+@media (prefers-reduced-motion: reduce) {
+  .card-link::after { transition: opacity .22s var(--ease); transform: none; }
+  .card-link:hover::after, .card-link:focus-visible::after { transform: none; }
+}
+
 /* Image band */
 .band {
   height: clamp(180px, 26vw, 320px);

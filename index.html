@@ -27,7 +27,7 @@
       imagesizes="100vw">
 <!-- ?v= is a cache buster. Bump it whenever site.css or site.js changes, or browsers
      will keep serving the old file against fresh HTML. -->
-<link rel="stylesheet" href="assets/css/site.css?v=67">
+<link rel="stylesheet" href="assets/css/site.css?v=69">
 
 <script type="application/ld+json">
 {
@@ -311,21 +311,35 @@
     </header>
 
     <h3 class="h3 rule-top">Test site capabilities</h3>
+    <!-- Each card is a link to /capabilities. The cards already lifted on
+         hover, which promised something to click; now they deliver it. The
+         whole card is the target rather than a "read more" inside it, so the
+         hit area matches what the hover highlights. -->
     <ul class="card-grid card-grid-3">
-      <li class="card card-accent reveal">
-        <h4 class="h4">Defense &amp; Counter-UAS</h4>
-        <p>Kinetic testing, electronic warfare (EMS) and threat mitigation.</p>
+      <li class="reveal">
+        <a class="card card-accent card-link" href="/capabilities">
+          <h4 class="h4">Defense &amp; Counter-UAS</h4>
+          <p>Kinetic testing, electronic warfare (EMS) and threat mitigation.</p>
+        </a>
       </li>
-      <li class="card card-accent reveal">
-        <h4 class="h4">Public Safety &amp; Urban Operations</h4>
-        <p>Testing in complex environments, including GPS-denied areas, dense urban conditions
-          and extended BVLOS corridors.</p>
+      <li class="reveal">
+        <a class="card card-accent card-link" href="/capabilities">
+          <h4 class="h4">Public Safety &amp; Urban Operations</h4>
+          <p>Testing in complex environments, including GPS-denied areas, dense urban conditions
+            and extended BVLOS corridors.</p>
+        </a>
       </li>
-      <li class="card card-accent reveal">
-        <h4 class="h4">Commercial &amp; Agriculture</h4>
-        <p>Logistics, precision agriculture and large-scale data collection.</p>
+      <li class="reveal">
+        <a class="card card-accent card-link" href="/capabilities">
+          <h4 class="h4">Commercial &amp; Agriculture</h4>
+          <p>Logistics, precision agriculture and large-scale data collection.</p>
+        </a>
       </li>
     </ul>
+
+    <p class="section-actions reveal">
+      <a class="btn btn-gold" href="/capabilities">See more capabilities</a>
+    </p>
   </div>
 </section>
 
@@ -434,6 +448,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=67" defer></script>
+<script src="assets/js/site.js?v=69" defer></script>
 </body>
 </html>
