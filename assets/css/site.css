@@ -371,6 +371,28 @@ a { color: inherit; }
     linear-gradient(to top, rgba(14, 32, 80, .85) 0%, rgba(14, 32, 80, 0) 42%);
 }
 
+/* Airspace grid and range rings, over the scrim and under the text.
+   Masked diagonally so it only exists on the open right-hand side of the
+   frame: the headline column keeps the flat scrim it was tuned against, so
+   nothing here touches the contrast the type relies on. Decorative only —
+   the scrim is aria-hidden and this draws no content. */
+.hero-scrim::after {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(to right, rgba(255, 255, 255, .08) 0 1px, transparent 1px 7rem),
+    repeating-linear-gradient(to bottom, rgba(255, 255, 255, .08) 0 1px, transparent 1px 7rem),
+    repeating-radial-gradient(circle at 78% 42%,
+      rgba(255, 255, 255, .10) 0 1px, transparent 1px 7rem);
+  -webkit-mask-image: linear-gradient(100deg, transparent 38%, #000 82%);
+          mask-image: linear-gradient(100deg, transparent 38%, #000 82%);
+}
+@media (max-width: 899px) {
+  /* On a phone the text runs the full width, so there is no clear side to
+     put this on. It goes rather than sit behind the headline. */
+  .hero-scrim::after { display: none; }
+}
+
 .hero-inner {
   position: relative;
   padding-block: clamp(4rem, 9vw, 8rem) clamp(4.5rem, 9vw, 7.5rem);
@@ -398,12 +420,13 @@ a { color: inherit; }
 }
 .hero-lead {
   max-width: 50ch;
+  text-wrap: pretty;          /* no one-word last line under the headline */
   color: rgba(255, 255, 255, .92);
   font-size: clamp(1rem, .96rem + .25vw, 1.125rem);
   margin-bottom: 2.25rem;
   text-shadow: 0 1px 10px rgba(6, 18, 46, .45);
 }
-.hero-actions { display: flex; flex-wrap: wrap; gap: .9rem; }
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem; }
 
 /* Gold brand band closing the hero. Purely decorative — height is set here
    because it carries no content to size it. */
@@ -496,33 +519,138 @@ a { color: inherit; }
     linear-gradient(160deg, var(--blue) 0%, var(--blue-deep) 62%, var(--blue-night) 100%);
   color: #fff;
 }
-.quote-grid { display: grid; gap: 1.5rem; margin-top: clamp(1.75rem, 3vw, 2.75rem); }
-@media (min-width: 900px) { .quote-grid { grid-template-columns: 1fr 1fr; } }
+.quotes-head { max-width: 46ch; margin-bottom: clamp(2rem, 4vw, 3.25rem); }
 
-.quote-card {
-  position: relative;
-  background: rgba(255, 255, 255, .07);
-  border: 1px solid rgba(255, 255, 255, .16);
-  border-left: 5px solid var(--gold);
+/* ---------- Speaker cards ----------
+   Sized by content, not by a fixed column count: two speakers sit side by
+   side, three fit a row, four wrap to two rows of two. The quotes are
+   verbatim and vary in length, so the cards stretch to a common height
+   rather than the longest quote being clipped to fit. */
+.speaker-grid {
+  display: grid; gap: clamp(1.25rem, 2.4vw, 2rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(23rem, 100%), 1fr));
+  align-items: stretch;
+}
+
+.speaker {
+  display: flex; flex-direction: column;
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .15);
+  border-top: 3px solid var(--gold);
   border-radius: var(--radius);
-  padding: 2.75rem 1.75rem 1.75rem;
-  backdrop-filter: blur(2px);
+  overflow: hidden;
+  transition: background-color .25s var(--ease), border-color .25s var(--ease);
 }
-.quote-card::before {
+.speaker:hover { background: rgba(255, 255, 255, .09); border-color: rgba(255, 255, 255, .26); }
+
+/* A portrait is optional. When one is on file the card leads with it; when
+   none is, the card is a pull quote and nothing hints that something is
+   missing — no silhouette, no grey box. */
+.speaker-portrait {
+  flex: none;
+  aspect-ratio: 4 / 5;
+  max-height: 17rem;
+  overflow: hidden;
+  background: var(--blue-night);
+}
+.speaker-portrait img {
+  width: 100%; height: 100%;
+  /* Heads sit high in a portrait, so crop from the top — centring takes the
+     chin off. */
+  object-fit: cover; object-position: center top;
+  transition: transform .5s var(--ease);
+}
+.speaker:hover .speaker-portrait img { transform: scale(1.03); }
+
+/* Side by side once there is room for both to be worth looking at. */
+@media (min-width: 560px) {
+  .speaker-has-photo { flex-direction: row; }
+  .speaker-has-photo .speaker-portrait { width: 40%; max-height: none; aspect-ratio: auto; }
+  .speaker-has-photo .speaker-body { flex: 1; }
+}
+
+.speaker-body {
+  position: relative;
+  /* flex:1 so the body claims the height the grid gave the card; without it
+     a short quote leaves the attribution stranded mid-card while a long one
+     sits at the foot, and the two never line up. */
+  flex: 1;
+  display: flex; flex-direction: column;
+  padding: 2.5rem 1.6rem 1.5rem;
+}
+.speaker-body::before {
   content: "\201C";
-  position: absolute; top: -.35rem; left: 1.4rem;
+  position: absolute; top: .1rem; left: 1.3rem;
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: 5.5rem; line-height: 1; color: var(--gold);
+  font-size: 4.5rem; line-height: 1; color: var(--gold); opacity: .85;
 }
-.quote-card blockquote p {
-  font-size: clamp(1rem, .96rem + .35vw, 1.1875rem);
-  line-height: 1.6; color: rgba(255, 255, 255, .96);
+
+.speaker-quote { flex: 1; }
+.speaker-quote p {
+  font-size: clamp(1rem, .96rem + .3vw, 1.125rem);
+  line-height: 1.65; color: rgba(255, 255, 255, .95);
+  text-wrap: pretty;
 }
-.quote-card figcaption {
-  margin-top: 1.25rem; padding-top: 1rem;
+
+.speaker-id {
+  display: flex; flex-direction: column; gap: .2rem;
+  margin-top: 1.4rem; padding-top: 1.1rem;
   border-top: 1px solid rgba(255, 255, 255, .2);
-  font-size: .8125rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+}
+.speaker-name {
+  font-size: .9375rem; font-weight: 700; letter-spacing: .02em;
+  color: #fff;
+}
+.speaker-role {
+  font-size: .75rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
   color: var(--gold);
+}
+
+/* ============================================================
+   LAUNCH RECAP VIDEO
+   ============================================================ */
+/* Night blue for most of its height, then easing into the colour the quotes
+   gradient below starts from, so the two dark sections meet without a seam
+   and read as one chapter — the launch, then what was said about it. The
+   fade is held off until 72% so the video itself stays on the flat dark
+   field its border was judged against. */
+.section-launch {
+  background: linear-gradient(to bottom,
+    var(--blue-night) 0%, var(--blue-night) 72%, var(--blue) 100%);
+  color: #fff;
+}
+.section-launch :focus-visible { outline-color: var(--gold); }
+
+.launch-head { max-width: 58ch; margin-bottom: clamp(2rem, 4vw, 3rem); }
+.launch-lead {
+  margin-top: 1.1rem;
+  font-size: clamp(1rem, .96rem + .3vw, 1.125rem);
+  line-height: 1.7; color: rgba(255, 255, 255, .86);
+  text-wrap: pretty;
+}
+
+/* Full content width, so the frame's left edge lines up with the heading
+   above it. Centring it inside a narrower cap put the video on one axis and
+   the type on another, which read as two unrelated blocks. */
+.launch-video { width: 100%; margin-inline: auto; }
+
+/* aspect-ratio on the wrapper, iframe absolutely filling it. The ratio is
+   reserved before the frame loads, so the page never jumps, and 16:9 is
+   exact at every width rather than approximated by a padding hack. */
+.launch-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .45);
+}
+.launch-frame iframe {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  border: 0;
+  display: block;
 }
 
 /* ============================================================
@@ -1871,4 +1999,18 @@ a.pc-link:focus-visible::after { opacity: 1; }
   .hero-sub, .hero-lead, .contact-copy, .quote-card blockquote p { color: #000 !important; }
   .reveal { opacity: 1 !important; transform: none !important; }
   body { font-size: 11pt; }
+}
+
+/* The ribbon-cutting photograph under the launch video. Same border and
+   radius as the video frame so the two read as one editorial unit. */
+.launch-photo { margin-top: clamp(1.5rem, 3vw, 2.5rem); }
+.launch-photo img {
+  display: block; width: 100%; height: auto;
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: var(--radius-lg);
+}
+.launch-photo figcaption {
+  margin-top: .85rem;
+  font-size: .8125rem; line-height: 1.6;
+  color: rgba(255, 255, 255, .72);
 }

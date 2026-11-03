@@ -16,9 +16,15 @@ editing a shared partial or a page body:
 
     python3 tools/build_pages.py
 
-It only writes the expansion pages. index.html, membership.html and
+It writes the expansion pages in full. membership.html and
 membership-thanks.html predate it and are maintained directly, so their markup
 is left alone.
+
+index.html is also hand-maintained, with one exception: the leadership
+remarks. Those come from SPEAKERS in site_data.py and are written into the
+region between the `leadership:start` / `leadership:end` markers, so adding a
+speaker is a dict and a re-run rather than hand-copied markup. Everything
+outside those markers is left exactly as found.
 """
 
 import pathlib
@@ -28,7 +34,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 56          # cache buster; bump when site.css or site.js changes
+ASSET_V = 61          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -802,6 +808,136 @@ PAGES = [
 ]
 
 
+# --------------------------------------------------------------------------
+# Leadership remarks, written into index.html between its markers
+# --------------------------------------------------------------------------
+LEAD_START = "<!-- leadership:start — generated from SPEAKERS in site_data.py -->"
+LEAD_END = "<!-- leadership:end -->"
+LAUNCH_START = "<!-- launchphoto:start — generated from LAUNCH_PHOTO in site_data.py -->"
+LAUNCH_END = "<!-- launchphoto:end -->"
+
+
+def launch_photo_block():
+    """The ribbon-cutting photograph under the video.
+
+    Rendered only when the file is actually on disk — the section is complete
+    without it, so a missing asset degrades to video-only rather than to a
+    broken image in the middle of the page.
+    """
+    ph = getattr(site_data, "LAUNCH_PHOTO", None)
+    if not ph or not (ROOT / ph["src"]).exists():
+        return f"{LAUNCH_START}\n    {LAUNCH_END}"
+    return f"""{LAUNCH_START}
+    <figure class="launch-photo reveal">
+      <img src="{ph['src']}" alt="{esc(ph['alt'])}"
+           width="1600" height="1067" loading="lazy" decoding="async">
+      <figcaption>{esc(ph['caption'])}</figcaption>
+    </figure>
+    {LAUNCH_END}"""
+
+
+def esc(s):
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def speaker_card(sp, missing):
+    """One speaker.
+
+    A portrait is optional and its absence is a first-class state, not a hole
+    to fill: no silhouette, no initials tile, no grey box. The card simply
+    sets the quote wider and reads as a pull quote until a real photograph
+    arrives.
+
+    A path that is set but not yet on disk counts as absent. That keeps a
+    photograph's arrival to one step — drop the file in and re-run — without
+    ever publishing an <img> pointing at a 404.
+    """
+    photo, alt = sp.get("photo"), sp.get("alt")
+    if photo and not alt:
+        raise SystemExit(
+            f"SPEAKERS: {sp['name']} has a photo but no alt text. A portrait "
+            f"without a description is unreadable to anyone using a screen "
+            f"reader, so the build stops here rather than shipping it.")
+    if photo and not (ROOT / photo).exists():
+        missing.append(f"{sp['name']} -> {photo}")
+        photo = None
+
+    portrait = ""
+    if photo:
+        portrait = (
+            f'\n        <div class="speaker-portrait">'
+            f'<img src="{photo}" alt="{esc(alt)}" width="640" height="800" '
+            f'loading="lazy" decoding="async"></div>')
+
+    return f"""      <figure class="speaker{' speaker-has-photo' if photo else ''} reveal">{portrait}
+        <div class="speaker-body">
+          <blockquote class="speaker-quote"><p>{esc(sp['quote'])}</p></blockquote>
+          <figcaption class="speaker-id">
+            <span class="speaker-name">{esc(sp['name'])}</span>
+            <span class="speaker-role">{esc(sp['role'])}</span>
+          </figcaption>
+        </div>
+      </figure>"""
+
+
+def leadership_block(missing):
+    cards = "\n".join(speaker_card(s, missing) for s in site_data.SPEAKERS)
+    return f"""{LEAD_START}
+    <div class="speaker-grid">
+{cards}
+    </div>
+    {LEAD_END}"""
+
+
+def patch_index():
+    """Rewrite only the marked region of index.html, leaving the rest alone."""
+    f = ROOT / "index.html"
+    s = f.read_text()
+    if LEAD_START not in s or LEAD_END not in s:
+        print("index.html: leadership markers not found, skipped")
+        return
+
+    missing = []
+    start = s.index(LEAD_START)
+    end = s.index(LEAD_END) + len(LEAD_END)
+    out = s[:start] + leadership_block(missing) + s[end:]
+
+    # Counted before the launch photo joins the list — that one is not a
+    # speaker, and folding it in here reported a negative portrait count.
+    n = len(site_data.SPEAKERS)
+    shown = n - len(missing)
+
+    if LAUNCH_START in out and LAUNCH_END in out:
+        a = out.index(LAUNCH_START)
+        b = out.index(LAUNCH_END) + len(LAUNCH_END)
+        out = out[:a] + launch_photo_block() + out[b:]
+        ph = getattr(site_data, "LAUNCH_PHOTO", None)
+        if ph and not (ROOT / ph["src"]).exists():
+            missing.append(f"launch recap photo -> {ph['src']}")
+
+    if out != s:
+        f.write_text(out)
+    print(f"wrote index.html             -> leadership remarks "
+          f"({n} speaker{'s' if n != 1 else ''}, {shown} with a portrait)")
+
+    if missing:
+        print("  portraits not yet on disk, so those cards render without one:")
+        for m in missing:
+            print(f"    - {m}")
+
+    # Not a nag: a quote assembled from separate excerpts puts words in a named
+    # person's mouth in an order they did not use. It stays on screen at every
+    # build until someone decides it is cleared.
+    unapproved = [sp for sp in site_data.SPEAKERS
+                  if sp.get("composite") and not sp.get("approved")]
+    if unapproved:
+        print("  REVIEW — quotes assembled from separate excerpts, not yet approved:")
+        for sp in unapproved:
+            print(f"    - {sp['name']}: {sp['composite']}")
+        print("    Mark approved=True in site_data.py once the wording is signed off,")
+        print("    or add ellipses at the omissions and approve that version.")
+
+
 def main():
     for filename, path, title, desc, body, scripts in PAGES:
         extra = "".join(
@@ -812,6 +948,7 @@ def main():
         html = re.sub(r"\n{3,}", "\n\n", html)
         (ROOT / filename).write_text(html)
         print(f"wrote {filename:24} -> {path}")
+    patch_index()
 
 
 if __name__ == "__main__":

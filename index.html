@@ -27,7 +27,7 @@
       imagesizes="100vw">
 <!-- ?v= is a cache buster. Bump it whenever site.css or site.js changes, or browsers
      will keep serving the old file against fresh HTML. -->
-<link rel="stylesheet" href="assets/css/site.css?v=56">
+<link rel="stylesheet" href="assets/css/site.css?v=61">
 
 <script type="application/ld+json">
 {
@@ -173,33 +173,91 @@
   </div>
 </section>
 
+<!-- ============ LAUNCH RECAP VIDEO ============ -->
+<!-- Runs straight into the leadership section below it: both are dark, and
+     together they read as one editorial chapter — the launch, then what the
+     state's leaders said about it. -->
+<section class="section section-launch" aria-labelledby="launch-h">
+  <div class="wrap">
+    <header class="launch-head reveal">
+      <p class="eyebrow eyebrow-gold">Official launch recap</p>
+      <h2 class="h2 h2-light" id="launch-h">A new era of unmanned aviation begins here</h2>
+      <p class="launch-lead">The launch of the Midwest UAS Test Site of Indiana marks a
+        significant milestone for unmanned aviation, bringing together leaders in defense,
+        manufacturing, research and technology to accelerate the future of flight.</p>
+    </header>
+
+    <!-- The ratio is held by the wrapper, not by the iframe's own width/height
+         attributes, so the frame can be fluid without ever reserving the wrong
+         box and shifting the page as it loads. -->
+    <figure class="launch-video reveal">
+      <div class="launch-frame">
+        <iframe src="https://www.youtube.com/embed/xlPwOLCDKng"
+                title="Midwest UAS Test Site of Indiana Launch Recap"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen></iframe>
+      </div>
+    </figure>
+
+    <!-- Generated. Edit LAUNCH_PHOTO in tools/site_data.py and re-run
+         tools/build_pages.py — do not hand-edit between the markers. -->
+    <!-- launchphoto:start — generated from LAUNCH_PHOTO in site_data.py -->
+    <!-- launchphoto:end -->
+  </div>
+</section>
+
 <!-- ============ LEADERSHIP VISION ============ -->
 <section class="section section-quotes" aria-labelledby="quotes-h">
   <div class="wrap">
-    <p class="eyebrow eyebrow-gold">Leadership Vision</p>
-    <h2 class="h2 h2-light" id="quotes-h">What Indiana's leaders are saying</h2>
+    <header class="quotes-head reveal">
+      <p class="eyebrow eyebrow-gold">Leadership Vision</p>
+      <h2 class="h2 h2-light" id="quotes-h">What Indiana's leaders are saying</h2>
+    </header>
 
-    <div class="quote-grid">
-      <figure class="quote-card reveal">
-        <blockquote>
-          <p>Our state is uniquely positioned to help lead the way in the development and
-            deployment of this important technology. With our strong defense industry, advanced
-            manufacturing capabilities, innovative colleges and universities, and skilled Hoosier
-            workforce, Indiana is ready to help unleash American Drone Dominance.</p>
-        </blockquote>
-        <figcaption>Senator Todd Young</figcaption>
+    <!-- Generated. Edit SPEAKERS in tools/site_data.py and re-run
+         tools/build_pages.py — do not hand-edit between the markers. -->
+    <!-- leadership:start — generated from SPEAKERS in site_data.py -->
+    <div class="speaker-grid">
+      <figure class="speaker reveal">
+        <div class="speaker-body">
+          <blockquote class="speaker-quote"><p>Our state is uniquely positioned to help lead the way in the development and deployment of this important technology. With our strong defense industry, advanced manufacturing capabilities, innovative colleges and universities, and skilled Hoosier workforce, Indiana is ready to help unleash American Drone Dominance.</p></blockquote>
+          <figcaption class="speaker-id">
+            <span class="speaker-name">Todd Young</span>
+            <span class="speaker-role">U.S. Senator for Indiana</span>
+          </figcaption>
+        </div>
       </figure>
-
-      <figure class="quote-card reveal">
-        <blockquote>
-          <p>Indiana has always stepped up to use our skills and labor to support America's
-            defense. Indiana's advanced manufacturing capacity and our concentration of defense
-            and research assets make us uniquely suited to lead in America's pursuit of drone
-            dominance.</p>
-        </blockquote>
-        <figcaption>Governor Mike Braun</figcaption>
+      <figure class="speaker reveal">
+        <div class="speaker-body">
+          <blockquote class="speaker-quote"><p>Indiana has always stepped up to use our skills and labor to support America's defense. Indiana's advanced manufacturing capacity and our concentration of defense and research assets make us uniquely suited to lead in America's pursuit of drone dominance.</p></blockquote>
+          <figcaption class="speaker-id">
+            <span class="speaker-name">Mike Braun</span>
+            <span class="speaker-role">Governor of Indiana</span>
+          </figcaption>
+        </div>
+      </figure>
+      <figure class="speaker reveal">
+        <div class="speaker-body">
+          <blockquote class="speaker-quote"><p>What makes this even more special is the opportunity it creates for innovators not just to test here, not just to innovate here, but to iterate here: to pilot new technologies, to tackle new challenges, and to move from benchtop to flight and then to full-scale production. Let Indiana be the domestic capital for drone and UAS manufacturing.</p></blockquote>
+          <figcaption class="speaker-id">
+            <span class="speaker-name">Mitch Frazier</span>
+            <span class="speaker-role">President, Indiana Economic Development Corporation</span>
+          </figcaption>
+        </div>
+      </figure>
+      <figure class="speaker reveal">
+        <div class="speaker-body">
+          <blockquote class="speaker-quote"><p>The Midwest and Great Lakes region already knows how to build things that matter. This initiative connects that manufacturing strength with the flight testing, defense expertise and research capabilities needed to bring new aviation technologies to market. Our ambition reaches across the region: help innovators develop their systems, prove them in relevant environments and build them here.</p></blockquote>
+          <figcaption class="speaker-id">
+            <span class="speaker-name">Andrew Kossack</span>
+            <span class="speaker-role">President and CEO, Applied Research Institute</span>
+          </figcaption>
+        </div>
       </figure>
     </div>
+    <!-- leadership:end -->
   </div>
 </section>
 
@@ -435,6 +493,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=56" defer></script>
+<script src="assets/js/site.js?v=61" defer></script>
 </body>
 </html>

@@ -504,3 +504,114 @@ PARTNER_GROUPS = [
              short="BAK", expand="Columbus Municipal Airport"),
     ]),
 ]
+
+
+# ---------------------------------------------------------------------------
+# LEADERSHIP REMARKS  (home page)
+# ---------------------------------------------------------------------------
+# Rendered by leadership_section() in build_pages.py into the marked region of
+# index.html. Adding a speaker is a dict here and a re-run of build_pages.py —
+# the layout takes any number of them.
+#
+# quote   As supplied. Never paraphrased, never trimmed to fit a card — if a
+#         quote is long the card grows, which is the right trade.
+#
+# composite / approved
+#         Set `composite` when a quote is assembled from separate excerpts
+#         rather than spoken as one continuous passage, with a note saying
+#         where it came from. Those words are being put in a named person's
+#         mouth in an order they did not use, so build_pages.py prints a
+#         warning on every run until `approved` is True — either because the
+#         speaker's office has signed off on the shortened form, or because
+#         ellipses now mark the omissions.
+#
+# role    The speaker's title as they hold it. Shown under the name.
+#
+# photo   Path under assets/img/speakers/, or None.
+#
+#         None is a supported state, not a gap to paper over: the card simply
+#         renders without a portrait. There is deliberately no placeholder
+#         silhouette or initials block — an invented face, or a grey box where
+#         a face should be, is worse on a page like this than no face at all.
+#         Drop the file in, set the path, re-run, and the portrait appears.
+#
+# alt     Describes the photograph for anyone who cannot see it. Required
+#         whenever photo is set; the builder refuses to publish a portrait
+#         without one.
+#
+# A portrait should be a head-and-shoulders crop, roughly 4:5, at least
+# 640px wide. The card crops to 4:5 from the top, because that is where heads
+# sit in a portrait — a centre crop takes the chin off.
+# ---------------------------------------------------------------------------
+SPEAKERS = [
+    {
+        "name": "Todd Young",
+        "role": "U.S. Senator for Indiana",
+        "quote": "Our state is uniquely positioned to help lead the way in the development "
+                 "and deployment of this important technology. With our strong defense "
+                 "industry, advanced manufacturing capabilities, innovative colleges and "
+                 "universities, and skilled Hoosier workforce, Indiana is ready to help "
+                 "unleash American Drone Dominance.",
+        "photo": "assets/img/speakers/todd-young.jpg",
+        "alt": "U.S. Senator Todd Young speaking at a lectern bearing the Midwest UAS "
+               "Test Site shield, in front of a large American flag.",
+    },
+    {
+        "name": "Mike Braun",
+        "role": "Governor of Indiana",
+        "quote": "Indiana has always stepped up to use our skills and labor to support "
+                 "America's defense. Indiana's advanced manufacturing capacity and our "
+                 "concentration of defense and research assets make us uniquely suited to "
+                 "lead in America's pursuit of drone dominance.",
+        "photo": "assets/img/speakers/mike-braun.jpg",
+        "alt": "Governor Mike Braun speaking at a lectern bearing the Midwest UAS Test "
+               "Site shield, between the American and Indiana flags.",
+    },
+    {
+        "name": "Mitch Frazier",
+        "role": "President, Indiana Economic Development Corporation",
+        "quote": "What makes this even more special is the opportunity it creates for "
+                 "innovators not just to test here, not just to innovate here, but to "
+                 "iterate here: to pilot new technologies, to tackle new challenges, and "
+                 "to move from benchtop to flight and then to full-scale production. Let "
+                 "Indiana be the domestic capital for drone and UAS manufacturing.",
+        "photo": "assets/img/speakers/mitch-frazier.jpg",
+        "alt": "Mitch Frazier speaking at a lectern bearing the Midwest UAS Test Site "
+               "shield, between the American and Indiana flags.",
+        # NOT VERBATIM. Assembled from separate excerpts of the 29 October launch
+        # transcript, so it omits intervening language. See `composite` below.
+        "composite": "October 29 launch transcript — combines separate excerpts.",
+        "approved": False,
+    },
+    {
+        "name": "Andrew Kossack",
+        "role": "President and CEO, Applied Research Institute",
+        "quote": "The Midwest and Great Lakes region already knows how to build things "
+                 "that matter. This initiative connects that manufacturing strength with "
+                 "the flight testing, defense expertise and research capabilities needed "
+                 "to bring new aviation technologies to market. Our ambition reaches "
+                 "across the region: help innovators develop their systems, prove them in "
+                 "relevant environments and build them here.",
+        "photo": "assets/img/speakers/andrew-kossack.jpg",
+        "alt": "Andrew Kossack speaking at a lectern bearing the Midwest UAS Test Site "
+               "shield, in front of a large American flag.",
+        "composite": "ARI launch press release — combines two excerpts of the published "
+                     "statement.",
+        "approved": False,
+    },
+]
+
+
+# ---------------------------------------------------------------------------
+# LAUNCH RECAP — supporting photograph
+# ---------------------------------------------------------------------------
+# Shown under the video in the launch section. Omitted entirely if the file is
+# not on disk, so the section degrades to video-only rather than to a broken
+# image.
+LAUNCH_PHOTO = {
+    "src": "assets/img/launch-ribbon-cutting.jpg",
+    "alt": "Officials and partners cut a blue ribbon at the opening of the Midwest UAS "
+           "Test Site of Indiana, in a hangar hung with the American flag and partner "
+           "banners.",
+    "caption": "The ribbon cutting at the opening of the Midwest UAS Test Site of Indiana.",
+}
