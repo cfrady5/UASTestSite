@@ -28,7 +28,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 55          # cache buster; bump when site.css or site.js changes
+ASSET_V = 56          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -766,24 +766,6 @@ def partners_page():
 </section>
 
 {"".join(sections)}
-<section class="section partner-note-section">
-  <div class="wrap">
-    <details class="partner-note reveal">
-      <summary>About this list</summary>
-      <div class="partner-note-body">
-        <p>Organization names are listed as supplied. Nothing here states the nature or status
-          of any commercial relationship with the test site — those designations are confirmed
-          before publication, and the grouping above reflects each organization's own field of
-          work, nothing more.</p>
-        <p>A website is linked only where the organization's official URL has been confirmed;
-          the rest appear unlinked rather than pointing somewhere guessed. Each logo is its
-          owner's trademark, shown with permission; organizations whose artwork is not yet on
-          file appear as set type.</p>
-      </div>
-    </details>
-  </div>
-</section>
-
 """
         + cta_band(
             "Become part of the network",

@@ -1833,26 +1833,6 @@ a.pc-link:focus-visible::after { opacity: 1; }
   .pc-link { padding: 1rem .75rem .9rem; gap: .7rem; }
 }
 
-/* ---------- The footnote ---------- */
-.partner-note-section { padding-top: 0; }
-.partner-note {
-  max-width: 68ch;
-  border-top: 1px solid var(--line);
-  padding-top: 1.5rem;
-}
-.partner-note > summary {
-  cursor: pointer;
-  font-size: .8125rem; font-weight: 700; letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-}
-.partner-note > summary:hover { color: var(--blue); }
-.partner-note-body { margin-top: .9rem; }
-.partner-note-body p {
-  font-size: .875rem; line-height: 1.7; color: var(--ink-soft);
-}
-.partner-note-body p + p { margin-top: .75rem; }
-
 @media (prefers-reduced-motion: reduce) {
   a.pc-link:hover, a.pc-link:focus-visible { transform: none; }
 }

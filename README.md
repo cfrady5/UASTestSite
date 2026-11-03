@@ -257,8 +257,14 @@ logos, the links and the optical sizing all carried over unchanged; only the
 arrangement is new. `assets/js/partner-marquee.js` is gone — recover it from
 git history if a scrolling strip is ever wanted somewhere else.
 
-The page needs no JavaScript. The grid, the category jump list and the
-collapsible provenance note are CSS and HTML.
+The page needs no JavaScript. The grid and the category jump list are CSS
+and HTML.
+
+It carries no footnote. An "About this list" note used to sit at the foot —
+names as supplied, no claim about any commercial relationship, why some
+entries are unlinked, logos shown with permission — and the client asked for
+it off the page. The constraints it described still hold in `site_data.py`,
+which is where they are enforced; nothing on the page states them now.
 
 **Sections alternate tone, not darkness.** `--paper` and `--paper-alt`, the
 site's two standing surfaces. A dark panel is the obvious way to separate
