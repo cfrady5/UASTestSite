@@ -543,16 +543,16 @@ a { color: inherit; }
 }
 .speaker:hover { background: rgba(255, 255, 255, .09); border-color: rgba(255, 255, 255, .26); }
 
-/* A portrait is optional. When one is on file it sits under the quote, as a
-   band across the foot of the card; when none is, the card is a pull quote
-   and nothing hints that something is missing — no silhouette, no grey box.
+/* A portrait is optional. When one is on file it sits between the quote and
+   the attribution, so the face introduces the name directly under it; when
+   none is, the card is a pull quote and nothing hints that something is
+   missing — no silhouette, no grey box.
 
    The crops are 3:2 but not all the same pixel size (one source was too small
    to reach the others' width), so the ratio is pinned here and object-fit
    keeps every card's band identical whatever the file measures. */
 .speaker-portrait {
   flex: none;
-  margin-top: auto;            /* pinned to the foot, whatever the quote's length */
   aspect-ratio: 3 / 2;
   overflow: hidden;
   background: var(--blue-night);
@@ -567,11 +567,10 @@ a { color: inherit; }
 
 .speaker-body {
   position: relative;
-  /* flex:1 so the body claims the height the grid gave the card; without it
-     a short quote leaves the attribution stranded mid-card while a long one
-     sits at the foot, and the two never line up. A card with a photograph
-     gives that slack to the portrait's auto top margin instead, which keeps
-     the picture on the card's bottom edge. */
+  /* flex:1 so the quote block absorbs whatever height the grid gave the card.
+     Everything below it — photograph, then attribution — is pushed to a
+     common line across the row, so cards whose quotes differ in length still
+     put their faces and their names at the same height. */
   flex: 1;
   display: flex; flex-direction: column;
   padding: 2.5rem 1.6rem 1.5rem;
@@ -583,18 +582,24 @@ a { color: inherit; }
   font-size: 4.5rem; line-height: 1; color: var(--gold); opacity: .85;
 }
 
-.speaker-quote { flex: 1; }
 .speaker-quote p {
   font-size: clamp(1rem, .96rem + .3vw, 1.125rem);
   line-height: 1.65; color: rgba(255, 255, 255, .95);
   text-wrap: pretty;
 }
 
+/* Outside .speaker-body now that the photograph sits between them, so it
+   carries its own gutters rather than inheriting the body's. */
 .speaker-id {
+  flex: none;
   display: flex; flex-direction: column; gap: .2rem;
-  margin-top: 1.4rem; padding-top: 1.1rem;
+  padding: 1.1rem 1.6rem 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, .2);
 }
+/* Without a photograph there is no band to separate quote from attribution,
+   so the rule above it does that job and the body stops short of the foot. */
+.speaker:not(.speaker-has-photo) .speaker-body { padding-bottom: .4rem; }
+.speaker-has-photo .speaker-id { border-top: none; }
 .speaker-name {
   font-size: .9375rem; font-weight: 700; letter-spacing: .02em;
   color: #fff;
@@ -1763,24 +1768,8 @@ a { color: inherit; }
 .partner-section { padding-block: clamp(2.75rem, 5vw, 4.5rem); }
 .partner-section-alt { background: var(--paper-alt); }
 
-.partner-section-head { margin-bottom: clamp(1.5rem, 3vw, 2.25rem); max-width: 62ch; }
+.partner-section-head { margin-bottom: clamp(1.25rem, 2.5vw, 1.9rem); max-width: 62ch; }
 .partner-section-head .h3 { color: var(--blue-deep); letter-spacing: -.01em; }
-.partner-section-intro {
-  margin-top: .5rem;
-  color: var(--ink-soft);
-  font-size: clamp(.9375rem, .91rem + .2vw, 1.0625rem);
-}
-.partner-section-count {
-  margin-top: .45rem;
-  font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--ink-faint, var(--ink-soft)); opacity: .75;
-}
-
-/* The jump list already separates the intro from the first category, so the
-   section's own closing space would just stack on top of it. */
-.partner-intro { padding-bottom: clamp(1.25rem, 2.5vw, 2rem); }
-.partner-intro-head { margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
-
 /* ---------- Category jump list ---------- */
 .partner-jump ul { display: flex; flex-wrap: wrap; gap: .5rem; }
 .partner-jump a {
@@ -1948,16 +1937,18 @@ a.pc-link:focus-visible::after { opacity: 1; }
   body { font-size: 11pt; }
 }
 
-/* The ribbon-cutting photograph under the launch video. Same border and
-   radius as the video frame so the two read as one editorial unit. */
-.launch-photo { margin-top: clamp(1.5rem, 3vw, 2.5rem); }
-.launch-photo img {
+/* The ribbon-cutting photograph opening the partners page, where a second
+   heading used to sit. On the light surface, so its border and caption are
+   ink rather than the white used on the dark home sections. */
+.partner-lead { margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem); }
+.partner-lead img {
   display: block; width: 100%; height: auto;
-  border: 1px solid rgba(255, 255, 255, .18);
+  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
 }
-.launch-photo figcaption {
-  margin-top: .85rem;
-  font-size: .8125rem; line-height: 1.6;
-  color: rgba(255, 255, 255, .72);
+.partner-lead figcaption {
+  margin-top: .9rem;
+  max-width: 68ch;
+  font-size: .875rem; line-height: 1.65;
+  color: var(--ink-soft);
 }

@@ -36,7 +36,7 @@ import site_data
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://www.midwestuastestsite.us"
-ASSET_V = 64          # cache buster; bump when site.css or site.js changes
+ASSET_V = 67          # cache buster; bump when site.css or site.js changes
 INBOX = "MidwestUASTestSite@theari.us"
 
 
@@ -605,22 +605,6 @@ def schedule_section():
 # confirmed website alongside its name.
 PARTNER_GROUPS = site_data.PARTNER_GROUPS
 
-# One line under each category heading, keyed by the group's slug.
-#
-# These describe the FIELD the grouping covers — which is all the grouping
-# itself claims; site_data.py groups each organization by its own line of
-# work, not by anything about its dealings with the test site. Nothing here
-# describes an organization, a relationship or a status, because none of that
-# is on file and the page says as much at the foot.
-GROUP_INTRO = {
-    "government":   "Public agencies, economic development bodies and university "
-                    "research foundations.",
-    "defense":      "Defense, naval and national security organizations.",
-    "academic":     "Universities, colleges and research institutions.",
-    "commercial":   "Aerospace, autonomy, sensing, communications and applied "
-                    "technology companies.",
-    "associations": "Industry associations and regional airports.",
-}
 
 
 # --------------------------------------------------------------------------
@@ -671,6 +655,30 @@ def logo_box(path):
     # trade.
     h = max(h, LOGO_MIN_H)
     return round(h * ratio), round(h)
+
+
+def partner_lead(total):
+    """What opens the page: the ribbon-cutting photograph where a second
+    heading used to be.
+
+    The page hero already says what this page is, so the heading under it was
+    saying it twice. The photograph does the same work better — and if the
+    file is missing the old heading comes back, because a page cannot open on
+    nothing.
+    """
+    ph = getattr(site_data, "LAUNCH_PHOTO", None)
+    if ph and (ROOT / ph["src"]).exists():
+        return f"""    <figure class="partner-lead reveal">
+      <img src="{ph['src']}" alt="{esc(ph['alt'])}"
+           width="1600" height="1067" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>{esc(ph['caption'])} {total} organizations are listed below,
+        grouped by each one\'s own field of work.</figcaption>
+    </figure>"""
+    return f"""    <header class="section-head partner-intro-head reveal">
+      <h2 class="h2">Ecosystem organizations</h2>
+      <p class="section-intro-copy">{total} organizations, grouped by each one\'s own field of
+        work. Select an organization to visit its website.</p>
+    </header>"""
 
 
 def partner_card(org):
@@ -736,8 +744,6 @@ def partners_page():
   <div class="wrap">
     <header class="partner-section-head reveal">
       <h2 class="h3" id="partners-{slug}-h">{name}</h2>
-      <p class="partner-section-intro">{GROUP_INTRO[slug]}</p>
-      <p class="partner-section-count">{count} organizations</p>
     </header>
     <ul class="partner-grid reveal">
 {cards}
@@ -757,13 +763,9 @@ def partners_page():
             "organizations connected to the test site.",
         )
         + f"""
-<section class="section section-intro partner-intro">
+<section class="section section-intro partner-intro" aria-label="Ecosystem organizations">
   <div class="wrap">
-    <header class="section-head partner-intro-head reveal">
-      <h2 class="h2">Ecosystem organizations</h2>
-      <p class="section-intro-copy">{total} organizations, grouped by each one's own field of
-        work. Select an organization to visit its website.</p>
-    </header>
+{partner_lead(total)}
 
     <nav class="partner-jump reveal" aria-label="Partner categories">
       <ul>
@@ -876,16 +878,16 @@ def speaker_card(sp, missing):
             f'<img src="{photo}" alt="{esc(alt)}" width="{w}" height="{h}" '
             f'loading="lazy" decoding="async"></div>')
 
-    # The photograph sits under the quote it belongs to, so the words come
-    # first and the speaker is who you see having said them.
+    # Quote, then the photograph, then who said it. The words come first, the
+    # face introduces the attribution directly under it.
     return f"""      <figure class="speaker{' speaker-has-photo' if photo else ''} reveal">
         <div class="speaker-body">
           <blockquote class="speaker-quote"><p>{esc(sp['quote'])}</p></blockquote>
-          <figcaption class="speaker-id">
-            <span class="speaker-name">{esc(sp['name'])}</span>
-            <span class="speaker-role">{esc(sp['role'])}</span>
-          </figcaption>
         </div>{portrait}
+        <figcaption class="speaker-id">
+          <span class="speaker-name">{esc(sp['name'])}</span>
+          <span class="speaker-role">{esc(sp['role'])}</span>
+        </figcaption>
       </figure>"""
 
 
